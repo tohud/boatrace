@@ -1,0 +1,34 @@
+{
+    "mappings":{
+        "raceMember_type":{
+            "properties":{
+                "raceId":{
+                    "type":"text",
+                    "fields":{
+                        "keyword":{
+                            "type":"keyword"
+                        }
+                    }
+                },
+                "rmLane":{
+                    "type":"integer"
+                },
+                "rmToban":{
+                    "type":"keyword"
+                },
+                "rmRank":{
+                    "type":"keyword"
+                },
+                "rmWeight":{
+                    "type":"float"
+                },
+                "rmChoseiWeight":{
+                    "type":"float"
+                },
+                "rmTenjiTime":{
+                    "type":"float"
+                }
+            }
+        }
+    }
+}

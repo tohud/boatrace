@@ -1,0 +1,37 @@
+{
+    "mappings":{
+        "raceInfo_type":{
+            "properties":{
+                "raceId":{
+                    "type":"text",
+                    "fields":{
+                        "keyword":{
+                            "type":"keyword"
+                        }
+                    }
+                },
+                "raceDate":{
+                    "type":"date"
+                },
+                "raceNumber":{
+                    "type":"integer"
+                },
+                "raceName":{
+                    "type":"text"
+                },
+                "raceGrade":{
+                    "type":"keyword"
+                },
+                "racePlaceId":{
+                    "type":"keyword"
+                },
+                "raceResult3t":{
+                    "type":"text"
+                },
+                "raceResult3todds":{
+                    "type":"float"
+                }
+            }
+        }
+    }
+}
