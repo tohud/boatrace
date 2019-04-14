@@ -11,7 +11,7 @@ CREATE TABLE raceinfo (
     raceWeather VARCHAR(10),
     raceWindSpeed FLOAT(3,1),
     raceSurfaceTemperature FLOAT(3,2),
-    raceWaveHeight TINYINT
+    raceWaveHeight TINYINT,
     PRIMARY KEY (raceId),
     INDEX raceinfo_date_idx (raceDate)
 );
