@@ -15,6 +15,7 @@ CREATE TABLE racemanagement (
     raceodds2f_flg BOOLEAN,
     raceodds1t_flg BOOLEAN,
     raceodds1f_flg BOOLEAN,
+    raceresult_flg BOOLEAN,
     PRIMARY KEY (raceId),
     INDEX raceinfo_date_idx (raceDate)
 );
