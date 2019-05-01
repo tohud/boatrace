@@ -13124,7 +13124,7 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">unicodedata</span>
 
 <span class="kn">import</span> <span class="nn">pymysql</span>
-<span class="kn">import</span> <span class="nn">getInfoKoushiki</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">getInfoKoushiki</span>
 </pre></div>
 
     </div>
@@ -13134,7 +13134,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setRaceManagementKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
@@ -13151,6 +13151,266 @@ div#notebook {
                 <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
         <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
     
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setRaceBeforeInfoWeatherKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+    <span class="c1">#racemanagementで、recebeforeinfoが未取得になっていたら取得してフラグをtrueにする。</span>
+        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and racebeforeinfo_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+        <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
+            <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;setRaceBeforeInfoWeatherKoushiki:&quot;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>        
+            <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getRaceBeforeInfoWeatherKoushiki</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
+                    <span class="c1">#print(ret)</span>
+                    <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO racebeforeinfo (raceId,raceTemperature,raceWeather,raceWindSpeed,raceSurfaceTemperature,raceWaveHeight) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,</span><span class="si">%f</span><span class="s2">,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%f</span><span class="s2">&#39;,&#39;</span><span class="si">%f</span><span class="s2">&#39;,&#39;</span><span class="si">%d</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span><span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="p">)</span>
+                    <span class="c1">#print(ins_sql)</span>
+                    <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
+                <span class="n">upd_sql</span><span class="o">=</span><span class="s2">&quot;UPDATE racemanagement SET racebeforeinfo_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
+                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
+                <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setRaceMemberKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="c1">#racemanagementで、racememberが未取得になっていたら取得してフラグをtrueにする。</span>
+        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and racemember_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+        <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
+            <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;setRaceMemberKoushiki:&quot;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getRaceMemberKoushiki</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
+                    <span class="c1">#print(ret)</span>
+                    <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO racemember (raceId,rmLane,rmToban,rmRank) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,</span><span class="si">%d</span><span class="s2">,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="c1">#print(ins_sql)</span>
+                    <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
+                <span class="n">upd_sql</span><span class="o">=</span><span class="s2">&quot;UPDATE racemanagement SET racemember_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
+                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
+                <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setOldOddsKoushiki3rentan</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="c1">#racemanagementで3連単のオッズを埋める</span>
+        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds3t_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+        <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
+            <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;setOldOddsKoushiki3rentan:&quot;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushiki3rentan</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
+                    <span class="c1">#print(ret)</span>
+                    <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 3連単オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;3t&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
+                <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds3t_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
+                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
+                <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setOldOddsKoushiki3renfuku</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="c1">#racemanagementで3連複のオッズを埋める</span>
+        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds3f_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+        <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
+            <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;setOldOddsKoushiki3renfuku:&quot;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushiki3renfuku</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
+                    <span class="c1">#print(ret)</span>
+                    <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 3連複オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;3f&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
+                <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds3f_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
+                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
+                <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setOldOddsKoushiki2rentan</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="c1">#racemanagementで2連単のオッズを埋める</span>
+        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds2t_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+        <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
+            <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;setOldOddsKoushiki2rentan:&quot;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushiki2rentan</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
+                    <span class="c1">#print(ret)</span>
+                    <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 2連単オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;2t&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
+                <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds2t_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
+                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
+                <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setOldOddsKoushiki2renfuku</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="c1">#racemanagementで2連複のオッズを埋める</span>
+        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds2f_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+        <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
+            <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;setOldOddsKoushiki2renfuku&quot;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushiki2renfuku</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
+                    <span class="c1">#print(ret)</span>
+                    <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 2連複オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;2f&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
+                <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds2f_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
+                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
+                <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setOldOddsKoushikiTansho</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="c1">#racemanagementで単勝のオッズを埋める</span>
+        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds1t_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+        <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
+            <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;setOldOddsKoushikiTansho:&quot;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushikiTansho</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
+                    <span class="c1">#print(ret)</span>
+                    <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 単勝オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;1t&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
+                <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds1t_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
+                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
+                <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">setOldOddsKoushikiResult</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceresult_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+        <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
+            <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;setOldOddsKoushikiResult&quot;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushikiResult</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
+                    <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceresult (raceId,goalRank,lane,toban,startTime,goalTime) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,</span><span class="si">%d</span><span class="s2">, </span><span class="si">%d</span><span class="s2">, &#39;</span><span class="si">%s</span><span class="s2">&#39;,</span><span class="si">%f</span><span class="s2">,</span><span class="si">%f</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+                    <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
+                <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceresult_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
+                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
+                <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>

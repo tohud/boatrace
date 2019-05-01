@@ -13119,9 +13119,8 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 公式からとってくる。</span>
-<span class="c1"># レースリスト、レースの参加メンバー、直前のオッズリストをESに突っ込む</span>
+<span class="c1"># レースリスト、レースの参加メンバー、直前のオッズリストをDBに突っ込む</span>
 <span class="c1"># https://www.boatrace.jp/owpc/pc/race/index?hd=%s</span>
-<span class="c1"># http://odds.kyotei24.jp/</span>
 <span class="c1"># mySQL接続用のユーザ、パスワードは $BR_HOME/config_nogit/mysqlUser.json</span>
 
 <span class="c1"># ToDO raceinfoをとっておく</span>
@@ -13140,7 +13139,7 @@ div#notebook {
 
 <span class="kn">import</span> <span class="nn">pymysql</span>
 <span class="kn">from</span> <span class="nn">getDataFromKoushiki</span> <span class="k">import</span> <span class="n">getInfoKoushiki</span>
-<span class="c1">#from getDataFromKoushiki import setInfoKoushiki</span>
+<span class="kn">from</span> <span class="nn">getDataFromKoushiki</span> <span class="k">import</span> <span class="n">setInfoKoushiki</span>
 <span class="kn">from</span> <span class="nn">myUtil</span> <span class="k">import</span> <span class="n">dbHandler</span>
 </pre></div>
 
@@ -13148,28 +13147,10 @@ div#notebook {
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[&#39;/home/ec2-user/.pyenv/versions/anaconda3-2018.12/lib/python36.zip&#39;, &#39;/home/ec2-user/.pyenv/versions/anaconda3-2018.12/lib/python3.6&#39;, &#39;/home/ec2-user/.pyenv/versions/anaconda3-2018.12/lib/python3.6/lib-dynload&#39;, &#39;&#39;, &#39;/home/ec2-user/.pyenv/versions/anaconda3-2018.12/lib/python3.6/site-packages&#39;, &#39;/home/ec2-user/.pyenv/versions/anaconda3-2018.12/lib/python3.6/site-packages/IPython/extensions&#39;, &#39;/home/ec2-user/.ipython&#39;]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;GACRP_HOME&#39;</span><span class="p">])</span>
@@ -13202,7 +13183,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbh</span><span class="o">=</span><span class="n">dbHandler</span><span class="o">.</span><span class="n">getDBHandle</span><span class="p">()</span>
@@ -13215,7 +13196,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#dbHandler.closeDBHandle(dbh)</span>
@@ -13228,7 +13209,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#　会場とplaceIdとの紐づけファイルをロード。たぶん使わない。</span>
@@ -13264,10 +13245,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">raceDate</span><span class="o">=</span><span class="s2">&quot;20190322&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">raceDate</span><span class="o">=</span><span class="s2">&quot;20190323&quot;</span>
 </pre></div>
 
     </div>
@@ -13277,36 +13258,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># レースの一覧を取得し、足りないracemanegementを作る。</span>
-
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getRaceManagementKoushiki</span><span class="p">(</span><span class="n">raceDate</span><span class="p">):</span>
-        <span class="c1">#racemanagementをここでは整備する。</span>
-        <span class="n">sel_sql</span><span class="o">=</span><span class="s2">&quot;SELECT count(*) FROM racemanagement WHERE raceid=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-        <span class="n">results</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-        
-        <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;count(*)&#39;</span><span class="p">]</span><span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1">#なければINSERT</span>
-            <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO racemanagement (raceId,raceDate,raceNumber,raceGrade,racePlaceId,racebeforeinfo_flg,racemember_flg,raceodds3t_flg,raceodds3f_flg,raceodds2t_flg,raceodds2f_flg,raceodds1t_flg,raceodds1f_flg,raceresult_flg) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;</span><span class="si">%s</span><span class="s2">&#39;,</span><span class="si">%d</span><span class="s2">,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-            <span class="c1">#print(ins_sql)</span>
-            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-    <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setRaceManagementKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13316,29 +13272,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[47]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># racemanegementをもとに、レースの直前情報を取得する。</span>
 <span class="c1"># ただし、beforeinfoはレースで一意の情報（Weather）と、メンバーごとの情報をわける。</span>
 <span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="c1">#racemanagementで、racememberが未取得になっていたら取得してフラグをtrueにする。</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and racebeforeinfo_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
-        <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">raceId</span><span class="p">)</span>        
-        <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getRaceBeforeInfoWeatherKoushiki</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
-                <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO racebeforeinfo (raceId,raceTemperature,raceWeather,raceWindSpeed,raceSurfaceTemperature,raceWaveHeight) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,</span><span class="si">%f</span><span class="s2">,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%f</span><span class="s2">&#39;,&#39;</span><span class="si">%f</span><span class="s2">&#39;,&#39;</span><span class="si">%d</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span><span class="nb">float</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="p">)</span>
-                <span class="c1">#print(ins_sql)</span>
-                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-            <span class="n">upd_sql</span><span class="o">=</span><span class="s2">&quot;UPDATE racemanagement SET racebeforeinfo_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-            <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
-            <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setRaceBeforeInfoWeatherKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13348,27 +13288,1743 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="c1">#racemanagementで、racememberが未取得になっていたら取得してフラグをtrueにする。</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and racemember_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
-        <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getRaceMemberKoushiki</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-                <span class="c1">#print(ret)</span>
-                <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO racemember (raceId,rmLane,rmToban,rmRank) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,</span><span class="si">%d</span><span class="s2">,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-                <span class="c1">#print(ins_sql)</span>
-                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-            <span class="n">upd_sql</span><span class="o">=</span><span class="s2">&quot;UPDATE racemanagement SET racemember_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-            <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
-            <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># racemanegementをもとに、レースのメンバー情報を取得する。</span>
+<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setRaceMemberKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>setRaceMemberKoushiki:20190323-01-01
+setRaceMemberKoushiki:20190323-01-02
+setRaceMemberKoushiki:20190323-01-03
+setRaceMemberKoushiki:20190323-01-04
+setRaceMemberKoushiki:20190323-01-05
+setRaceMemberKoushiki:20190323-01-06
+setRaceMemberKoushiki:20190323-01-07
+setRaceMemberKoushiki:20190323-01-08
+setRaceMemberKoushiki:20190323-01-09
+setRaceMemberKoushiki:20190323-01-10
+setRaceMemberKoushiki:20190323-01-11
+setRaceMemberKoushiki:20190323-01-12
+setRaceMemberKoushiki:20190323-03-01
+setRaceMemberKoushiki:20190323-03-02
+setRaceMemberKoushiki:20190323-03-03
+setRaceMemberKoushiki:20190323-03-04
+setRaceMemberKoushiki:20190323-03-05
+setRaceMemberKoushiki:20190323-03-06
+setRaceMemberKoushiki:20190323-03-07
+setRaceMemberKoushiki:20190323-03-08
+setRaceMemberKoushiki:20190323-03-09
+setRaceMemberKoushiki:20190323-03-10
+setRaceMemberKoushiki:20190323-03-11
+setRaceMemberKoushiki:20190323-03-12
+setRaceMemberKoushiki:20190323-05-01
+setRaceMemberKoushiki:20190323-05-02
+setRaceMemberKoushiki:20190323-05-03
+setRaceMemberKoushiki:20190323-05-04
+setRaceMemberKoushiki:20190323-05-05
+setRaceMemberKoushiki:20190323-05-06
+setRaceMemberKoushiki:20190323-05-07
+setRaceMemberKoushiki:20190323-05-08
+setRaceMemberKoushiki:20190323-05-09
+setRaceMemberKoushiki:20190323-05-10
+setRaceMemberKoushiki:20190323-05-11
+setRaceMemberKoushiki:20190323-05-12
+setRaceMemberKoushiki:20190323-06-01
+setRaceMemberKoushiki:20190323-06-02
+setRaceMemberKoushiki:20190323-06-03
+setRaceMemberKoushiki:20190323-06-04
+setRaceMemberKoushiki:20190323-06-05
+setRaceMemberKoushiki:20190323-06-06
+setRaceMemberKoushiki:20190323-06-07
+setRaceMemberKoushiki:20190323-06-08
+setRaceMemberKoushiki:20190323-06-09
+setRaceMemberKoushiki:20190323-06-10
+setRaceMemberKoushiki:20190323-06-11
+setRaceMemberKoushiki:20190323-06-12
+setRaceMemberKoushiki:20190323-07-01
+setRaceMemberKoushiki:20190323-07-02
+setRaceMemberKoushiki:20190323-07-03
+setRaceMemberKoushiki:20190323-07-04
+setRaceMemberKoushiki:20190323-07-05
+setRaceMemberKoushiki:20190323-07-06
+setRaceMemberKoushiki:20190323-07-07
+setRaceMemberKoushiki:20190323-07-08
+setRaceMemberKoushiki:20190323-07-09
+setRaceMemberKoushiki:20190323-07-10
+setRaceMemberKoushiki:20190323-07-11
+setRaceMemberKoushiki:20190323-07-12
+setRaceMemberKoushiki:20190323-08-01
+setRaceMemberKoushiki:20190323-08-02
+setRaceMemberKoushiki:20190323-08-03
+setRaceMemberKoushiki:20190323-08-04
+setRaceMemberKoushiki:20190323-08-05
+setRaceMemberKoushiki:20190323-08-06
+setRaceMemberKoushiki:20190323-08-07
+setRaceMemberKoushiki:20190323-08-08
+setRaceMemberKoushiki:20190323-08-09
+setRaceMemberKoushiki:20190323-08-10
+setRaceMemberKoushiki:20190323-08-11
+setRaceMemberKoushiki:20190323-08-12
+setRaceMemberKoushiki:20190323-10-01
+setRaceMemberKoushiki:20190323-10-02
+setRaceMemberKoushiki:20190323-10-03
+setRaceMemberKoushiki:20190323-10-04
+setRaceMemberKoushiki:20190323-10-05
+setRaceMemberKoushiki:20190323-10-06
+setRaceMemberKoushiki:20190323-10-07
+setRaceMemberKoushiki:20190323-10-08
+setRaceMemberKoushiki:20190323-10-09
+setRaceMemberKoushiki:20190323-10-10
+setRaceMemberKoushiki:20190323-10-11
+setRaceMemberKoushiki:20190323-10-12
+setRaceMemberKoushiki:20190323-11-01
+setRaceMemberKoushiki:20190323-11-02
+setRaceMemberKoushiki:20190323-11-03
+setRaceMemberKoushiki:20190323-11-04
+setRaceMemberKoushiki:20190323-11-05
+setRaceMemberKoushiki:20190323-11-06
+setRaceMemberKoushiki:20190323-11-07
+setRaceMemberKoushiki:20190323-11-08
+setRaceMemberKoushiki:20190323-11-09
+setRaceMemberKoushiki:20190323-11-10
+setRaceMemberKoushiki:20190323-11-11
+setRaceMemberKoushiki:20190323-11-12
+setRaceMemberKoushiki:20190323-12-01
+setRaceMemberKoushiki:20190323-12-02
+setRaceMemberKoushiki:20190323-12-03
+setRaceMemberKoushiki:20190323-12-04
+setRaceMemberKoushiki:20190323-12-05
+setRaceMemberKoushiki:20190323-12-06
+setRaceMemberKoushiki:20190323-12-07
+setRaceMemberKoushiki:20190323-12-08
+setRaceMemberKoushiki:20190323-12-09
+setRaceMemberKoushiki:20190323-12-10
+setRaceMemberKoushiki:20190323-12-11
+setRaceMemberKoushiki:20190323-12-12
+setRaceMemberKoushiki:20190323-15-01
+setRaceMemberKoushiki:20190323-15-02
+setRaceMemberKoushiki:20190323-15-03
+setRaceMemberKoushiki:20190323-15-04
+setRaceMemberKoushiki:20190323-15-05
+setRaceMemberKoushiki:20190323-15-06
+setRaceMemberKoushiki:20190323-15-07
+setRaceMemberKoushiki:20190323-15-08
+setRaceMemberKoushiki:20190323-15-09
+setRaceMemberKoushiki:20190323-15-10
+setRaceMemberKoushiki:20190323-15-11
+setRaceMemberKoushiki:20190323-15-12
+setRaceMemberKoushiki:20190323-16-01
+setRaceMemberKoushiki:20190323-16-02
+setRaceMemberKoushiki:20190323-16-03
+setRaceMemberKoushiki:20190323-16-04
+setRaceMemberKoushiki:20190323-16-05
+setRaceMemberKoushiki:20190323-16-06
+setRaceMemberKoushiki:20190323-16-07
+setRaceMemberKoushiki:20190323-16-08
+setRaceMemberKoushiki:20190323-16-09
+setRaceMemberKoushiki:20190323-16-10
+setRaceMemberKoushiki:20190323-16-11
+setRaceMemberKoushiki:20190323-16-12
+setRaceMemberKoushiki:20190323-21-01
+setRaceMemberKoushiki:20190323-21-02
+setRaceMemberKoushiki:20190323-21-03
+setRaceMemberKoushiki:20190323-21-04
+setRaceMemberKoushiki:20190323-21-05
+setRaceMemberKoushiki:20190323-21-06
+setRaceMemberKoushiki:20190323-21-07
+setRaceMemberKoushiki:20190323-21-08
+setRaceMemberKoushiki:20190323-21-09
+setRaceMemberKoushiki:20190323-21-10
+setRaceMemberKoushiki:20190323-21-11
+setRaceMemberKoushiki:20190323-21-12
+setRaceMemberKoushiki:20190323-23-01
+setRaceMemberKoushiki:20190323-23-02
+setRaceMemberKoushiki:20190323-23-03
+setRaceMemberKoushiki:20190323-23-04
+setRaceMemberKoushiki:20190323-23-05
+setRaceMemberKoushiki:20190323-23-06
+setRaceMemberKoushiki:20190323-23-07
+setRaceMemberKoushiki:20190323-23-08
+setRaceMemberKoushiki:20190323-23-09
+setRaceMemberKoushiki:20190323-23-10
+setRaceMemberKoushiki:20190323-23-11
+setRaceMemberKoushiki:20190323-23-12
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 3連単のオッズ情報を取得する</span>
+<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushiki3rentan</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>20190323-01-01
+20190323-01-02
+20190323-01-03
+20190323-01-04
+20190323-01-05
+20190323-01-06
+20190323-01-07
+20190323-01-08
+20190323-01-09
+20190323-01-10
+20190323-01-11
+20190323-01-12
+20190323-03-01
+20190323-03-02
+20190323-03-03
+20190323-03-04
+20190323-03-05
+20190323-03-06
+20190323-03-07
+20190323-03-08
+20190323-03-09
+20190323-03-10
+20190323-03-11
+20190323-03-12
+20190323-05-01
+20190323-05-02
+20190323-05-03
+20190323-05-04
+20190323-05-05
+20190323-05-06
+20190323-05-07
+20190323-05-08
+20190323-05-09
+20190323-05-10
+20190323-05-11
+20190323-05-12
+20190323-06-01
+20190323-06-02
+20190323-06-03
+20190323-06-04
+20190323-06-05
+20190323-06-06
+20190323-06-07
+20190323-06-08
+20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-06-09
+20190323-06-10
+20190323-06-11
+20190323-06-12
+20190323-07-01
+20190323-07-02
+20190323-07-03
+20190323-07-04
+20190323-07-05
+20190323-07-06
+20190323-07-07
+20190323-07-08
+20190323-07-09
+20190323-07-10
+20190323-07-11
+20190323-07-12
+20190323-08-01
+20190323-08-02
+20190323-08-03
+20190323-08-04
+20190323-08-05
+20190323-08-06
+20190323-08-07
+20190323-08-08
+20190323-08-09
+20190323-08-10
+20190323-08-11
+20190323-08-12
+20190323-10-01
+20190323-10-02
+20190323-10-03
+20190323-10-04
+20190323-10-05
+20190323-10-06
+20190323-10-07
+20190323-10-08
+20190323-10-09
+20190323-10-10
+20190323-10-11
+20190323-10-12
+20190323-11-01
+20190323-11-02
+20190323-11-03
+20190323-11-04
+20190323-11-05
+20190323-11-06
+20190323-11-07
+20190323-11-08
+20190323-11-09
+20190323-11-10
+20190323-11-11
+20190323-11-12
+20190323-12-01
+20190323-12-02
+20190323-12-03
+20190323-12-04
+20190323-12-05
+20190323-12-06
+20190323-12-07
+20190323-12-08
+20190323-12-09
+20190323-12-10
+20190323-12-11
+20190323-12-12
+20190323-15-01
+20190323-15-02
+20190323-15-03
+20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-15-04
+20190323-15-05
+20190323-15-06
+20190323-15-07
+20190323-15-08
+20190323-15-09
+20190323-15-10
+20190323-15-11
+20190323-15-12
+20190323-16-01
+20190323-16-02
+20190323-16-03
+20190323-16-04
+20190323-16-05
+20190323-16-06
+20190323-16-07
+20190323-16-08
+20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連単オッズ取得 raceId:20190323-16-09
+20190323-16-10
+20190323-16-11
+20190323-16-12
+20190323-21-01
+20190323-21-02
+20190323-21-03
+20190323-21-04
+20190323-21-05
+20190323-21-06
+20190323-21-07
+20190323-21-08
+20190323-21-09
+20190323-21-10
+20190323-21-11
+20190323-21-12
+20190323-23-01
+20190323-23-02
+20190323-23-03
+20190323-23-04
+20190323-23-05
+20190323-23-06
+20190323-23-07
+20190323-23-08
+20190323-23-09
+20190323-23-10
+20190323-23-11
+20190323-23-12
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 3連複のオッズ情報を取得する</span>
+<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushiki3renfuku</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>20190323-01-01
+20190323-01-02
+20190323-01-03
+20190323-01-04
+20190323-01-05
+20190323-01-06
+20190323-01-07
+20190323-01-08
+20190323-01-09
+20190323-01-10
+20190323-01-11
+20190323-01-12
+20190323-03-01
+20190323-03-02
+20190323-03-03
+20190323-03-04
+20190323-03-05
+20190323-03-06
+20190323-03-07
+20190323-03-08
+20190323-03-09
+20190323-03-10
+20190323-03-11
+20190323-03-12
+20190323-05-01
+20190323-05-02
+20190323-05-03
+20190323-05-04
+20190323-05-05
+20190323-05-06
+20190323-05-07
+20190323-05-08
+20190323-05-09
+20190323-05-10
+20190323-05-11
+20190323-05-12
+20190323-06-01
+20190323-06-02
+20190323-06-03
+20190323-06-04
+20190323-06-05
+20190323-06-06
+20190323-06-07
+20190323-06-08
+20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-06-09
+20190323-06-10
+20190323-06-11
+20190323-06-12
+20190323-07-01
+20190323-07-02
+20190323-07-03
+20190323-07-04
+20190323-07-05
+20190323-07-06
+20190323-07-07
+20190323-07-08
+20190323-07-09
+20190323-07-10
+20190323-07-11
+20190323-07-12
+20190323-08-01
+20190323-08-02
+20190323-08-03
+20190323-08-04
+20190323-08-05
+20190323-08-06
+20190323-08-07
+20190323-08-08
+20190323-08-09
+20190323-08-10
+20190323-08-11
+20190323-08-12
+20190323-10-01
+20190323-10-02
+20190323-10-03
+20190323-10-04
+20190323-10-05
+20190323-10-06
+20190323-10-07
+20190323-10-08
+20190323-10-09
+20190323-10-10
+20190323-10-11
+20190323-10-12
+20190323-11-01
+20190323-11-02
+20190323-11-03
+20190323-11-04
+20190323-11-05
+20190323-11-06
+20190323-11-07
+20190323-11-08
+20190323-11-09
+20190323-11-10
+20190323-11-11
+20190323-11-12
+20190323-12-01
+20190323-12-02
+20190323-12-03
+20190323-12-04
+20190323-12-05
+20190323-12-06
+20190323-12-07
+20190323-12-08
+20190323-12-09
+20190323-12-10
+20190323-12-11
+20190323-12-12
+20190323-15-01
+20190323-15-02
+20190323-15-03
+20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-15-04
+20190323-15-05
+20190323-15-06
+20190323-15-07
+20190323-15-08
+20190323-15-09
+20190323-15-10
+20190323-15-11
+20190323-15-12
+20190323-16-01
+20190323-16-02
+20190323-16-03
+20190323-16-04
+20190323-16-05
+20190323-16-06
+20190323-16-07
+20190323-16-08
+20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 3連複オッズ取得 raceId:20190323-16-09
+20190323-16-10
+20190323-16-11
+20190323-16-12
+20190323-21-01
+20190323-21-02
+20190323-21-03
+20190323-21-04
+20190323-21-05
+20190323-21-06
+20190323-21-07
+20190323-21-08
+20190323-21-09
+20190323-21-10
+20190323-21-11
+20190323-21-12
+20190323-23-01
+20190323-23-02
+20190323-23-03
+20190323-23-04
+20190323-23-05
+20190323-23-06
+20190323-23-07
+20190323-23-08
+20190323-23-09
+20190323-23-10
+20190323-23-11
+20190323-23-12
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2連単のオッズ情報を取得する</span>
+<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushiki2rentan</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>20190323-01-01
+20190323-01-02
+20190323-01-03
+20190323-01-04
+20190323-01-05
+20190323-01-06
+20190323-01-07
+20190323-01-08
+20190323-01-09
+20190323-01-10
+20190323-01-11
+20190323-01-12
+20190323-03-01
+20190323-03-02
+20190323-03-03
+20190323-03-04
+20190323-03-05
+20190323-03-06
+20190323-03-07
+20190323-03-08
+20190323-03-09
+20190323-03-10
+20190323-03-11
+20190323-03-12
+20190323-05-01
+20190323-05-02
+20190323-05-03
+20190323-05-04
+20190323-05-05
+20190323-05-06
+20190323-05-07
+20190323-05-08
+20190323-05-09
+20190323-05-10
+20190323-05-11
+20190323-05-12
+20190323-06-01
+20190323-06-02
+20190323-06-03
+20190323-06-04
+20190323-06-05
+20190323-06-06
+20190323-06-07
+20190323-06-08
+20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-06-09
+20190323-06-10
+20190323-06-11
+20190323-06-12
+20190323-07-01
+20190323-07-02
+20190323-07-03
+20190323-07-04
+20190323-07-05
+20190323-07-06
+20190323-07-07
+20190323-07-08
+20190323-07-09
+20190323-07-10
+20190323-07-11
+20190323-07-12
+20190323-08-01
+20190323-08-02
+20190323-08-03
+20190323-08-04
+20190323-08-05
+20190323-08-06
+20190323-08-07
+20190323-08-08
+20190323-08-09
+20190323-08-10
+20190323-08-11
+20190323-08-12
+20190323-10-01
+20190323-10-02
+20190323-10-03
+20190323-10-04
+20190323-10-05
+20190323-10-06
+20190323-10-07
+20190323-10-08
+20190323-10-09
+20190323-10-10
+20190323-10-11
+20190323-10-12
+20190323-11-01
+20190323-11-02
+20190323-11-03
+20190323-11-04
+20190323-11-05
+20190323-11-06
+20190323-11-07
+20190323-11-08
+20190323-11-09
+20190323-11-10
+20190323-11-11
+20190323-11-12
+20190323-12-01
+20190323-12-02
+20190323-12-03
+20190323-12-04
+20190323-12-05
+20190323-12-06
+20190323-12-07
+20190323-12-08
+20190323-12-09
+20190323-12-10
+20190323-12-11
+20190323-12-12
+20190323-15-01
+20190323-15-02
+20190323-15-03
+20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-15-04
+20190323-15-05
+20190323-15-06
+20190323-15-07
+20190323-15-08
+20190323-15-09
+20190323-15-10
+20190323-15-11
+20190323-15-12
+20190323-16-01
+20190323-16-02
+20190323-16-03
+20190323-16-04
+20190323-16-05
+20190323-16-06
+20190323-16-07
+20190323-16-08
+20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連単オッズ取得 raceId:20190323-16-09
+20190323-16-10
+20190323-16-11
+20190323-16-12
+20190323-21-01
+20190323-21-02
+20190323-21-03
+20190323-21-04
+20190323-21-05
+20190323-21-06
+20190323-21-07
+20190323-21-08
+20190323-21-09
+20190323-21-10
+20190323-21-11
+20190323-21-12
+20190323-23-01
+20190323-23-02
+20190323-23-03
+20190323-23-04
+20190323-23-05
+20190323-23-06
+20190323-23-07
+20190323-23-08
+20190323-23-09
+20190323-23-10
+20190323-23-11
+20190323-23-12
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 2連複のオッズ情報を取得する</span>
+<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushiki2renfuku</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>20190323-01-01
+20190323 1 01
+20190323-01-02
+20190323 2 01
+20190323-01-03
+20190323 3 01
+20190323-01-04
+20190323 4 01
+20190323-01-05
+20190323 5 01
+20190323-01-06
+20190323 6 01
+20190323-01-07
+20190323 7 01
+20190323-01-08
+20190323 8 01
+20190323-01-09
+20190323 9 01
+20190323-01-10
+20190323 10 01
+20190323-01-11
+20190323 11 01
+20190323-01-12
+20190323 12 01
+20190323-03-01
+20190323 1 03
+20190323-03-02
+20190323 2 03
+20190323-03-03
+20190323 3 03
+20190323-03-04
+20190323 4 03
+20190323-03-05
+20190323 5 03
+20190323-03-06
+20190323 6 03
+20190323-03-07
+20190323 7 03
+20190323-03-08
+20190323 8 03
+20190323-03-09
+20190323 9 03
+20190323-03-10
+20190323 10 03
+20190323-03-11
+20190323 11 03
+20190323-03-12
+20190323 12 03
+20190323-05-01
+20190323 1 05
+20190323-05-02
+20190323 2 05
+20190323-05-03
+20190323 3 05
+20190323-05-04
+20190323 4 05
+20190323-05-05
+20190323 5 05
+20190323-05-06
+20190323 6 05
+20190323-05-07
+20190323 7 05
+20190323-05-08
+20190323 8 05
+20190323-05-09
+20190323 9 05
+20190323-05-10
+20190323 10 05
+20190323-05-11
+20190323 11 05
+20190323-05-12
+20190323 12 05
+20190323-06-01
+20190323 1 06
+20190323-06-02
+20190323 2 06
+20190323-06-03
+20190323 3 06
+20190323-06-04
+20190323 4 06
+20190323-06-05
+20190323 5 06
+20190323-06-06
+20190323 6 06
+20190323-06-07
+20190323 7 06
+20190323-06-08
+20190323 8 06
+20190323-06-09
+20190323 9 06
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-06-09
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-06-09
+20190323-06-10
+20190323 10 06
+20190323-06-11
+20190323 11 06
+20190323-06-12
+20190323 12 06
+20190323-07-01
+20190323 1 07
+20190323-07-02
+20190323 2 07
+20190323-07-03
+20190323 3 07
+20190323-07-04
+20190323 4 07
+20190323-07-05
+20190323 5 07
+20190323-07-06
+20190323 6 07
+20190323-07-07
+20190323 7 07
+20190323-07-08
+20190323 8 07
+20190323-07-09
+20190323 9 07
+20190323-07-10
+20190323 10 07
+20190323-07-11
+20190323 11 07
+20190323-07-12
+20190323 12 07
+20190323-08-01
+20190323 1 08
+20190323-08-02
+20190323 2 08
+20190323-08-03
+20190323 3 08
+20190323-08-04
+20190323 4 08
+20190323-08-05
+20190323 5 08
+20190323-08-06
+20190323 6 08
+20190323-08-07
+20190323 7 08
+20190323-08-08
+20190323 8 08
+20190323-08-09
+20190323 9 08
+20190323-08-10
+20190323 10 08
+20190323-08-11
+20190323 11 08
+20190323-08-12
+20190323 12 08
+20190323-10-01
+20190323 1 10
+20190323-10-02
+20190323 2 10
+20190323-10-03
+20190323 3 10
+20190323-10-04
+20190323 4 10
+20190323-10-05
+20190323 5 10
+20190323-10-06
+20190323 6 10
+20190323-10-07
+20190323 7 10
+20190323-10-08
+20190323 8 10
+20190323-10-09
+20190323 9 10
+20190323-10-10
+20190323 10 10
+20190323-10-11
+20190323 11 10
+20190323-10-12
+20190323 12 10
+20190323-11-01
+20190323 1 11
+20190323-11-02
+20190323 2 11
+20190323-11-03
+20190323 3 11
+20190323-11-04
+20190323 4 11
+20190323-11-05
+20190323 5 11
+20190323-11-06
+20190323 6 11
+20190323-11-07
+20190323 7 11
+20190323-11-08
+20190323 8 11
+20190323-11-09
+20190323 9 11
+20190323-11-10
+20190323 10 11
+20190323-11-11
+20190323 11 11
+20190323-11-12
+20190323 12 11
+20190323-12-01
+20190323 1 12
+20190323-12-02
+20190323 2 12
+20190323-12-03
+20190323 3 12
+20190323-12-04
+20190323 4 12
+20190323-12-05
+20190323 5 12
+20190323-12-06
+20190323 6 12
+20190323-12-07
+20190323 7 12
+20190323-12-08
+20190323 8 12
+20190323-12-09
+20190323 9 12
+20190323-12-10
+20190323 10 12
+20190323-12-11
+20190323 11 12
+20190323-12-12
+20190323 12 12
+20190323-15-01
+20190323 1 15
+20190323-15-02
+20190323 2 15
+20190323-15-03
+20190323 3 15
+20190323-15-04
+20190323 4 15
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-15-04
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-15-04
+20190323-15-05
+20190323 5 15
+20190323-15-06
+20190323 6 15
+20190323-15-07
+20190323 7 15
+20190323-15-08
+20190323 8 15
+20190323-15-09
+20190323 9 15
+20190323-15-10
+20190323 10 15
+20190323-15-11
+20190323 11 15
+20190323-15-12
+20190323 12 15
+20190323-16-01
+20190323 1 16
+20190323-16-02
+20190323 2 16
+20190323-16-03
+20190323 3 16
+20190323-16-04
+20190323 4 16
+20190323-16-05
+20190323 5 16
+20190323-16-06
+20190323 6 16
+20190323-16-07
+20190323 7 16
+20190323-16-08
+20190323 8 16
+20190323-16-09
+20190323 9 16
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-16-09
+[SKIP]欠場 at 2連複オッズ取得 raceId:20190323-16-09
+20190323-16-10
+20190323 10 16
+20190323-16-11
+20190323 11 16
+20190323-16-12
+20190323 12 16
+20190323-21-01
+20190323 1 21
+20190323-21-02
+20190323 2 21
+20190323-21-03
+20190323 3 21
+20190323-21-04
+20190323 4 21
+20190323-21-05
+20190323 5 21
+20190323-21-06
+20190323 6 21
+20190323-21-07
+20190323 7 21
+20190323-21-08
+20190323 8 21
+20190323-21-09
+20190323 9 21
+20190323-21-10
+20190323 10 21
+20190323-21-11
+20190323 11 21
+20190323-21-12
+20190323 12 21
+20190323-23-01
+20190323 1 23
+20190323-23-02
+20190323 2 23
+20190323-23-03
+20190323 3 23
+20190323-23-04
+20190323 4 23
+20190323-23-05
+20190323 5 23
+20190323-23-06
+20190323 6 23
+20190323-23-07
+20190323 7 23
+20190323-23-08
+20190323 8 23
+20190323-23-09
+20190323 9 23
+20190323-23-10
+20190323 10 23
+20190323-23-11
+20190323 11 23
+20190323-23-12
+20190323 12 23
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 単勝のオッズ情報を取得する</span>
+<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushikiTansho</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>20190323-01-01
+20190323-01-02
+20190323-01-03
+20190323-01-04
+20190323-01-05
+20190323-01-06
+20190323-01-07
+20190323-01-08
+20190323-01-09
+20190323-01-10
+20190323-01-11
+20190323-01-12
+20190323-03-01
+20190323-03-02
+20190323-03-03
+20190323-03-04
+20190323-03-05
+20190323-03-06
+20190323-03-07
+20190323-03-08
+20190323-03-09
+20190323-03-10
+20190323-03-11
+20190323-03-12
+20190323-05-01
+20190323-05-02
+20190323-05-03
+20190323-05-04
+20190323-05-05
+20190323-05-06
+20190323-05-07
+20190323-05-08
+20190323-05-09
+20190323-05-10
+20190323-05-11
+20190323-05-12
+20190323-06-01
+20190323-06-02
+20190323-06-03
+20190323-06-04
+20190323-06-05
+20190323-06-06
+20190323-06-07
+20190323-06-08
+20190323-06-09
+[SKIP]欠場 at 単勝オッズ取得 raceId:20190323-06-09
+20190323-06-10
+20190323-06-11
+20190323-06-12
+20190323-07-01
+20190323-07-02
+20190323-07-03
+20190323-07-04
+20190323-07-05
+20190323-07-06
+20190323-07-07
+20190323-07-08
+20190323-07-09
+20190323-07-10
+20190323-07-11
+20190323-07-12
+20190323-08-01
+20190323-08-02
+20190323-08-03
+20190323-08-04
+20190323-08-05
+20190323-08-06
+20190323-08-07
+20190323-08-08
+20190323-08-09
+20190323-08-10
+20190323-08-11
+20190323-08-12
+20190323-10-01
+20190323-10-02
+20190323-10-03
+20190323-10-04
+20190323-10-05
+20190323-10-06
+20190323-10-07
+20190323-10-08
+20190323-10-09
+20190323-10-10
+20190323-10-11
+20190323-10-12
+20190323-11-01
+20190323-11-02
+20190323-11-03
+20190323-11-04
+20190323-11-05
+20190323-11-06
+20190323-11-07
+20190323-11-08
+20190323-11-09
+20190323-11-10
+20190323-11-11
+20190323-11-12
+20190323-12-01
+20190323-12-02
+20190323-12-03
+20190323-12-04
+20190323-12-05
+20190323-12-06
+20190323-12-07
+20190323-12-08
+20190323-12-09
+20190323-12-10
+20190323-12-11
+20190323-12-12
+20190323-15-01
+20190323-15-02
+20190323-15-03
+20190323-15-04
+[SKIP]欠場 at 単勝オッズ取得 raceId:20190323-15-04
+20190323-15-05
+20190323-15-06
+20190323-15-07
+20190323-15-08
+20190323-15-09
+20190323-15-10
+20190323-15-11
+20190323-15-12
+20190323-16-01
+20190323-16-02
+20190323-16-03
+20190323-16-04
+20190323-16-05
+20190323-16-06
+20190323-16-07
+20190323-16-08
+20190323-16-09
+[SKIP]欠場 at 単勝オッズ取得 raceId:20190323-16-09
+20190323-16-10
+20190323-16-11
+20190323-16-12
+20190323-21-01
+20190323-21-02
+20190323-21-03
+20190323-21-04
+20190323-21-05
+20190323-21-06
+20190323-21-07
+20190323-21-08
+20190323-21-09
+20190323-21-10
+20190323-21-11
+20190323-21-12
+20190323-23-01
+20190323-23-02
+20190323-23-03
+20190323-23-04
+20190323-23-05
+20190323-23-06
+20190323-23-07
+20190323-23-08
+20190323-23-09
+20190323-23-10
+20190323-23-11
+20190323-23-12
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># レース結果情報を取得する</span>
+<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushikiResult</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>20190323-01-01
+20190323-01-02
+20190323-01-03
+20190323-01-04
+20190323-01-05
+20190323-01-06
+20190323-01-07
+20190323-01-08
+20190323-01-09
+20190323-01-10
+20190323-01-11
+20190323-01-12
+20190323-03-01
+20190323-03-02
+20190323-03-03
+20190323-03-04
+20190323-03-05
+20190323-03-06
+20190323-03-07
+20190323-03-08
+20190323-03-09
+20190323-03-10
+20190323-03-11
+20190323-03-12
+20190323-05-01
+20190323-05-02
+20190323-05-03
+20190323-05-04
+20190323-05-05
+20190323-05-06
+20190323-05-07
+20190323-05-08
+20190323-05-09
+20190323-05-10
+20190323-05-11
+20190323-05-12
+20190323-06-01
+20190323-06-02
+20190323-06-03
+20190323-06-04
+20190323-06-05
+20190323-06-06
+20190323-06-07
+20190323-06-08
+20190323-06-09
+[SKIP]IndexError発生 at 結果取得 raceid:20190323-06-09
+20190323-06-10
+20190323-06-11
+20190323-06-12
+20190323-07-01
+20190323-07-02
+20190323-07-03
+20190323-07-04
+20190323-07-05
+20190323-07-06
+20190323-07-07
+20190323-07-08
+20190323-07-09
+20190323-07-10
+20190323-07-11
+20190323-07-12
+20190323-08-01
+20190323-08-02
+20190323-08-03
+20190323-08-04
+20190323-08-05
+20190323-08-06
+20190323-08-07
+20190323-08-08
+20190323-08-09
+20190323-08-10
+20190323-08-11
+20190323-08-12
+20190323-10-01
+20190323-10-02
+20190323-10-03
+20190323-10-04
+20190323-10-05
+20190323-10-06
+20190323-10-07
+20190323-10-08
+20190323-10-09
+20190323-10-10
+20190323-10-11
+20190323-10-12
+20190323-11-01
+20190323-11-02
+20190323-11-03
+20190323-11-04
+20190323-11-05
+20190323-11-06
+20190323-11-07
+20190323-11-08
+20190323-11-09
+20190323-11-10
+20190323-11-11
+20190323-11-12
+20190323-12-01
+20190323-12-02
+20190323-12-03
+20190323-12-04
+20190323-12-05
+20190323-12-06
+20190323-12-07
+20190323-12-08
+20190323-12-09
+20190323-12-10
+20190323-12-11
+20190323-12-12
+20190323-15-01
+20190323-15-02
+20190323-15-03
+20190323-15-04
+[SKIP]IndexError発生 at 結果取得 raceid:20190323-15-04
+20190323-15-05
+20190323-15-06
+20190323-15-07
+20190323-15-08
+20190323-15-09
+20190323-15-10
+20190323-15-11
+20190323-15-12
+20190323-16-01
+20190323-16-02
+20190323-16-03
+20190323-16-04
+20190323-16-05
+20190323-16-06
+20190323-16-07
+20190323-16-08
+20190323-16-09
+[SKIP]IndexError発生 at 結果取得 raceid:20190323-16-09
+20190323-16-10
+20190323-16-11
+20190323-16-12
+20190323-21-01
+20190323-21-02
+20190323-21-03
+20190323-21-04
+20190323-21-05
+20190323-21-06
+20190323-21-07
+20190323-21-08
+20190323-21-09
+20190323-21-10
+20190323-21-11
+20190323-21-12
+20190323-23-01
+20190323-23-02
+20190323-23-03
+20190323-23-04
+20190323-23-05
+20190323-23-06
+20190323-23-07
+20190323-23-08
+20190323-23-09
+20190323-23-10
+20190323-23-11
+20190323-23-12
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
@@ -13391,217 +15047,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span>   
-<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="c1">#racemanagementで3連単のオッズを埋める</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds3t_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
-        <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushiki3rentan</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-                <span class="c1">#print(ret)</span>
-                <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 3連単オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;3t&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-            <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds3t_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-            <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
-            <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#raceId=&quot;20190321-01-01&quot;</span>
-<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="c1">#racemanagementで3連複のオッズを埋める</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds3f_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
-        <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushiki3renfuku</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-                <span class="c1">#print(ret)</span>
-                <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 3連複オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;3f&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-            <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds3f_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-            <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
-            <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[51]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#raceId=&quot;20190321-01-01&quot;</span>
-<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="c1">#racemanagementで2連単のオッズを埋める</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds2t_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
-        <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushiki2rentan</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-                <span class="c1">#print(ret)</span>
-                <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 2連単オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;2t&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-            <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds2t_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-            <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
-            <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-    
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#raceId=&quot;20190321-01-01&quot;</span>
-<span class="c1">#for ret in getOldOddsKoushiki2renfuku(raceId):</span>
-<span class="c1">#    print(ret)</span>
-
-<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="c1">#racemanagementで2連複のオッズを埋める</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds2f_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
-        <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushiki2renfuku</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-                <span class="c1">#print(ret)</span>
-                <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 2連複オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;2f&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-            <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds2f_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-            <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
-            <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#raceId=&quot;20190321-01-01&quot;</span>
-<span class="c1">#for ret in getOldOddsKoushikiTansho(raceId):</span>
-<span class="c1">#    print(ret)</span>
-
-<span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="c1">#racemanagementで単勝のオッズを埋める</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceodds1t_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
-        <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushikiTansho</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-                <span class="c1">#print(ret)</span>
-                <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;欠場&#39;</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]欠場 at 単勝オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceodds (raceId,oddsType,funaken,odds) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,&#39;1t&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;,&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-            <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceodds1t_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-            <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
-            <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-
-            
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[54]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbh</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and raceresult_flg = FALSE&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceDate</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">raceIdhash</span> <span class="ow">in</span> <span class="n">raceIdList</span><span class="p">:</span>
-        <span class="n">raceId</span> <span class="o">=</span> <span class="n">raceIdhash</span><span class="p">[</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">ins_cursor</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">getInfoKoushiki</span><span class="o">.</span><span class="n">getOldOddsKoushikiResult</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-                <span class="n">ins_sql</span><span class="o">=</span><span class="s2">&quot;INSERT INTO raceresult (raceId,goalRank,lane,toban,startTime,goalTime) VALUES (&#39;</span><span class="si">%s</span><span class="s2">&#39; ,</span><span class="si">%d</span><span class="s2">, </span><span class="si">%d</span><span class="s2">, &#39;</span><span class="si">%s</span><span class="s2">&#39;,</span><span class="si">%f</span><span class="s2">,</span><span class="si">%f</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">,</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">ret</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-                <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">ins_sql</span><span class="p">)</span>
-            <span class="n">upd_sql</span> <span class="o">=</span> <span class="s2">&quot;UPDATE racemanagement SET raceresult_flg = TRUE where raceId =&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-            <span class="n">ins_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">upd_sql</span><span class="p">)</span>
-            <span class="n">dbh</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </pre></div>
 
     </div>

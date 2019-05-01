@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>getInfoKoushiki</title>
+<title>getOldOddsBatch</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13118,15 +13118,25 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># バッチで過去のレース情報・オッズを取得する</span>
+<span class="c1"># バッチ専用なので、jupyterで動かすときにはDebugをTrueにすること。⇒コード変えるの面倒なので引数なかったらDebugモードにする。</span>
+<span class="c1"># args[1]:startDate  args[2]:endDate</span>
+<span class="c1"># Usage: nohup python getOldOddsBatch.py startDate endDate &gt; $BR_HOME/log/batch.log &amp;</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">urllib.request</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="kn">import</span> <span class="nn">unicodedata</span>
+
+<span class="kn">import</span> <span class="nn">pymysql</span>
+<span class="kn">from</span> <span class="nn">getDataFromKoushiki</span> <span class="k">import</span> <span class="n">getInfoKoushiki</span>
+<span class="kn">from</span> <span class="nn">getDataFromKoushiki</span> <span class="k">import</span> <span class="n">setInfoKoushiki</span>
+<span class="kn">from</span> <span class="nn">myUtil</span> <span class="k">import</span> <span class="n">dbHandler</span>
 </pre></div>
 
     </div>
@@ -13139,40 +13149,11 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># レース一覧の取得</span>
-<span class="k">def</span> <span class="nf">getRaceManagementKoushiki</span><span class="p">(</span><span class="n">ymd</span><span class="p">):</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/index?hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ymd</span><span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.table1&quot;</span><span class="p">):</span>
-        <span class="n">recs</span><span class="o">=</span><span class="n">block</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;tr&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">recs</span><span class="p">:</span>
-            <span class="n">tds</span><span class="o">=</span><span class="n">rec</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;td&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tds</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-                <span class="n">tmp</span><span class="o">=</span><span class="n">tds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="c1">#placePattern=r&#39;tpl=(\d\d)&#39;</span>
-                <span class="n">placePattern</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;tv(\d*)&#39;</span>
-                <span class="n">placeId</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">placePattern</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="c1">#print(placeId)</span>
-                
-                <span class="n">tmp</span><span class="o">=</span><span class="n">tds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                <span class="n">gradePattern</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;class=\&quot;is-(.*?)\&quot;&#39;</span>
-                <span class="n">grade</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">gradePattern</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="n">grade</span><span class="o">=</span><span class="p">(</span><span class="n">grade</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="c1">#print(grade)</span>
-                
-                <span class="n">rname</span><span class="o">=</span><span class="n">tds</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-                <span class="c1">#print(rname)</span>
-                
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">12</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-                    <span class="n">raceId</span><span class="o">=</span><span class="n">ymd</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">placeId</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                    <span class="n">raceDate</span><span class="o">=</span><span class="n">ymd</span>
-                    <span class="n">raceNumber</span><span class="o">=</span><span class="n">i</span>
-                    <span class="n">raceName</span><span class="o">=</span><span class="n">rname</span>
-                    <span class="n">raceGrade</span><span class="o">=</span><span class="n">grade</span>
-                    <span class="n">racePlaceId</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">placeId</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                    
-                    <span class="k">yield</span> <span class="n">raceId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">,</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">raceName</span><span class="p">,</span><span class="n">raceGrade</span><span class="p">,</span><span class="n">racePlaceId</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">args</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+    <span class="n">Debug</span><span class="o">=</span><span class="kc">True</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">Debug</span><span class="o">=</span><span class="kc">False</span>
 </pre></div>
 
     </div>
@@ -13185,54 +13166,12 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># レース直前情報の取得（天候）</span>
-<span class="k">def</span> <span class="nf">getRaceBeforeInfoWeatherKoushiki</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-    <span class="n">raceNumber</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">raceId</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">placeId</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/beforeinfo?rno=</span><span class="si">%d</span><span class="s2">&amp;jcd=</span><span class="si">%s</span><span class="s2">&amp;hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">placeId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">soup</span> <span class="o">=</span> <span class="p">(</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.weather1_body&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-    
-        <span class="n">direction</span><span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-direction&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">direction</span><span class="o">=</span><span class="p">((</span><span class="n">direction</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="c1">#print(&quot;direction:&quot;+direction)</span>
-    
-        <span class="n">weather</span><span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-weather&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">weather</span><span class="o">=</span><span class="p">(</span><span class="n">weather</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.weather1_bodyUnitLabelTitle&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-        <span class="c1">#print(&quot;weather:&quot;+str(weather) )</span>
-        <span class="n">weather</span><span class="o">=</span><span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s1">&#39;NFKC&#39;</span><span class="p">,</span> <span class="n">weather</span><span class="p">)</span>
-    
-        <span class="n">temperature</span><span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-direction&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">temperature</span><span class="o">=</span><span class="p">((</span><span class="n">temperature</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.weather1_bodyUnitLabel&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.weather1_bodyUnitLabelData&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-        <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;℃&#39;</span><span class="p">)</span>
-        <span class="c1">#print(&quot;temperature:&quot;+temperature)</span>
-    
-        <span class="n">wind_speed</span><span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-wind&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">wind_speed</span><span class="o">=</span><span class="p">(</span><span class="n">wind_speed</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.weather1_bodyUnitLabelData&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-        <span class="n">wind_speed</span><span class="o">=</span><span class="n">wind_speed</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>
-        <span class="c1">#print(wind_speed)</span>
-    
-        <span class="n">wind_direction</span><span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-windDirection&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">wind_direction</span><span class="o">=</span><span class="p">((</span><span class="n">wind_direction</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="c1">#print(wind_direction)</span>
-    
-        <span class="n">water_temperature</span><span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-waterTemperature&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">water_temperature</span><span class="o">=</span><span class="n">water_temperature</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.weather1_bodyUnitLabelData&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-        <span class="n">water_temperature</span><span class="o">=</span><span class="n">water_temperature</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;℃&quot;</span><span class="p">)</span>
-        <span class="c1">#print(water_temperature)</span>
-
-        <span class="n">wave</span><span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-wave&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">wave</span><span class="o">=</span><span class="n">wave</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.weather1_bodyUnitLabelData&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-        <span class="n">wave</span><span class="o">=</span><span class="n">wave</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;cm&quot;</span><span class="p">)</span>
-        <span class="c1">#print(wave)</span>
-        
-        <span class="k">yield</span> <span class="n">temperature</span><span class="p">,</span><span class="n">weather</span><span class="p">,</span><span class="n">wind_speed</span><span class="p">,</span><span class="n">water_temperature</span><span class="p">,</span><span class="n">wave</span>
-
-    <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]IndexError発生 at 直前情報　天候取得　raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span> <span class="p">)</span>
-    
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">Debug</span><span class="p">:</span>
+    <span class="n">startDate</span><span class="o">=</span><span class="s2">&quot;20181220&quot;</span>
+    <span class="n">endDate</span>  <span class="o">=</span><span class="s2">&quot;20181221&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">startDate</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">endDate</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13245,221 +13184,2195 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getRaceMemberKoushiki</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-    <span class="c1">#html = u.urlopen(&quot;https://www.boatrace.jp/owpc/pc/race/index?hd=%s&quot; % ymd)</span>
-    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-    <span class="n">raceNumber</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">raceId</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">placeId</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/racelist?rno=</span><span class="si">%d</span><span class="s2">&amp;jcd=</span><span class="si">%s</span><span class="s2">&amp;hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">placeId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-fs12&quot;</span><span class="p">):</span>
-        <span class="c1">#print(block)</span>
-        <span class="n">recs</span><span class="o">=</span><span class="n">block</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;tr&quot;</span><span class="p">)</span>
-        <span class="n">rec</span><span class="o">=</span><span class="n">recs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">tds</span><span class="o">=</span><span class="n">rec</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;td&quot;</span><span class="p">)</span>
-        <span class="n">lane</span><span class="o">=</span><span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s1">&#39;NFKC&#39;</span><span class="p">,</span> <span class="n">tds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>        
-        <span class="n">tobanId</span><span class="o">=</span><span class="p">((</span><span class="n">tds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-fs11&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
-        <span class="n">rank</span><span class="o">=</span><span class="p">(</span><span class="n">tds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-        <span class="c1">#print(&quot;lane:&quot;,lane)</span>
-        <span class="c1">#print(&quot;tobanId:&quot;,tobanId)</span>
-        <span class="c1">#print(&quot;rank:&quot;,rank)</span>
-        <span class="c1">#print(tds[2]) ※　他に取りたい項目があればここからとってくる</span>
-        
-        <span class="k">yield</span> <span class="n">lane</span><span class="p">,</span><span class="n">tobanId</span><span class="p">,</span><span class="n">rank</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">startDate_t</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">startDate</span><span class="p">,</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">endDate_t</span>  <span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">endDate</span><span class="p">,</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">raceDate_t</span><span class="o">=</span><span class="n">startDate_t</span>
+
+<span class="n">dbh</span><span class="o">=</span><span class="n">dbHandler</span><span class="o">.</span><span class="n">getDBHandle</span><span class="p">()</span>
+<span class="k">while</span> <span class="n">raceDate_t</span> <span class="o">&lt;=</span> <span class="n">endDate_t</span><span class="p">:</span>
+    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceDate_t</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;START:&quot;</span><span class="o">+</span><span class="n">raceDate</span><span class="p">)</span>
+    
+    <span class="c1"># レースの一覧を取得し、足りないracemanegementを作る。</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setRaceManagementKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>    
+    <span class="c1"># racemanegementをもとに、レースの直前情報を取得する。</span>
+    <span class="c1"># ただし、beforeinfoはレースで一意の情報（Weather）と、メンバーごとの情報をわける。</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setRaceBeforeInfoWeatherKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+    <span class="c1"># racemanegementをもとに、レースのメンバー情報を取得する。</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setRaceMemberKoushiki</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>    
+    <span class="c1"># 3連単のオッズ情報を取得する</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushiki3rentan</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+    <span class="c1"># 3連複のオッズ情報を取得する</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushiki3renfuku</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+    <span class="c1"># 2連単のオッズ情報を取得する</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushiki2rentan</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+    <span class="c1"># 2連複のオッズ情報を取得する</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushiki2renfuku</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+    <span class="c1"># 単勝のオッズ情報を取得する</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushikiTansho</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+    <span class="c1"># レース結果情報を取得する</span>
+    <span class="n">setInfoKoushiki</span><span class="o">.</span><span class="n">setOldOddsKoushikiResult</span><span class="p">(</span><span class="n">dbh</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;END:&quot;</span><span class="o">+</span><span class="n">raceDate</span><span class="p">)</span>    
+    <span class="n">raceDate_t</span><span class="o">=</span><span class="n">raceDate_t</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getOldOddsKoushiki3rentan</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-    <span class="n">raceNumber</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">raceId</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">placeId</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
-    <span class="c1">#print(raceDate,raceNumber,placeId)</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/odds3t?rno=</span><span class="si">%d</span><span class="s2">&amp;jcd=</span><span class="si">%s</span><span class="s2">&amp;hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">placeId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-    
-    <span class="c1"># 3連単の組み合わせリストを辞書順に作成</span>
-    <span class="n">sanrentanList</span><span class="o">=</span><span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">==</span><span class="n">j</span> <span class="ow">or</span> <span class="n">i</span><span class="o">==</span><span class="n">k</span> <span class="ow">or</span> <span class="n">j</span><span class="o">==</span><span class="n">k</span><span class="p">):</span>
-                    <span class="k">continue</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">sanrentanList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-    <span class="nb">sorted</span><span class="p">(</span><span class="n">sanrentanList</span><span class="p">)</span>
-    
-    <span class="n">sanrentanOddsList</span><span class="o">=</span><span class="p">[]</span>
-    <span class="k">for</span> <span class="n">oddspoint</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.oddsPoint&quot;</span><span class="p">):</span>
-        <span class="n">sanrentanOddsList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">oddspoint</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
-    
-    <span class="n">cnt</span><span class="o">=</span><span class="mi">0</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
-                <span class="k">yield</span> <span class="n">sanrentanList</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">20</span><span class="o">+</span><span class="n">j</span><span class="p">],</span><span class="n">sanrentanOddsList</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">*</span><span class="mi">6</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]IndexError発生 at 3連単オッズ取得　raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span> <span class="p">)</span>
-</pre></div>
+<div class="output_wrapper">
+<div class="output">
 
-    </div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>START:20181220
+setRaceBeforeInfoWeatherKoushiki:20181220-01-01
+setRaceBeforeInfoWeatherKoushiki:20181220-01-02
+setRaceBeforeInfoWeatherKoushiki:20181220-01-03
+setRaceBeforeInfoWeatherKoushiki:20181220-01-04
+setRaceBeforeInfoWeatherKoushiki:20181220-01-05
+setRaceBeforeInfoWeatherKoushiki:20181220-01-06
+setRaceBeforeInfoWeatherKoushiki:20181220-01-07
+setRaceBeforeInfoWeatherKoushiki:20181220-01-08
+setRaceBeforeInfoWeatherKoushiki:20181220-01-09
+setRaceBeforeInfoWeatherKoushiki:20181220-01-10
+setRaceBeforeInfoWeatherKoushiki:20181220-01-11
+setRaceBeforeInfoWeatherKoushiki:20181220-01-12
+setRaceBeforeInfoWeatherKoushiki:20181220-05-01
+setRaceBeforeInfoWeatherKoushiki:20181220-05-02
+setRaceBeforeInfoWeatherKoushiki:20181220-05-03
+setRaceBeforeInfoWeatherKoushiki:20181220-05-04
+setRaceBeforeInfoWeatherKoushiki:20181220-05-05
+setRaceBeforeInfoWeatherKoushiki:20181220-05-06
+setRaceBeforeInfoWeatherKoushiki:20181220-05-07
+setRaceBeforeInfoWeatherKoushiki:20181220-05-08
+setRaceBeforeInfoWeatherKoushiki:20181220-05-09
+setRaceBeforeInfoWeatherKoushiki:20181220-05-10
+setRaceBeforeInfoWeatherKoushiki:20181220-05-11
+setRaceBeforeInfoWeatherKoushiki:20181220-05-12
+setRaceBeforeInfoWeatherKoushiki:20181220-07-01
+setRaceBeforeInfoWeatherKoushiki:20181220-07-02
+setRaceBeforeInfoWeatherKoushiki:20181220-07-03
+setRaceBeforeInfoWeatherKoushiki:20181220-07-04
+setRaceBeforeInfoWeatherKoushiki:20181220-07-05
+setRaceBeforeInfoWeatherKoushiki:20181220-07-06
+setRaceBeforeInfoWeatherKoushiki:20181220-07-07
+setRaceBeforeInfoWeatherKoushiki:20181220-07-08
+setRaceBeforeInfoWeatherKoushiki:20181220-07-09
+setRaceBeforeInfoWeatherKoushiki:20181220-07-10
+setRaceBeforeInfoWeatherKoushiki:20181220-07-11
+setRaceBeforeInfoWeatherKoushiki:20181220-07-12
+setRaceBeforeInfoWeatherKoushiki:20181220-09-01
+setRaceBeforeInfoWeatherKoushiki:20181220-09-02
+setRaceBeforeInfoWeatherKoushiki:20181220-09-03
+setRaceBeforeInfoWeatherKoushiki:20181220-09-04
+setRaceBeforeInfoWeatherKoushiki:20181220-09-05
+setRaceBeforeInfoWeatherKoushiki:20181220-09-06
+setRaceBeforeInfoWeatherKoushiki:20181220-09-07
+setRaceBeforeInfoWeatherKoushiki:20181220-09-08
+setRaceBeforeInfoWeatherKoushiki:20181220-09-09
+setRaceBeforeInfoWeatherKoushiki:20181220-09-10
+setRaceBeforeInfoWeatherKoushiki:20181220-09-11
+setRaceBeforeInfoWeatherKoushiki:20181220-09-12
+setRaceBeforeInfoWeatherKoushiki:20181220-11-01
+setRaceBeforeInfoWeatherKoushiki:20181220-11-02
+setRaceBeforeInfoWeatherKoushiki:20181220-11-03
+setRaceBeforeInfoWeatherKoushiki:20181220-11-04
+setRaceBeforeInfoWeatherKoushiki:20181220-11-05
+setRaceBeforeInfoWeatherKoushiki:20181220-11-06
+setRaceBeforeInfoWeatherKoushiki:20181220-11-07
+setRaceBeforeInfoWeatherKoushiki:20181220-11-08
+setRaceBeforeInfoWeatherKoushiki:20181220-11-09
+setRaceBeforeInfoWeatherKoushiki:20181220-11-10
+setRaceBeforeInfoWeatherKoushiki:20181220-11-11
+setRaceBeforeInfoWeatherKoushiki:20181220-11-12
+setRaceBeforeInfoWeatherKoushiki:20181220-12-01
+setRaceBeforeInfoWeatherKoushiki:20181220-12-02
+setRaceBeforeInfoWeatherKoushiki:20181220-12-03
+setRaceBeforeInfoWeatherKoushiki:20181220-12-04
+setRaceBeforeInfoWeatherKoushiki:20181220-12-05
+setRaceBeforeInfoWeatherKoushiki:20181220-12-06
+setRaceBeforeInfoWeatherKoushiki:20181220-12-07
+setRaceBeforeInfoWeatherKoushiki:20181220-12-08
+setRaceBeforeInfoWeatherKoushiki:20181220-12-09
+setRaceBeforeInfoWeatherKoushiki:20181220-12-10
+setRaceBeforeInfoWeatherKoushiki:20181220-12-11
+setRaceBeforeInfoWeatherKoushiki:20181220-12-12
+setRaceBeforeInfoWeatherKoushiki:20181220-14-01
+setRaceBeforeInfoWeatherKoushiki:20181220-14-02
+setRaceBeforeInfoWeatherKoushiki:20181220-14-03
+setRaceBeforeInfoWeatherKoushiki:20181220-14-04
+setRaceBeforeInfoWeatherKoushiki:20181220-14-05
+setRaceBeforeInfoWeatherKoushiki:20181220-14-06
+setRaceBeforeInfoWeatherKoushiki:20181220-14-07
+setRaceBeforeInfoWeatherKoushiki:20181220-14-08
+setRaceBeforeInfoWeatherKoushiki:20181220-14-09
+setRaceBeforeInfoWeatherKoushiki:20181220-14-10
+setRaceBeforeInfoWeatherKoushiki:20181220-14-11
+setRaceBeforeInfoWeatherKoushiki:20181220-14-12
+setRaceBeforeInfoWeatherKoushiki:20181220-16-01
+setRaceBeforeInfoWeatherKoushiki:20181220-16-02
+setRaceBeforeInfoWeatherKoushiki:20181220-16-03
+setRaceBeforeInfoWeatherKoushiki:20181220-16-04
+setRaceBeforeInfoWeatherKoushiki:20181220-16-05
+setRaceBeforeInfoWeatherKoushiki:20181220-16-06
+setRaceBeforeInfoWeatherKoushiki:20181220-16-07
+setRaceBeforeInfoWeatherKoushiki:20181220-16-08
+setRaceBeforeInfoWeatherKoushiki:20181220-16-09
+setRaceBeforeInfoWeatherKoushiki:20181220-16-10
+setRaceBeforeInfoWeatherKoushiki:20181220-16-11
+setRaceBeforeInfoWeatherKoushiki:20181220-16-12
+setRaceBeforeInfoWeatherKoushiki:20181220-17-01
+setRaceBeforeInfoWeatherKoushiki:20181220-17-02
+setRaceBeforeInfoWeatherKoushiki:20181220-17-03
+setRaceBeforeInfoWeatherKoushiki:20181220-17-04
+setRaceBeforeInfoWeatherKoushiki:20181220-17-05
+setRaceBeforeInfoWeatherKoushiki:20181220-17-06
+setRaceBeforeInfoWeatherKoushiki:20181220-17-07
+setRaceBeforeInfoWeatherKoushiki:20181220-17-08
+setRaceBeforeInfoWeatherKoushiki:20181220-17-09
+setRaceBeforeInfoWeatherKoushiki:20181220-17-10
+setRaceBeforeInfoWeatherKoushiki:20181220-17-11
+setRaceBeforeInfoWeatherKoushiki:20181220-17-12
+setRaceBeforeInfoWeatherKoushiki:20181220-19-01
+setRaceBeforeInfoWeatherKoushiki:20181220-19-02
+setRaceBeforeInfoWeatherKoushiki:20181220-19-03
+setRaceBeforeInfoWeatherKoushiki:20181220-19-04
+setRaceBeforeInfoWeatherKoushiki:20181220-19-05
+setRaceBeforeInfoWeatherKoushiki:20181220-19-06
+setRaceBeforeInfoWeatherKoushiki:20181220-19-07
+setRaceBeforeInfoWeatherKoushiki:20181220-19-08
+setRaceBeforeInfoWeatherKoushiki:20181220-19-09
+setRaceBeforeInfoWeatherKoushiki:20181220-19-10
+setRaceBeforeInfoWeatherKoushiki:20181220-19-11
+setRaceBeforeInfoWeatherKoushiki:20181220-19-12
+setRaceBeforeInfoWeatherKoushiki:20181220-21-01
+setRaceBeforeInfoWeatherKoushiki:20181220-21-02
+setRaceBeforeInfoWeatherKoushiki:20181220-21-03
+setRaceBeforeInfoWeatherKoushiki:20181220-21-04
+setRaceBeforeInfoWeatherKoushiki:20181220-21-05
+setRaceBeforeInfoWeatherKoushiki:20181220-21-06
+setRaceBeforeInfoWeatherKoushiki:20181220-21-07
+setRaceBeforeInfoWeatherKoushiki:20181220-21-08
+setRaceBeforeInfoWeatherKoushiki:20181220-21-09
+setRaceBeforeInfoWeatherKoushiki:20181220-21-10
+setRaceBeforeInfoWeatherKoushiki:20181220-21-11
+setRaceBeforeInfoWeatherKoushiki:20181220-21-12
+setRaceBeforeInfoWeatherKoushiki:20181220-22-01
+setRaceBeforeInfoWeatherKoushiki:20181220-22-02
+setRaceBeforeInfoWeatherKoushiki:20181220-22-03
+setRaceBeforeInfoWeatherKoushiki:20181220-22-04
+setRaceBeforeInfoWeatherKoushiki:20181220-22-05
+setRaceBeforeInfoWeatherKoushiki:20181220-22-06
+setRaceBeforeInfoWeatherKoushiki:20181220-22-07
+setRaceBeforeInfoWeatherKoushiki:20181220-22-08
+setRaceBeforeInfoWeatherKoushiki:20181220-22-09
+setRaceBeforeInfoWeatherKoushiki:20181220-22-10
+setRaceBeforeInfoWeatherKoushiki:20181220-22-11
+setRaceBeforeInfoWeatherKoushiki:20181220-22-12
+setRaceBeforeInfoWeatherKoushiki:20181220-24-01
+setRaceBeforeInfoWeatherKoushiki:20181220-24-02
+setRaceBeforeInfoWeatherKoushiki:20181220-24-03
+setRaceBeforeInfoWeatherKoushiki:20181220-24-04
+setRaceBeforeInfoWeatherKoushiki:20181220-24-05
+setRaceBeforeInfoWeatherKoushiki:20181220-24-06
+setRaceBeforeInfoWeatherKoushiki:20181220-24-07
+setRaceBeforeInfoWeatherKoushiki:20181220-24-08
+setRaceBeforeInfoWeatherKoushiki:20181220-24-09
+setRaceBeforeInfoWeatherKoushiki:20181220-24-10
+setRaceBeforeInfoWeatherKoushiki:20181220-24-11
+setRaceBeforeInfoWeatherKoushiki:20181220-24-12
+setRaceMemberKoushiki:20181220-01-01
+setRaceMemberKoushiki:20181220-01-02
+setRaceMemberKoushiki:20181220-01-03
+setRaceMemberKoushiki:20181220-01-04
+setRaceMemberKoushiki:20181220-01-05
+setRaceMemberKoushiki:20181220-01-06
+setRaceMemberKoushiki:20181220-01-07
+setRaceMemberKoushiki:20181220-01-08
+setRaceMemberKoushiki:20181220-01-09
+setRaceMemberKoushiki:20181220-01-10
+setRaceMemberKoushiki:20181220-01-11
+setRaceMemberKoushiki:20181220-01-12
+setRaceMemberKoushiki:20181220-05-01
+setRaceMemberKoushiki:20181220-05-02
+setRaceMemberKoushiki:20181220-05-03
+setRaceMemberKoushiki:20181220-05-04
+setRaceMemberKoushiki:20181220-05-05
+setRaceMemberKoushiki:20181220-05-06
+setRaceMemberKoushiki:20181220-05-07
+setRaceMemberKoushiki:20181220-05-08
+setRaceMemberKoushiki:20181220-05-09
+setRaceMemberKoushiki:20181220-05-10
+setRaceMemberKoushiki:20181220-05-11
+setRaceMemberKoushiki:20181220-05-12
+setRaceMemberKoushiki:20181220-07-01
+setRaceMemberKoushiki:20181220-07-02
+setRaceMemberKoushiki:20181220-07-03
+setRaceMemberKoushiki:20181220-07-04
+setRaceMemberKoushiki:20181220-07-05
+setRaceMemberKoushiki:20181220-07-06
+setRaceMemberKoushiki:20181220-07-07
+setRaceMemberKoushiki:20181220-07-08
+setRaceMemberKoushiki:20181220-07-09
+setRaceMemberKoushiki:20181220-07-10
+setRaceMemberKoushiki:20181220-07-11
+setRaceMemberKoushiki:20181220-07-12
+setRaceMemberKoushiki:20181220-09-01
+setRaceMemberKoushiki:20181220-09-02
+setRaceMemberKoushiki:20181220-09-03
+setRaceMemberKoushiki:20181220-09-04
+setRaceMemberKoushiki:20181220-09-05
+setRaceMemberKoushiki:20181220-09-06
+setRaceMemberKoushiki:20181220-09-07
+setRaceMemberKoushiki:20181220-09-08
+setRaceMemberKoushiki:20181220-09-09
+setRaceMemberKoushiki:20181220-09-10
+setRaceMemberKoushiki:20181220-09-11
+setRaceMemberKoushiki:20181220-09-12
+setRaceMemberKoushiki:20181220-11-01
+setRaceMemberKoushiki:20181220-11-02
+setRaceMemberKoushiki:20181220-11-03
+setRaceMemberKoushiki:20181220-11-04
+setRaceMemberKoushiki:20181220-11-05
+setRaceMemberKoushiki:20181220-11-06
+setRaceMemberKoushiki:20181220-11-07
+setRaceMemberKoushiki:20181220-11-08
+setRaceMemberKoushiki:20181220-11-09
+setRaceMemberKoushiki:20181220-11-10
+setRaceMemberKoushiki:20181220-11-11
+setRaceMemberKoushiki:20181220-11-12
+setRaceMemberKoushiki:20181220-12-01
+setRaceMemberKoushiki:20181220-12-02
+setRaceMemberKoushiki:20181220-12-03
+setRaceMemberKoushiki:20181220-12-04
+setRaceMemberKoushiki:20181220-12-05
+setRaceMemberKoushiki:20181220-12-06
+setRaceMemberKoushiki:20181220-12-07
+setRaceMemberKoushiki:20181220-12-08
+setRaceMemberKoushiki:20181220-12-09
+setRaceMemberKoushiki:20181220-12-10
+setRaceMemberKoushiki:20181220-12-11
+setRaceMemberKoushiki:20181220-12-12
+setRaceMemberKoushiki:20181220-14-01
+setRaceMemberKoushiki:20181220-14-02
+setRaceMemberKoushiki:20181220-14-03
+setRaceMemberKoushiki:20181220-14-04
+setRaceMemberKoushiki:20181220-14-05
+setRaceMemberKoushiki:20181220-14-06
+setRaceMemberKoushiki:20181220-14-07
+setRaceMemberKoushiki:20181220-14-08
+setRaceMemberKoushiki:20181220-14-09
+setRaceMemberKoushiki:20181220-14-10
+setRaceMemberKoushiki:20181220-14-11
+setRaceMemberKoushiki:20181220-14-12
+setRaceMemberKoushiki:20181220-16-01
+setRaceMemberKoushiki:20181220-16-02
+setRaceMemberKoushiki:20181220-16-03
+setRaceMemberKoushiki:20181220-16-04
+setRaceMemberKoushiki:20181220-16-05
+setRaceMemberKoushiki:20181220-16-06
+setRaceMemberKoushiki:20181220-16-07
+setRaceMemberKoushiki:20181220-16-08
+setRaceMemberKoushiki:20181220-16-09
+setRaceMemberKoushiki:20181220-16-10
+setRaceMemberKoushiki:20181220-16-11
+setRaceMemberKoushiki:20181220-16-12
+setRaceMemberKoushiki:20181220-17-01
+setRaceMemberKoushiki:20181220-17-02
+setRaceMemberKoushiki:20181220-17-03
+setRaceMemberKoushiki:20181220-17-04
+setRaceMemberKoushiki:20181220-17-05
+setRaceMemberKoushiki:20181220-17-06
+setRaceMemberKoushiki:20181220-17-07
+setRaceMemberKoushiki:20181220-17-08
+setRaceMemberKoushiki:20181220-17-09
+setRaceMemberKoushiki:20181220-17-10
+setRaceMemberKoushiki:20181220-17-11
+setRaceMemberKoushiki:20181220-17-12
+setRaceMemberKoushiki:20181220-19-01
+setRaceMemberKoushiki:20181220-19-02
+setRaceMemberKoushiki:20181220-19-03
+setRaceMemberKoushiki:20181220-19-04
+setRaceMemberKoushiki:20181220-19-05
+setRaceMemberKoushiki:20181220-19-06
+setRaceMemberKoushiki:20181220-19-07
+setRaceMemberKoushiki:20181220-19-08
+setRaceMemberKoushiki:20181220-19-09
+setRaceMemberKoushiki:20181220-19-10
+setRaceMemberKoushiki:20181220-19-11
+setRaceMemberKoushiki:20181220-19-12
+setRaceMemberKoushiki:20181220-21-01
+setRaceMemberKoushiki:20181220-21-02
+setRaceMemberKoushiki:20181220-21-03
+setRaceMemberKoushiki:20181220-21-04
+setRaceMemberKoushiki:20181220-21-05
+setRaceMemberKoushiki:20181220-21-06
+setRaceMemberKoushiki:20181220-21-07
+setRaceMemberKoushiki:20181220-21-08
+setRaceMemberKoushiki:20181220-21-09
+setRaceMemberKoushiki:20181220-21-10
+setRaceMemberKoushiki:20181220-21-11
+setRaceMemberKoushiki:20181220-21-12
+setRaceMemberKoushiki:20181220-22-01
+setRaceMemberKoushiki:20181220-22-02
+setRaceMemberKoushiki:20181220-22-03
+setRaceMemberKoushiki:20181220-22-04
+setRaceMemberKoushiki:20181220-22-05
+setRaceMemberKoushiki:20181220-22-06
+setRaceMemberKoushiki:20181220-22-07
+setRaceMemberKoushiki:20181220-22-08
+setRaceMemberKoushiki:20181220-22-09
+setRaceMemberKoushiki:20181220-22-10
+setRaceMemberKoushiki:20181220-22-11
+setRaceMemberKoushiki:20181220-22-12
+setRaceMemberKoushiki:20181220-24-01
+setRaceMemberKoushiki:20181220-24-02
+setRaceMemberKoushiki:20181220-24-03
+setRaceMemberKoushiki:20181220-24-04
+setRaceMemberKoushiki:20181220-24-05
+setRaceMemberKoushiki:20181220-24-06
+setRaceMemberKoushiki:20181220-24-07
+setRaceMemberKoushiki:20181220-24-08
+setRaceMemberKoushiki:20181220-24-09
+setRaceMemberKoushiki:20181220-24-10
+setRaceMemberKoushiki:20181220-24-11
+setRaceMemberKoushiki:20181220-24-12
+setOldOddsKoushiki3rentan:20181220-01-01
+setOldOddsKoushiki3rentan:20181220-01-02
+setOldOddsKoushiki3rentan:20181220-01-03
+setOldOddsKoushiki3rentan:20181220-01-04
+setOldOddsKoushiki3rentan:20181220-01-05
+setOldOddsKoushiki3rentan:20181220-01-06
+setOldOddsKoushiki3rentan:20181220-01-07
+setOldOddsKoushiki3rentan:20181220-01-08
+setOldOddsKoushiki3rentan:20181220-01-09
+setOldOddsKoushiki3rentan:20181220-01-10
+setOldOddsKoushiki3rentan:20181220-01-11
+setOldOddsKoushiki3rentan:20181220-01-12
+setOldOddsKoushiki3rentan:20181220-05-01
+setOldOddsKoushiki3rentan:20181220-05-02
+setOldOddsKoushiki3rentan:20181220-05-03
+setOldOddsKoushiki3rentan:20181220-05-04
+setOldOddsKoushiki3rentan:20181220-05-05
+setOldOddsKoushiki3rentan:20181220-05-06
+setOldOddsKoushiki3rentan:20181220-05-07
+setOldOddsKoushiki3rentan:20181220-05-08
+setOldOddsKoushiki3rentan:20181220-05-09
+setOldOddsKoushiki3rentan:20181220-05-10
+setOldOddsKoushiki3rentan:20181220-05-11
+setOldOddsKoushiki3rentan:20181220-05-12
+setOldOddsKoushiki3rentan:20181220-07-01
+setOldOddsKoushiki3rentan:20181220-07-02
+setOldOddsKoushiki3rentan:20181220-07-03
+setOldOddsKoushiki3rentan:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-04
+setOldOddsKoushiki3rentan:20181220-07-05
+setOldOddsKoushiki3rentan:20181220-07-06
+setOldOddsKoushiki3rentan:20181220-07-07
+setOldOddsKoushiki3rentan:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-07-08
+setOldOddsKoushiki3rentan:20181220-07-09
+setOldOddsKoushiki3rentan:20181220-07-10
+setOldOddsKoushiki3rentan:20181220-07-11
+setOldOddsKoushiki3rentan:20181220-07-12
+setOldOddsKoushiki3rentan:20181220-09-01
+setOldOddsKoushiki3rentan:20181220-09-02
+setOldOddsKoushiki3rentan:20181220-09-03
+setOldOddsKoushiki3rentan:20181220-09-04
+setOldOddsKoushiki3rentan:20181220-09-05
+setOldOddsKoushiki3rentan:20181220-09-06
+setOldOddsKoushiki3rentan:20181220-09-07
+setOldOddsKoushiki3rentan:20181220-09-08
+setOldOddsKoushiki3rentan:20181220-09-09
+setOldOddsKoushiki3rentan:20181220-09-10
+setOldOddsKoushiki3rentan:20181220-09-11
+setOldOddsKoushiki3rentan:20181220-09-12
+setOldOddsKoushiki3rentan:20181220-11-01
+setOldOddsKoushiki3rentan:20181220-11-02
+setOldOddsKoushiki3rentan:20181220-11-03
+setOldOddsKoushiki3rentan:20181220-11-04
+setOldOddsKoushiki3rentan:20181220-11-05
+setOldOddsKoushiki3rentan:20181220-11-06
+setOldOddsKoushiki3rentan:20181220-11-07
+setOldOddsKoushiki3rentan:20181220-11-08
+setOldOddsKoushiki3rentan:20181220-11-09
+setOldOddsKoushiki3rentan:20181220-11-10
+setOldOddsKoushiki3rentan:20181220-11-11
+setOldOddsKoushiki3rentan:20181220-11-12
+setOldOddsKoushiki3rentan:20181220-12-01
+setOldOddsKoushiki3rentan:20181220-12-02
+setOldOddsKoushiki3rentan:20181220-12-03
+setOldOddsKoushiki3rentan:20181220-12-04
+setOldOddsKoushiki3rentan:20181220-12-05
+setOldOddsKoushiki3rentan:20181220-12-06
+setOldOddsKoushiki3rentan:20181220-12-07
+setOldOddsKoushiki3rentan:20181220-12-08
+setOldOddsKoushiki3rentan:20181220-12-09
+setOldOddsKoushiki3rentan:20181220-12-10
+setOldOddsKoushiki3rentan:20181220-12-11
+setOldOddsKoushiki3rentan:20181220-12-12
+setOldOddsKoushiki3rentan:20181220-14-01
+setOldOddsKoushiki3rentan:20181220-14-02
+setOldOddsKoushiki3rentan:20181220-14-03
+setOldOddsKoushiki3rentan:20181220-14-04
+setOldOddsKoushiki3rentan:20181220-14-05
+setOldOddsKoushiki3rentan:20181220-14-06
+setOldOddsKoushiki3rentan:20181220-14-07
+setOldOddsKoushiki3rentan:20181220-14-08
+setOldOddsKoushiki3rentan:20181220-14-09
+setOldOddsKoushiki3rentan:20181220-14-10
+setOldOddsKoushiki3rentan:20181220-14-11
+setOldOddsKoushiki3rentan:20181220-14-12
+setOldOddsKoushiki3rentan:20181220-16-01
+setOldOddsKoushiki3rentan:20181220-16-02
+setOldOddsKoushiki3rentan:20181220-16-03
+setOldOddsKoushiki3rentan:20181220-16-04
+setOldOddsKoushiki3rentan:20181220-16-05
+setOldOddsKoushiki3rentan:20181220-16-06
+setOldOddsKoushiki3rentan:20181220-16-07
+setOldOddsKoushiki3rentan:20181220-16-08
+setOldOddsKoushiki3rentan:20181220-16-09
+setOldOddsKoushiki3rentan:20181220-16-10
+setOldOddsKoushiki3rentan:20181220-16-11
+setOldOddsKoushiki3rentan:20181220-16-12
+setOldOddsKoushiki3rentan:20181220-17-01
+setOldOddsKoushiki3rentan:20181220-17-02
+setOldOddsKoushiki3rentan:20181220-17-03
+setOldOddsKoushiki3rentan:20181220-17-04
+setOldOddsKoushiki3rentan:20181220-17-05
+setOldOddsKoushiki3rentan:20181220-17-06
+setOldOddsKoushiki3rentan:20181220-17-07
+setOldOddsKoushiki3rentan:20181220-17-08
+setOldOddsKoushiki3rentan:20181220-17-09
+setOldOddsKoushiki3rentan:20181220-17-10
+setOldOddsKoushiki3rentan:20181220-17-11
+setOldOddsKoushiki3rentan:20181220-17-12
+setOldOddsKoushiki3rentan:20181220-19-01
+setOldOddsKoushiki3rentan:20181220-19-02
+setOldOddsKoushiki3rentan:20181220-19-03
+setOldOddsKoushiki3rentan:20181220-19-04
+setOldOddsKoushiki3rentan:20181220-19-05
+setOldOddsKoushiki3rentan:20181220-19-06
+setOldOddsKoushiki3rentan:20181220-19-07
+setOldOddsKoushiki3rentan:20181220-19-08
+setOldOddsKoushiki3rentan:20181220-19-09
+setOldOddsKoushiki3rentan:20181220-19-10
+setOldOddsKoushiki3rentan:20181220-19-11
+setOldOddsKoushiki3rentan:20181220-19-12
+setOldOddsKoushiki3rentan:20181220-21-01
+setOldOddsKoushiki3rentan:20181220-21-02
+setOldOddsKoushiki3rentan:20181220-21-03
+setOldOddsKoushiki3rentan:20181220-21-04
+setOldOddsKoushiki3rentan:20181220-21-05
+setOldOddsKoushiki3rentan:20181220-21-06
+setOldOddsKoushiki3rentan:20181220-21-07
+setOldOddsKoushiki3rentan:20181220-21-08
+setOldOddsKoushiki3rentan:20181220-21-09
+setOldOddsKoushiki3rentan:20181220-21-10
+setOldOddsKoushiki3rentan:20181220-21-11
+setOldOddsKoushiki3rentan:20181220-21-12
+setOldOddsKoushiki3rentan:20181220-22-01
+setOldOddsKoushiki3rentan:20181220-22-02
+setOldOddsKoushiki3rentan:20181220-22-03
+setOldOddsKoushiki3rentan:20181220-22-04
+setOldOddsKoushiki3rentan:20181220-22-05
+setOldOddsKoushiki3rentan:20181220-22-06
+setOldOddsKoushiki3rentan:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連単オッズ取得 raceId:20181220-22-07
+setOldOddsKoushiki3rentan:20181220-22-08
+setOldOddsKoushiki3rentan:20181220-22-09
+setOldOddsKoushiki3rentan:20181220-22-10
+setOldOddsKoushiki3rentan:20181220-22-11
+setOldOddsKoushiki3rentan:20181220-22-12
+setOldOddsKoushiki3rentan:20181220-24-01
+setOldOddsKoushiki3rentan:20181220-24-02
+setOldOddsKoushiki3rentan:20181220-24-03
+setOldOddsKoushiki3rentan:20181220-24-04
+setOldOddsKoushiki3rentan:20181220-24-05
+setOldOddsKoushiki3rentan:20181220-24-06
+setOldOddsKoushiki3rentan:20181220-24-07
+setOldOddsKoushiki3rentan:20181220-24-08
+setOldOddsKoushiki3rentan:20181220-24-09
+setOldOddsKoushiki3rentan:20181220-24-10
+setOldOddsKoushiki3rentan:20181220-24-11
+setOldOddsKoushiki3rentan:20181220-24-12
+setOldOddsKoushiki3renfuku:20181220-01-01
+setOldOddsKoushiki3renfuku:20181220-01-02
+setOldOddsKoushiki3renfuku:20181220-01-03
+setOldOddsKoushiki3renfuku:20181220-01-04
+setOldOddsKoushiki3renfuku:20181220-01-05
+setOldOddsKoushiki3renfuku:20181220-01-06
+setOldOddsKoushiki3renfuku:20181220-01-07
+setOldOddsKoushiki3renfuku:20181220-01-08
+setOldOddsKoushiki3renfuku:20181220-01-09
+setOldOddsKoushiki3renfuku:20181220-01-10
+setOldOddsKoushiki3renfuku:20181220-01-11
+setOldOddsKoushiki3renfuku:20181220-01-12
+setOldOddsKoushiki3renfuku:20181220-05-01
+setOldOddsKoushiki3renfuku:20181220-05-02
+setOldOddsKoushiki3renfuku:20181220-05-03
+setOldOddsKoushiki3renfuku:20181220-05-04
+setOldOddsKoushiki3renfuku:20181220-05-05
+setOldOddsKoushiki3renfuku:20181220-05-06
+setOldOddsKoushiki3renfuku:20181220-05-07
+setOldOddsKoushiki3renfuku:20181220-05-08
+setOldOddsKoushiki3renfuku:20181220-05-09
+setOldOddsKoushiki3renfuku:20181220-05-10
+setOldOddsKoushiki3renfuku:20181220-05-11
+setOldOddsKoushiki3renfuku:20181220-05-12
+setOldOddsKoushiki3renfuku:20181220-07-01
+setOldOddsKoushiki3renfuku:20181220-07-02
+setOldOddsKoushiki3renfuku:20181220-07-03
+setOldOddsKoushiki3renfuku:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-04
+setOldOddsKoushiki3renfuku:20181220-07-05
+setOldOddsKoushiki3renfuku:20181220-07-06
+setOldOddsKoushiki3renfuku:20181220-07-07
+setOldOddsKoushiki3renfuku:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-07-08
+setOldOddsKoushiki3renfuku:20181220-07-09
+setOldOddsKoushiki3renfuku:20181220-07-10
+setOldOddsKoushiki3renfuku:20181220-07-11
+setOldOddsKoushiki3renfuku:20181220-07-12
+setOldOddsKoushiki3renfuku:20181220-09-01
+setOldOddsKoushiki3renfuku:20181220-09-02
+setOldOddsKoushiki3renfuku:20181220-09-03
+setOldOddsKoushiki3renfuku:20181220-09-04
+setOldOddsKoushiki3renfuku:20181220-09-05
+setOldOddsKoushiki3renfuku:20181220-09-06
+setOldOddsKoushiki3renfuku:20181220-09-07
+setOldOddsKoushiki3renfuku:20181220-09-08
+setOldOddsKoushiki3renfuku:20181220-09-09
+setOldOddsKoushiki3renfuku:20181220-09-10
+setOldOddsKoushiki3renfuku:20181220-09-11
+setOldOddsKoushiki3renfuku:20181220-09-12
+setOldOddsKoushiki3renfuku:20181220-11-01
+setOldOddsKoushiki3renfuku:20181220-11-02
+setOldOddsKoushiki3renfuku:20181220-11-03
+setOldOddsKoushiki3renfuku:20181220-11-04
+setOldOddsKoushiki3renfuku:20181220-11-05
+setOldOddsKoushiki3renfuku:20181220-11-06
+setOldOddsKoushiki3renfuku:20181220-11-07
+setOldOddsKoushiki3renfuku:20181220-11-08
+setOldOddsKoushiki3renfuku:20181220-11-09
+setOldOddsKoushiki3renfuku:20181220-11-10
+setOldOddsKoushiki3renfuku:20181220-11-11
+setOldOddsKoushiki3renfuku:20181220-11-12
+setOldOddsKoushiki3renfuku:20181220-12-01
+setOldOddsKoushiki3renfuku:20181220-12-02
+setOldOddsKoushiki3renfuku:20181220-12-03
+setOldOddsKoushiki3renfuku:20181220-12-04
+setOldOddsKoushiki3renfuku:20181220-12-05
+setOldOddsKoushiki3renfuku:20181220-12-06
+setOldOddsKoushiki3renfuku:20181220-12-07
+setOldOddsKoushiki3renfuku:20181220-12-08
+setOldOddsKoushiki3renfuku:20181220-12-09
+setOldOddsKoushiki3renfuku:20181220-12-10
+setOldOddsKoushiki3renfuku:20181220-12-11
+setOldOddsKoushiki3renfuku:20181220-12-12
+setOldOddsKoushiki3renfuku:20181220-14-01
+setOldOddsKoushiki3renfuku:20181220-14-02
+setOldOddsKoushiki3renfuku:20181220-14-03
+setOldOddsKoushiki3renfuku:20181220-14-04
+setOldOddsKoushiki3renfuku:20181220-14-05
+setOldOddsKoushiki3renfuku:20181220-14-06
+setOldOddsKoushiki3renfuku:20181220-14-07
+setOldOddsKoushiki3renfuku:20181220-14-08
+setOldOddsKoushiki3renfuku:20181220-14-09
+setOldOddsKoushiki3renfuku:20181220-14-10
+setOldOddsKoushiki3renfuku:20181220-14-11
+setOldOddsKoushiki3renfuku:20181220-14-12
+setOldOddsKoushiki3renfuku:20181220-16-01
+setOldOddsKoushiki3renfuku:20181220-16-02
+setOldOddsKoushiki3renfuku:20181220-16-03
+setOldOddsKoushiki3renfuku:20181220-16-04
+setOldOddsKoushiki3renfuku:20181220-16-05
+setOldOddsKoushiki3renfuku:20181220-16-06
+setOldOddsKoushiki3renfuku:20181220-16-07
+setOldOddsKoushiki3renfuku:20181220-16-08
+setOldOddsKoushiki3renfuku:20181220-16-09
+setOldOddsKoushiki3renfuku:20181220-16-10
+setOldOddsKoushiki3renfuku:20181220-16-11
+setOldOddsKoushiki3renfuku:20181220-16-12
+setOldOddsKoushiki3renfuku:20181220-17-01
+setOldOddsKoushiki3renfuku:20181220-17-02
+setOldOddsKoushiki3renfuku:20181220-17-03
+setOldOddsKoushiki3renfuku:20181220-17-04
+setOldOddsKoushiki3renfuku:20181220-17-05
+setOldOddsKoushiki3renfuku:20181220-17-06
+setOldOddsKoushiki3renfuku:20181220-17-07
+setOldOddsKoushiki3renfuku:20181220-17-08
+setOldOddsKoushiki3renfuku:20181220-17-09
+setOldOddsKoushiki3renfuku:20181220-17-10
+setOldOddsKoushiki3renfuku:20181220-17-11
+setOldOddsKoushiki3renfuku:20181220-17-12
+setOldOddsKoushiki3renfuku:20181220-19-01
+setOldOddsKoushiki3renfuku:20181220-19-02
+setOldOddsKoushiki3renfuku:20181220-19-03
+setOldOddsKoushiki3renfuku:20181220-19-04
+setOldOddsKoushiki3renfuku:20181220-19-05
+setOldOddsKoushiki3renfuku:20181220-19-06
+setOldOddsKoushiki3renfuku:20181220-19-07
+setOldOddsKoushiki3renfuku:20181220-19-08
+setOldOddsKoushiki3renfuku:20181220-19-09
+setOldOddsKoushiki3renfuku:20181220-19-10
+setOldOddsKoushiki3renfuku:20181220-19-11
+setOldOddsKoushiki3renfuku:20181220-19-12
+setOldOddsKoushiki3renfuku:20181220-21-01
+setOldOddsKoushiki3renfuku:20181220-21-02
+setOldOddsKoushiki3renfuku:20181220-21-03
+setOldOddsKoushiki3renfuku:20181220-21-04
+setOldOddsKoushiki3renfuku:20181220-21-05
+setOldOddsKoushiki3renfuku:20181220-21-06
+setOldOddsKoushiki3renfuku:20181220-21-07
+setOldOddsKoushiki3renfuku:20181220-21-08
+setOldOddsKoushiki3renfuku:20181220-21-09
+setOldOddsKoushiki3renfuku:20181220-21-10
+setOldOddsKoushiki3renfuku:20181220-21-11
+setOldOddsKoushiki3renfuku:20181220-21-12
+setOldOddsKoushiki3renfuku:20181220-22-01
+setOldOddsKoushiki3renfuku:20181220-22-02
+setOldOddsKoushiki3renfuku:20181220-22-03
+setOldOddsKoushiki3renfuku:20181220-22-04
+setOldOddsKoushiki3renfuku:20181220-22-05
+setOldOddsKoushiki3renfuku:20181220-22-06
+setOldOddsKoushiki3renfuku:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 3連複オッズ取得 raceId:20181220-22-07
+setOldOddsKoushiki3renfuku:20181220-22-08
+setOldOddsKoushiki3renfuku:20181220-22-09
+setOldOddsKoushiki3renfuku:20181220-22-10
+setOldOddsKoushiki3renfuku:20181220-22-11
+setOldOddsKoushiki3renfuku:20181220-22-12
+setOldOddsKoushiki3renfuku:20181220-24-01
+setOldOddsKoushiki3renfuku:20181220-24-02
+setOldOddsKoushiki3renfuku:20181220-24-03
+setOldOddsKoushiki3renfuku:20181220-24-04
+setOldOddsKoushiki3renfuku:20181220-24-05
+setOldOddsKoushiki3renfuku:20181220-24-06
+setOldOddsKoushiki3renfuku:20181220-24-07
+setOldOddsKoushiki3renfuku:20181220-24-08
+setOldOddsKoushiki3renfuku:20181220-24-09
+setOldOddsKoushiki3renfuku:20181220-24-10
+setOldOddsKoushiki3renfuku:20181220-24-11
+setOldOddsKoushiki3renfuku:20181220-24-12
+setOldOddsKoushiki2rentan:20181220-01-01
+setOldOddsKoushiki2rentan:20181220-01-02
+setOldOddsKoushiki2rentan:20181220-01-03
+setOldOddsKoushiki2rentan:20181220-01-04
+setOldOddsKoushiki2rentan:20181220-01-05
+setOldOddsKoushiki2rentan:20181220-01-06
+setOldOddsKoushiki2rentan:20181220-01-07
+setOldOddsKoushiki2rentan:20181220-01-08
+setOldOddsKoushiki2rentan:20181220-01-09
+setOldOddsKoushiki2rentan:20181220-01-10
+setOldOddsKoushiki2rentan:20181220-01-11
+setOldOddsKoushiki2rentan:20181220-01-12
+setOldOddsKoushiki2rentan:20181220-05-01
+setOldOddsKoushiki2rentan:20181220-05-02
+setOldOddsKoushiki2rentan:20181220-05-03
+setOldOddsKoushiki2rentan:20181220-05-04
+setOldOddsKoushiki2rentan:20181220-05-05
+setOldOddsKoushiki2rentan:20181220-05-06
+setOldOddsKoushiki2rentan:20181220-05-07
+setOldOddsKoushiki2rentan:20181220-05-08
+setOldOddsKoushiki2rentan:20181220-05-09
+setOldOddsKoushiki2rentan:20181220-05-10
+setOldOddsKoushiki2rentan:20181220-05-11
+setOldOddsKoushiki2rentan:20181220-05-12
+setOldOddsKoushiki2rentan:20181220-07-01
+setOldOddsKoushiki2rentan:20181220-07-02
+setOldOddsKoushiki2rentan:20181220-07-03
+setOldOddsKoushiki2rentan:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-04
+setOldOddsKoushiki2rentan:20181220-07-05
+setOldOddsKoushiki2rentan:20181220-07-06
+setOldOddsKoushiki2rentan:20181220-07-07
+setOldOddsKoushiki2rentan:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-07-08
+setOldOddsKoushiki2rentan:20181220-07-09
+setOldOddsKoushiki2rentan:20181220-07-10
+setOldOddsKoushiki2rentan:20181220-07-11
+setOldOddsKoushiki2rentan:20181220-07-12
+setOldOddsKoushiki2rentan:20181220-09-01
+setOldOddsKoushiki2rentan:20181220-09-02
+setOldOddsKoushiki2rentan:20181220-09-03
+setOldOddsKoushiki2rentan:20181220-09-04
+setOldOddsKoushiki2rentan:20181220-09-05
+setOldOddsKoushiki2rentan:20181220-09-06
+setOldOddsKoushiki2rentan:20181220-09-07
+setOldOddsKoushiki2rentan:20181220-09-08
+setOldOddsKoushiki2rentan:20181220-09-09
+setOldOddsKoushiki2rentan:20181220-09-10
+setOldOddsKoushiki2rentan:20181220-09-11
+setOldOddsKoushiki2rentan:20181220-09-12
+setOldOddsKoushiki2rentan:20181220-11-01
+setOldOddsKoushiki2rentan:20181220-11-02
+setOldOddsKoushiki2rentan:20181220-11-03
+setOldOddsKoushiki2rentan:20181220-11-04
+setOldOddsKoushiki2rentan:20181220-11-05
+setOldOddsKoushiki2rentan:20181220-11-06
+setOldOddsKoushiki2rentan:20181220-11-07
+setOldOddsKoushiki2rentan:20181220-11-08
+setOldOddsKoushiki2rentan:20181220-11-09
+setOldOddsKoushiki2rentan:20181220-11-10
+setOldOddsKoushiki2rentan:20181220-11-11
+setOldOddsKoushiki2rentan:20181220-11-12
+setOldOddsKoushiki2rentan:20181220-12-01
+setOldOddsKoushiki2rentan:20181220-12-02
+setOldOddsKoushiki2rentan:20181220-12-03
+setOldOddsKoushiki2rentan:20181220-12-04
+setOldOddsKoushiki2rentan:20181220-12-05
+setOldOddsKoushiki2rentan:20181220-12-06
+setOldOddsKoushiki2rentan:20181220-12-07
+setOldOddsKoushiki2rentan:20181220-12-08
+setOldOddsKoushiki2rentan:20181220-12-09
+setOldOddsKoushiki2rentan:20181220-12-10
+setOldOddsKoushiki2rentan:20181220-12-11
+setOldOddsKoushiki2rentan:20181220-12-12
+setOldOddsKoushiki2rentan:20181220-14-01
+setOldOddsKoushiki2rentan:20181220-14-02
+setOldOddsKoushiki2rentan:20181220-14-03
+setOldOddsKoushiki2rentan:20181220-14-04
+setOldOddsKoushiki2rentan:20181220-14-05
+setOldOddsKoushiki2rentan:20181220-14-06
+setOldOddsKoushiki2rentan:20181220-14-07
+setOldOddsKoushiki2rentan:20181220-14-08
+setOldOddsKoushiki2rentan:20181220-14-09
+setOldOddsKoushiki2rentan:20181220-14-10
+setOldOddsKoushiki2rentan:20181220-14-11
+setOldOddsKoushiki2rentan:20181220-14-12
+setOldOddsKoushiki2rentan:20181220-16-01
+setOldOddsKoushiki2rentan:20181220-16-02
+setOldOddsKoushiki2rentan:20181220-16-03
+setOldOddsKoushiki2rentan:20181220-16-04
+setOldOddsKoushiki2rentan:20181220-16-05
+setOldOddsKoushiki2rentan:20181220-16-06
+setOldOddsKoushiki2rentan:20181220-16-07
+setOldOddsKoushiki2rentan:20181220-16-08
+setOldOddsKoushiki2rentan:20181220-16-09
+setOldOddsKoushiki2rentan:20181220-16-10
+setOldOddsKoushiki2rentan:20181220-16-11
+setOldOddsKoushiki2rentan:20181220-16-12
+setOldOddsKoushiki2rentan:20181220-17-01
+setOldOddsKoushiki2rentan:20181220-17-02
+setOldOddsKoushiki2rentan:20181220-17-03
+setOldOddsKoushiki2rentan:20181220-17-04
+setOldOddsKoushiki2rentan:20181220-17-05
+setOldOddsKoushiki2rentan:20181220-17-06
+setOldOddsKoushiki2rentan:20181220-17-07
+setOldOddsKoushiki2rentan:20181220-17-08
+setOldOddsKoushiki2rentan:20181220-17-09
+setOldOddsKoushiki2rentan:20181220-17-10
+setOldOddsKoushiki2rentan:20181220-17-11
+setOldOddsKoushiki2rentan:20181220-17-12
+setOldOddsKoushiki2rentan:20181220-19-01
+setOldOddsKoushiki2rentan:20181220-19-02
+setOldOddsKoushiki2rentan:20181220-19-03
+setOldOddsKoushiki2rentan:20181220-19-04
+setOldOddsKoushiki2rentan:20181220-19-05
+setOldOddsKoushiki2rentan:20181220-19-06
+setOldOddsKoushiki2rentan:20181220-19-07
+setOldOddsKoushiki2rentan:20181220-19-08
+setOldOddsKoushiki2rentan:20181220-19-09
+setOldOddsKoushiki2rentan:20181220-19-10
+setOldOddsKoushiki2rentan:20181220-19-11
+setOldOddsKoushiki2rentan:20181220-19-12
+setOldOddsKoushiki2rentan:20181220-21-01
+setOldOddsKoushiki2rentan:20181220-21-02
+setOldOddsKoushiki2rentan:20181220-21-03
+setOldOddsKoushiki2rentan:20181220-21-04
+setOldOddsKoushiki2rentan:20181220-21-05
+setOldOddsKoushiki2rentan:20181220-21-06
+setOldOddsKoushiki2rentan:20181220-21-07
+setOldOddsKoushiki2rentan:20181220-21-08
+setOldOddsKoushiki2rentan:20181220-21-09
+setOldOddsKoushiki2rentan:20181220-21-10
+setOldOddsKoushiki2rentan:20181220-21-11
+setOldOddsKoushiki2rentan:20181220-21-12
+setOldOddsKoushiki2rentan:20181220-22-01
+setOldOddsKoushiki2rentan:20181220-22-02
+setOldOddsKoushiki2rentan:20181220-22-03
+setOldOddsKoushiki2rentan:20181220-22-04
+setOldOddsKoushiki2rentan:20181220-22-05
+setOldOddsKoushiki2rentan:20181220-22-06
+setOldOddsKoushiki2rentan:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連単オッズ取得 raceId:20181220-22-07
+setOldOddsKoushiki2rentan:20181220-22-08
+setOldOddsKoushiki2rentan:20181220-22-09
+setOldOddsKoushiki2rentan:20181220-22-10
+setOldOddsKoushiki2rentan:20181220-22-11
+setOldOddsKoushiki2rentan:20181220-22-12
+setOldOddsKoushiki2rentan:20181220-24-01
+setOldOddsKoushiki2rentan:20181220-24-02
+setOldOddsKoushiki2rentan:20181220-24-03
+setOldOddsKoushiki2rentan:20181220-24-04
+setOldOddsKoushiki2rentan:20181220-24-05
+setOldOddsKoushiki2rentan:20181220-24-06
+setOldOddsKoushiki2rentan:20181220-24-07
+setOldOddsKoushiki2rentan:20181220-24-08
+setOldOddsKoushiki2rentan:20181220-24-09
+setOldOddsKoushiki2rentan:20181220-24-10
+setOldOddsKoushiki2rentan:20181220-24-11
+setOldOddsKoushiki2rentan:20181220-24-12
+setOldOddsKoushiki2renfuku20181220-01-01
+20181220 1 01
+setOldOddsKoushiki2renfuku20181220-01-02
+20181220 2 01
+setOldOddsKoushiki2renfuku20181220-01-03
+20181220 3 01
+setOldOddsKoushiki2renfuku20181220-01-04
+20181220 4 01
+setOldOddsKoushiki2renfuku20181220-01-05
+20181220 5 01
+setOldOddsKoushiki2renfuku20181220-01-06
+20181220 6 01
+setOldOddsKoushiki2renfuku20181220-01-07
+20181220 7 01
+setOldOddsKoushiki2renfuku20181220-01-08
+20181220 8 01
+setOldOddsKoushiki2renfuku20181220-01-09
+20181220 9 01
+setOldOddsKoushiki2renfuku20181220-01-10
+20181220 10 01
+setOldOddsKoushiki2renfuku20181220-01-11
+20181220 11 01
+setOldOddsKoushiki2renfuku20181220-01-12
+20181220 12 01
+setOldOddsKoushiki2renfuku20181220-05-01
+20181220 1 05
+setOldOddsKoushiki2renfuku20181220-05-02
+20181220 2 05
+setOldOddsKoushiki2renfuku20181220-05-03
+20181220 3 05
+setOldOddsKoushiki2renfuku20181220-05-04
+20181220 4 05
+setOldOddsKoushiki2renfuku20181220-05-05
+20181220 5 05
+setOldOddsKoushiki2renfuku20181220-05-06
+20181220 6 05
+setOldOddsKoushiki2renfuku20181220-05-07
+20181220 7 05
+setOldOddsKoushiki2renfuku20181220-05-08
+20181220 8 05
+setOldOddsKoushiki2renfuku20181220-05-09
+20181220 9 05
+setOldOddsKoushiki2renfuku20181220-05-10
+20181220 10 05
+setOldOddsKoushiki2renfuku20181220-05-11
+20181220 11 05
+setOldOddsKoushiki2renfuku20181220-05-12
+20181220 12 05
+setOldOddsKoushiki2renfuku20181220-07-01
+20181220 1 07
+setOldOddsKoushiki2renfuku20181220-07-02
+20181220 2 07
+setOldOddsKoushiki2renfuku20181220-07-03
+20181220 3 07
+setOldOddsKoushiki2renfuku20181220-07-04
+20181220 4 07
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-04
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-04
+setOldOddsKoushiki2renfuku20181220-07-05
+20181220 5 07
+setOldOddsKoushiki2renfuku20181220-07-06
+20181220 6 07
+setOldOddsKoushiki2renfuku20181220-07-07
+20181220 7 07
+setOldOddsKoushiki2renfuku20181220-07-08
+20181220 8 07
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-08
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-07-08
+setOldOddsKoushiki2renfuku20181220-07-09
+20181220 9 07
+setOldOddsKoushiki2renfuku20181220-07-10
+20181220 10 07
+setOldOddsKoushiki2renfuku20181220-07-11
+20181220 11 07
+setOldOddsKoushiki2renfuku20181220-07-12
+20181220 12 07
+setOldOddsKoushiki2renfuku20181220-09-01
+20181220 1 09
+setOldOddsKoushiki2renfuku20181220-09-02
+20181220 2 09
+setOldOddsKoushiki2renfuku20181220-09-03
+20181220 3 09
+setOldOddsKoushiki2renfuku20181220-09-04
+20181220 4 09
+setOldOddsKoushiki2renfuku20181220-09-05
+20181220 5 09
+setOldOddsKoushiki2renfuku20181220-09-06
+20181220 6 09
+setOldOddsKoushiki2renfuku20181220-09-07
+20181220 7 09
+setOldOddsKoushiki2renfuku20181220-09-08
+20181220 8 09
+setOldOddsKoushiki2renfuku20181220-09-09
+20181220 9 09
+setOldOddsKoushiki2renfuku20181220-09-10
+20181220 10 09
+setOldOddsKoushiki2renfuku20181220-09-11
+20181220 11 09
+setOldOddsKoushiki2renfuku20181220-09-12
+20181220 12 09
+setOldOddsKoushiki2renfuku20181220-11-01
+20181220 1 11
+setOldOddsKoushiki2renfuku20181220-11-02
+20181220 2 11
+setOldOddsKoushiki2renfuku20181220-11-03
+20181220 3 11
+setOldOddsKoushiki2renfuku20181220-11-04
+20181220 4 11
+setOldOddsKoushiki2renfuku20181220-11-05
+20181220 5 11
+setOldOddsKoushiki2renfuku20181220-11-06
+20181220 6 11
+setOldOddsKoushiki2renfuku20181220-11-07
+20181220 7 11
+setOldOddsKoushiki2renfuku20181220-11-08
+20181220 8 11
+setOldOddsKoushiki2renfuku20181220-11-09
+20181220 9 11
+setOldOddsKoushiki2renfuku20181220-11-10
+20181220 10 11
+setOldOddsKoushiki2renfuku20181220-11-11
+20181220 11 11
+setOldOddsKoushiki2renfuku20181220-11-12
+20181220 12 11
+setOldOddsKoushiki2renfuku20181220-12-01
+20181220 1 12
+setOldOddsKoushiki2renfuku20181220-12-02
+20181220 2 12
+setOldOddsKoushiki2renfuku20181220-12-03
+20181220 3 12
+setOldOddsKoushiki2renfuku20181220-12-04
+20181220 4 12
+setOldOddsKoushiki2renfuku20181220-12-05
+20181220 5 12
+setOldOddsKoushiki2renfuku20181220-12-06
+20181220 6 12
+setOldOddsKoushiki2renfuku20181220-12-07
+20181220 7 12
+setOldOddsKoushiki2renfuku20181220-12-08
+20181220 8 12
+setOldOddsKoushiki2renfuku20181220-12-09
+20181220 9 12
+setOldOddsKoushiki2renfuku20181220-12-10
+20181220 10 12
+setOldOddsKoushiki2renfuku20181220-12-11
+20181220 11 12
+setOldOddsKoushiki2renfuku20181220-12-12
+20181220 12 12
+setOldOddsKoushiki2renfuku20181220-14-01
+20181220 1 14
+setOldOddsKoushiki2renfuku20181220-14-02
+20181220 2 14
+setOldOddsKoushiki2renfuku20181220-14-03
+20181220 3 14
+setOldOddsKoushiki2renfuku20181220-14-04
+20181220 4 14
+setOldOddsKoushiki2renfuku20181220-14-05
+20181220 5 14
+setOldOddsKoushiki2renfuku20181220-14-06
+20181220 6 14
+setOldOddsKoushiki2renfuku20181220-14-07
+20181220 7 14
+setOldOddsKoushiki2renfuku20181220-14-08
+20181220 8 14
+setOldOddsKoushiki2renfuku20181220-14-09
+20181220 9 14
+setOldOddsKoushiki2renfuku20181220-14-10
+20181220 10 14
+setOldOddsKoushiki2renfuku20181220-14-11
+20181220 11 14
+setOldOddsKoushiki2renfuku20181220-14-12
+20181220 12 14
+setOldOddsKoushiki2renfuku20181220-16-01
+20181220 1 16
+setOldOddsKoushiki2renfuku20181220-16-02
+20181220 2 16
+setOldOddsKoushiki2renfuku20181220-16-03
+20181220 3 16
+setOldOddsKoushiki2renfuku20181220-16-04
+20181220 4 16
+setOldOddsKoushiki2renfuku20181220-16-05
+20181220 5 16
+setOldOddsKoushiki2renfuku20181220-16-06
+20181220 6 16
+setOldOddsKoushiki2renfuku20181220-16-07
+20181220 7 16
+setOldOddsKoushiki2renfuku20181220-16-08
+20181220 8 16
+setOldOddsKoushiki2renfuku20181220-16-09
+20181220 9 16
+setOldOddsKoushiki2renfuku20181220-16-10
+20181220 10 16
+setOldOddsKoushiki2renfuku20181220-16-11
+20181220 11 16
+setOldOddsKoushiki2renfuku20181220-16-12
+20181220 12 16
+setOldOddsKoushiki2renfuku20181220-17-01
+20181220 1 17
+setOldOddsKoushiki2renfuku20181220-17-02
+20181220 2 17
+setOldOddsKoushiki2renfuku20181220-17-03
+20181220 3 17
+setOldOddsKoushiki2renfuku20181220-17-04
+20181220 4 17
+setOldOddsKoushiki2renfuku20181220-17-05
+20181220 5 17
+setOldOddsKoushiki2renfuku20181220-17-06
+20181220 6 17
+setOldOddsKoushiki2renfuku20181220-17-07
+20181220 7 17
+setOldOddsKoushiki2renfuku20181220-17-08
+20181220 8 17
+setOldOddsKoushiki2renfuku20181220-17-09
+20181220 9 17
+setOldOddsKoushiki2renfuku20181220-17-10
+20181220 10 17
+setOldOddsKoushiki2renfuku20181220-17-11
+20181220 11 17
+setOldOddsKoushiki2renfuku20181220-17-12
+20181220 12 17
+setOldOddsKoushiki2renfuku20181220-19-01
+20181220 1 19
+setOldOddsKoushiki2renfuku20181220-19-02
+20181220 2 19
+setOldOddsKoushiki2renfuku20181220-19-03
+20181220 3 19
+setOldOddsKoushiki2renfuku20181220-19-04
+20181220 4 19
+setOldOddsKoushiki2renfuku20181220-19-05
+20181220 5 19
+setOldOddsKoushiki2renfuku20181220-19-06
+20181220 6 19
+setOldOddsKoushiki2renfuku20181220-19-07
+20181220 7 19
+setOldOddsKoushiki2renfuku20181220-19-08
+20181220 8 19
+setOldOddsKoushiki2renfuku20181220-19-09
+20181220 9 19
+setOldOddsKoushiki2renfuku20181220-19-10
+20181220 10 19
+setOldOddsKoushiki2renfuku20181220-19-11
+20181220 11 19
+setOldOddsKoushiki2renfuku20181220-19-12
+20181220 12 19
+setOldOddsKoushiki2renfuku20181220-21-01
+20181220 1 21
+setOldOddsKoushiki2renfuku20181220-21-02
+20181220 2 21
+setOldOddsKoushiki2renfuku20181220-21-03
+20181220 3 21
+setOldOddsKoushiki2renfuku20181220-21-04
+20181220 4 21
+setOldOddsKoushiki2renfuku20181220-21-05
+20181220 5 21
+setOldOddsKoushiki2renfuku20181220-21-06
+20181220 6 21
+setOldOddsKoushiki2renfuku20181220-21-07
+20181220 7 21
+setOldOddsKoushiki2renfuku20181220-21-08
+20181220 8 21
+setOldOddsKoushiki2renfuku20181220-21-09
+20181220 9 21
+setOldOddsKoushiki2renfuku20181220-21-10
+20181220 10 21
+setOldOddsKoushiki2renfuku20181220-21-11
+20181220 11 21
+setOldOddsKoushiki2renfuku20181220-21-12
+20181220 12 21
+setOldOddsKoushiki2renfuku20181220-22-01
+20181220 1 22
+setOldOddsKoushiki2renfuku20181220-22-02
+20181220 2 22
+setOldOddsKoushiki2renfuku20181220-22-03
+20181220 3 22
+setOldOddsKoushiki2renfuku20181220-22-04
+20181220 4 22
+setOldOddsKoushiki2renfuku20181220-22-05
+20181220 5 22
+setOldOddsKoushiki2renfuku20181220-22-06
+20181220 6 22
+setOldOddsKoushiki2renfuku20181220-22-07
+20181220 7 22
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-22-07
+[SKIP]欠場 at 2連複オッズ取得 raceId:20181220-22-07
+setOldOddsKoushiki2renfuku20181220-22-08
+20181220 8 22
+setOldOddsKoushiki2renfuku20181220-22-09
+20181220 9 22
+setOldOddsKoushiki2renfuku20181220-22-10
+20181220 10 22
+setOldOddsKoushiki2renfuku20181220-22-11
+20181220 11 22
+setOldOddsKoushiki2renfuku20181220-22-12
+20181220 12 22
+setOldOddsKoushiki2renfuku20181220-24-01
+20181220 1 24
+setOldOddsKoushiki2renfuku20181220-24-02
+20181220 2 24
+setOldOddsKoushiki2renfuku20181220-24-03
+20181220 3 24
+setOldOddsKoushiki2renfuku20181220-24-04
+20181220 4 24
+setOldOddsKoushiki2renfuku20181220-24-05
+20181220 5 24
+setOldOddsKoushiki2renfuku20181220-24-06
+20181220 6 24
+setOldOddsKoushiki2renfuku20181220-24-07
+20181220 7 24
+setOldOddsKoushiki2renfuku20181220-24-08
+20181220 8 24
+setOldOddsKoushiki2renfuku20181220-24-09
+20181220 9 24
+setOldOddsKoushiki2renfuku20181220-24-10
+20181220 10 24
+setOldOddsKoushiki2renfuku20181220-24-11
+20181220 11 24
+setOldOddsKoushiki2renfuku20181220-24-12
+20181220 12 24
+setOldOddsKoushikiTansho:20181220-01-01
+setOldOddsKoushikiTansho:20181220-01-02
+setOldOddsKoushikiTansho:20181220-01-03
+setOldOddsKoushikiTansho:20181220-01-04
+setOldOddsKoushikiTansho:20181220-01-05
+setOldOddsKoushikiTansho:20181220-01-06
+setOldOddsKoushikiTansho:20181220-01-07
+setOldOddsKoushikiTansho:20181220-01-08
+setOldOddsKoushikiTansho:20181220-01-09
+setOldOddsKoushikiTansho:20181220-01-10
+setOldOddsKoushikiTansho:20181220-01-11
+setOldOddsKoushikiTansho:20181220-01-12
+setOldOddsKoushikiTansho:20181220-05-01
+setOldOddsKoushikiTansho:20181220-05-02
+setOldOddsKoushikiTansho:20181220-05-03
+setOldOddsKoushikiTansho:20181220-05-04
+setOldOddsKoushikiTansho:20181220-05-05
+setOldOddsKoushikiTansho:20181220-05-06
+setOldOddsKoushikiTansho:20181220-05-07
+setOldOddsKoushikiTansho:20181220-05-08
+setOldOddsKoushikiTansho:20181220-05-09
+setOldOddsKoushikiTansho:20181220-05-10
+setOldOddsKoushikiTansho:20181220-05-11
+setOldOddsKoushikiTansho:20181220-05-12
+setOldOddsKoushikiTansho:20181220-07-01
+setOldOddsKoushikiTansho:20181220-07-02
+setOldOddsKoushikiTansho:20181220-07-03
+setOldOddsKoushikiTansho:20181220-07-04
+[SKIP]欠場 at 単勝オッズ取得 raceId:20181220-07-04
+setOldOddsKoushikiTansho:20181220-07-05
+setOldOddsKoushikiTansho:20181220-07-06
+setOldOddsKoushikiTansho:20181220-07-07
+setOldOddsKoushikiTansho:20181220-07-08
+[SKIP]欠場 at 単勝オッズ取得 raceId:20181220-07-08
+setOldOddsKoushikiTansho:20181220-07-09
+setOldOddsKoushikiTansho:20181220-07-10
+setOldOddsKoushikiTansho:20181220-07-11
+setOldOddsKoushikiTansho:20181220-07-12
+setOldOddsKoushikiTansho:20181220-09-01
+setOldOddsKoushikiTansho:20181220-09-02
+setOldOddsKoushikiTansho:20181220-09-03
+setOldOddsKoushikiTansho:20181220-09-04
+setOldOddsKoushikiTansho:20181220-09-05
+setOldOddsKoushikiTansho:20181220-09-06
+setOldOddsKoushikiTansho:20181220-09-07
+setOldOddsKoushikiTansho:20181220-09-08
+setOldOddsKoushikiTansho:20181220-09-09
+setOldOddsKoushikiTansho:20181220-09-10
+setOldOddsKoushikiTansho:20181220-09-11
+setOldOddsKoushikiTansho:20181220-09-12
+setOldOddsKoushikiTansho:20181220-11-01
+setOldOddsKoushikiTansho:20181220-11-02
+setOldOddsKoushikiTansho:20181220-11-03
+setOldOddsKoushikiTansho:20181220-11-04
+setOldOddsKoushikiTansho:20181220-11-05
+setOldOddsKoushikiTansho:20181220-11-06
+setOldOddsKoushikiTansho:20181220-11-07
+setOldOddsKoushikiTansho:20181220-11-08
+setOldOddsKoushikiTansho:20181220-11-09
+setOldOddsKoushikiTansho:20181220-11-10
+setOldOddsKoushikiTansho:20181220-11-11
+setOldOddsKoushikiTansho:20181220-11-12
+setOldOddsKoushikiTansho:20181220-12-01
+setOldOddsKoushikiTansho:20181220-12-02
+setOldOddsKoushikiTansho:20181220-12-03
+setOldOddsKoushikiTansho:20181220-12-04
+setOldOddsKoushikiTansho:20181220-12-05
+setOldOddsKoushikiTansho:20181220-12-06
+setOldOddsKoushikiTansho:20181220-12-07
+setOldOddsKoushikiTansho:20181220-12-08
+setOldOddsKoushikiTansho:20181220-12-09
+setOldOddsKoushikiTansho:20181220-12-10
+setOldOddsKoushikiTansho:20181220-12-11
+setOldOddsKoushikiTansho:20181220-12-12
+setOldOddsKoushikiTansho:20181220-14-01
+setOldOddsKoushikiTansho:20181220-14-02
+setOldOddsKoushikiTansho:20181220-14-03
+setOldOddsKoushikiTansho:20181220-14-04
+setOldOddsKoushikiTansho:20181220-14-05
+setOldOddsKoushikiTansho:20181220-14-06
+setOldOddsKoushikiTansho:20181220-14-07
+setOldOddsKoushikiTansho:20181220-14-08
+setOldOddsKoushikiTansho:20181220-14-09
+setOldOddsKoushikiTansho:20181220-14-10
+setOldOddsKoushikiTansho:20181220-14-11
+setOldOddsKoushikiTansho:20181220-14-12
+setOldOddsKoushikiTansho:20181220-16-01
+setOldOddsKoushikiTansho:20181220-16-02
+setOldOddsKoushikiTansho:20181220-16-03
+setOldOddsKoushikiTansho:20181220-16-04
+setOldOddsKoushikiTansho:20181220-16-05
+setOldOddsKoushikiTansho:20181220-16-06
+setOldOddsKoushikiTansho:20181220-16-07
+setOldOddsKoushikiTansho:20181220-16-08
+setOldOddsKoushikiTansho:20181220-16-09
+setOldOddsKoushikiTansho:20181220-16-10
+setOldOddsKoushikiTansho:20181220-16-11
+setOldOddsKoushikiTansho:20181220-16-12
+setOldOddsKoushikiTansho:20181220-17-01
+setOldOddsKoushikiTansho:20181220-17-02
+setOldOddsKoushikiTansho:20181220-17-03
+setOldOddsKoushikiTansho:20181220-17-04
+setOldOddsKoushikiTansho:20181220-17-05
+setOldOddsKoushikiTansho:20181220-17-06
+setOldOddsKoushikiTansho:20181220-17-07
+setOldOddsKoushikiTansho:20181220-17-08
+setOldOddsKoushikiTansho:20181220-17-09
+setOldOddsKoushikiTansho:20181220-17-10
+setOldOddsKoushikiTansho:20181220-17-11
+setOldOddsKoushikiTansho:20181220-17-12
+setOldOddsKoushikiTansho:20181220-19-01
+setOldOddsKoushikiTansho:20181220-19-02
+setOldOddsKoushikiTansho:20181220-19-03
+setOldOddsKoushikiTansho:20181220-19-04
+setOldOddsKoushikiTansho:20181220-19-05
+setOldOddsKoushikiTansho:20181220-19-06
+setOldOddsKoushikiTansho:20181220-19-07
+setOldOddsKoushikiTansho:20181220-19-08
+setOldOddsKoushikiTansho:20181220-19-09
+setOldOddsKoushikiTansho:20181220-19-10
+setOldOddsKoushikiTansho:20181220-19-11
+setOldOddsKoushikiTansho:20181220-19-12
+setOldOddsKoushikiTansho:20181220-21-01
+setOldOddsKoushikiTansho:20181220-21-02
+setOldOddsKoushikiTansho:20181220-21-03
+setOldOddsKoushikiTansho:20181220-21-04
+setOldOddsKoushikiTansho:20181220-21-05
+setOldOddsKoushikiTansho:20181220-21-06
+setOldOddsKoushikiTansho:20181220-21-07
+setOldOddsKoushikiTansho:20181220-21-08
+setOldOddsKoushikiTansho:20181220-21-09
+setOldOddsKoushikiTansho:20181220-21-10
+setOldOddsKoushikiTansho:20181220-21-11
+setOldOddsKoushikiTansho:20181220-21-12
+setOldOddsKoushikiTansho:20181220-22-01
+setOldOddsKoushikiTansho:20181220-22-02
+setOldOddsKoushikiTansho:20181220-22-03
+setOldOddsKoushikiTansho:20181220-22-04
+setOldOddsKoushikiTansho:20181220-22-05
+setOldOddsKoushikiTansho:20181220-22-06
+setOldOddsKoushikiTansho:20181220-22-07
+[SKIP]欠場 at 単勝オッズ取得 raceId:20181220-22-07
+setOldOddsKoushikiTansho:20181220-22-08
+setOldOddsKoushikiTansho:20181220-22-09
+setOldOddsKoushikiTansho:20181220-22-10
+setOldOddsKoushikiTansho:20181220-22-11
+setOldOddsKoushikiTansho:20181220-22-12
+setOldOddsKoushikiTansho:20181220-24-01
+setOldOddsKoushikiTansho:20181220-24-02
+setOldOddsKoushikiTansho:20181220-24-03
+setOldOddsKoushikiTansho:20181220-24-04
+setOldOddsKoushikiTansho:20181220-24-05
+setOldOddsKoushikiTansho:20181220-24-06
+setOldOddsKoushikiTansho:20181220-24-07
+setOldOddsKoushikiTansho:20181220-24-08
+setOldOddsKoushikiTansho:20181220-24-09
+setOldOddsKoushikiTansho:20181220-24-10
+setOldOddsKoushikiTansho:20181220-24-11
+setOldOddsKoushikiTansho:20181220-24-12
+setOldOddsKoushikiResult20181220-01-01
+setOldOddsKoushikiResult20181220-01-02
+setOldOddsKoushikiResult20181220-01-03
+setOldOddsKoushikiResult20181220-01-04
+setOldOddsKoushikiResult20181220-01-05
+setOldOddsKoushikiResult20181220-01-06
+setOldOddsKoushikiResult20181220-01-07
+setOldOddsKoushikiResult20181220-01-08
+setOldOddsKoushikiResult20181220-01-09
+setOldOddsKoushikiResult20181220-01-10
+setOldOddsKoushikiResult20181220-01-11
+setOldOddsKoushikiResult20181220-01-12
+setOldOddsKoushikiResult20181220-05-01
+setOldOddsKoushikiResult20181220-05-02
+setOldOddsKoushikiResult20181220-05-03
+setOldOddsKoushikiResult20181220-05-04
+setOldOddsKoushikiResult20181220-05-05
+setOldOddsKoushikiResult20181220-05-06
+setOldOddsKoushikiResult20181220-05-07
+setOldOddsKoushikiResult20181220-05-08
+setOldOddsKoushikiResult20181220-05-09
+setOldOddsKoushikiResult20181220-05-10
+setOldOddsKoushikiResult20181220-05-11
+setOldOddsKoushikiResult20181220-05-12
+setOldOddsKoushikiResult20181220-07-01
+setOldOddsKoushikiResult20181220-07-02
+setOldOddsKoushikiResult20181220-07-03
+setOldOddsKoushikiResult20181220-07-04
+[SKIP]IndexError発生 at 結果取得 raceid:20181220-07-04
+setOldOddsKoushikiResult20181220-07-05
+setOldOddsKoushikiResult20181220-07-06
+setOldOddsKoushikiResult20181220-07-07
+setOldOddsKoushikiResult20181220-07-08
+[SKIP]IndexError発生 at 結果取得 raceid:20181220-07-08
+setOldOddsKoushikiResult20181220-07-09
+setOldOddsKoushikiResult20181220-07-10
+setOldOddsKoushikiResult20181220-07-11
+setOldOddsKoushikiResult20181220-07-12
+setOldOddsKoushikiResult20181220-09-01
+setOldOddsKoushikiResult20181220-09-02
+setOldOddsKoushikiResult20181220-09-03
+setOldOddsKoushikiResult20181220-09-04
+[SKIP]IndexError発生 at 結果取得 raceid:20181220-09-04
+setOldOddsKoushikiResult20181220-09-05
+setOldOddsKoushikiResult20181220-09-06
+setOldOddsKoushikiResult20181220-09-07
+setOldOddsKoushikiResult20181220-09-08
+setOldOddsKoushikiResult20181220-09-09
+setOldOddsKoushikiResult20181220-09-10
+setOldOddsKoushikiResult20181220-09-11
+setOldOddsKoushikiResult20181220-09-12
+setOldOddsKoushikiResult20181220-11-01
+setOldOddsKoushikiResult20181220-11-02
+setOldOddsKoushikiResult20181220-11-03
+setOldOddsKoushikiResult20181220-11-04
+setOldOddsKoushikiResult20181220-11-05
+setOldOddsKoushikiResult20181220-11-06
+setOldOddsKoushikiResult20181220-11-07
+setOldOddsKoushikiResult20181220-11-08
+setOldOddsKoushikiResult20181220-11-09
+setOldOddsKoushikiResult20181220-11-10
+setOldOddsKoushikiResult20181220-11-11
+setOldOddsKoushikiResult20181220-11-12
+setOldOddsKoushikiResult20181220-12-01
+setOldOddsKoushikiResult20181220-12-02
+setOldOddsKoushikiResult20181220-12-03
+setOldOddsKoushikiResult20181220-12-04
+setOldOddsKoushikiResult20181220-12-05
+setOldOddsKoushikiResult20181220-12-06
+setOldOddsKoushikiResult20181220-12-07
+setOldOddsKoushikiResult20181220-12-08
+setOldOddsKoushikiResult20181220-12-09
+setOldOddsKoushikiResult20181220-12-10
+setOldOddsKoushikiResult20181220-12-11
+setOldOddsKoushikiResult20181220-12-12
+setOldOddsKoushikiResult20181220-14-01
+setOldOddsKoushikiResult20181220-14-02
+setOldOddsKoushikiResult20181220-14-03
+setOldOddsKoushikiResult20181220-14-04
+setOldOddsKoushikiResult20181220-14-05
+setOldOddsKoushikiResult20181220-14-06
+setOldOddsKoushikiResult20181220-14-07
+setOldOddsKoushikiResult20181220-14-08
+setOldOddsKoushikiResult20181220-14-09
+setOldOddsKoushikiResult20181220-14-10
+setOldOddsKoushikiResult20181220-14-11
+setOldOddsKoushikiResult20181220-14-12
+setOldOddsKoushikiResult20181220-16-01
+setOldOddsKoushikiResult20181220-16-02
+setOldOddsKoushikiResult20181220-16-03
+setOldOddsKoushikiResult20181220-16-04
+setOldOddsKoushikiResult20181220-16-05
+setOldOddsKoushikiResult20181220-16-06
+setOldOddsKoushikiResult20181220-16-07
+setOldOddsKoushikiResult20181220-16-08
+setOldOddsKoushikiResult20181220-16-09
+setOldOddsKoushikiResult20181220-16-10
+setOldOddsKoushikiResult20181220-16-11
+setOldOddsKoushikiResult20181220-16-12
+setOldOddsKoushikiResult20181220-17-01
+setOldOddsKoushikiResult20181220-17-02
+setOldOddsKoushikiResult20181220-17-03
+setOldOddsKoushikiResult20181220-17-04
+setOldOddsKoushikiResult20181220-17-05
+setOldOddsKoushikiResult20181220-17-06
+setOldOddsKoushikiResult20181220-17-07
+setOldOddsKoushikiResult20181220-17-08
+setOldOddsKoushikiResult20181220-17-09
+setOldOddsKoushikiResult20181220-17-10
+setOldOddsKoushikiResult20181220-17-11
+setOldOddsKoushikiResult20181220-17-12
+setOldOddsKoushikiResult20181220-19-01
+setOldOddsKoushikiResult20181220-19-02
+setOldOddsKoushikiResult20181220-19-03
+setOldOddsKoushikiResult20181220-19-04
+setOldOddsKoushikiResult20181220-19-05
+setOldOddsKoushikiResult20181220-19-06
+setOldOddsKoushikiResult20181220-19-07
+setOldOddsKoushikiResult20181220-19-08
+setOldOddsKoushikiResult20181220-19-09
+setOldOddsKoushikiResult20181220-19-10
+setOldOddsKoushikiResult20181220-19-11
+setOldOddsKoushikiResult20181220-19-12
+setOldOddsKoushikiResult20181220-21-01
+setOldOddsKoushikiResult20181220-21-02
+setOldOddsKoushikiResult20181220-21-03
+setOldOddsKoushikiResult20181220-21-04
+setOldOddsKoushikiResult20181220-21-05
+setOldOddsKoushikiResult20181220-21-06
+setOldOddsKoushikiResult20181220-21-07
+setOldOddsKoushikiResult20181220-21-08
+setOldOddsKoushikiResult20181220-21-09
+setOldOddsKoushikiResult20181220-21-10
+setOldOddsKoushikiResult20181220-21-11
+setOldOddsKoushikiResult20181220-21-12
+setOldOddsKoushikiResult20181220-22-01
+setOldOddsKoushikiResult20181220-22-02
+setOldOddsKoushikiResult20181220-22-03
+setOldOddsKoushikiResult20181220-22-04
+setOldOddsKoushikiResult20181220-22-05
+setOldOddsKoushikiResult20181220-22-06
+setOldOddsKoushikiResult20181220-22-07
+[SKIP]IndexError発生 at 結果取得 raceid:20181220-22-07
+setOldOddsKoushikiResult20181220-22-08
+setOldOddsKoushikiResult20181220-22-09
+setOldOddsKoushikiResult20181220-22-10
+setOldOddsKoushikiResult20181220-22-11
+setOldOddsKoushikiResult20181220-22-12
+setOldOddsKoushikiResult20181220-24-01
+setOldOddsKoushikiResult20181220-24-02
+setOldOddsKoushikiResult20181220-24-03
+setOldOddsKoushikiResult20181220-24-04
+setOldOddsKoushikiResult20181220-24-05
+setOldOddsKoushikiResult20181220-24-06
+setOldOddsKoushikiResult20181220-24-07
+setOldOddsKoushikiResult20181220-24-08
+setOldOddsKoushikiResult20181220-24-09
+setOldOddsKoushikiResult20181220-24-10
+setOldOddsKoushikiResult20181220-24-11
+setOldOddsKoushikiResult20181220-24-12
+END:20181220
+START:20181221
+setRaceBeforeInfoWeatherKoushiki:20181221-01-01
+setRaceBeforeInfoWeatherKoushiki:20181221-01-02
+setRaceBeforeInfoWeatherKoushiki:20181221-01-03
+setRaceBeforeInfoWeatherKoushiki:20181221-01-04
+setRaceBeforeInfoWeatherKoushiki:20181221-01-05
+setRaceBeforeInfoWeatherKoushiki:20181221-01-06
+setRaceBeforeInfoWeatherKoushiki:20181221-01-07
+setRaceBeforeInfoWeatherKoushiki:20181221-01-08
+setRaceBeforeInfoWeatherKoushiki:20181221-01-09
+setRaceBeforeInfoWeatherKoushiki:20181221-01-10
+setRaceBeforeInfoWeatherKoushiki:20181221-01-11
+setRaceBeforeInfoWeatherKoushiki:20181221-01-12
+setRaceBeforeInfoWeatherKoushiki:20181221-05-01
+setRaceBeforeInfoWeatherKoushiki:20181221-05-02
+setRaceBeforeInfoWeatherKoushiki:20181221-05-03
+setRaceBeforeInfoWeatherKoushiki:20181221-05-04
+setRaceBeforeInfoWeatherKoushiki:20181221-05-05
+setRaceBeforeInfoWeatherKoushiki:20181221-05-06
+setRaceBeforeInfoWeatherKoushiki:20181221-05-07
+setRaceBeforeInfoWeatherKoushiki:20181221-05-08
+setRaceBeforeInfoWeatherKoushiki:20181221-05-09
+setRaceBeforeInfoWeatherKoushiki:20181221-05-10
+setRaceBeforeInfoWeatherKoushiki:20181221-05-11
+setRaceBeforeInfoWeatherKoushiki:20181221-05-12
+setRaceBeforeInfoWeatherKoushiki:20181221-06-01
+setRaceBeforeInfoWeatherKoushiki:20181221-06-02
+setRaceBeforeInfoWeatherKoushiki:20181221-06-03
+setRaceBeforeInfoWeatherKoushiki:20181221-06-04
+setRaceBeforeInfoWeatherKoushiki:20181221-06-05
+setRaceBeforeInfoWeatherKoushiki:20181221-06-06
+setRaceBeforeInfoWeatherKoushiki:20181221-06-07
+setRaceBeforeInfoWeatherKoushiki:20181221-06-08
+setRaceBeforeInfoWeatherKoushiki:20181221-06-09
+setRaceBeforeInfoWeatherKoushiki:20181221-06-10
+setRaceBeforeInfoWeatherKoushiki:20181221-06-11
+setRaceBeforeInfoWeatherKoushiki:20181221-06-12
+setRaceBeforeInfoWeatherKoushiki:20181221-08-01
+setRaceBeforeInfoWeatherKoushiki:20181221-08-02
+setRaceBeforeInfoWeatherKoushiki:20181221-08-03
+setRaceBeforeInfoWeatherKoushiki:20181221-08-04
+setRaceBeforeInfoWeatherKoushiki:20181221-08-05
+setRaceBeforeInfoWeatherKoushiki:20181221-08-06
+setRaceBeforeInfoWeatherKoushiki:20181221-08-07
+setRaceBeforeInfoWeatherKoushiki:20181221-08-08
+setRaceBeforeInfoWeatherKoushiki:20181221-08-09
+setRaceBeforeInfoWeatherKoushiki:20181221-08-10
+setRaceBeforeInfoWeatherKoushiki:20181221-08-11
+setRaceBeforeInfoWeatherKoushiki:20181221-08-12
+setRaceBeforeInfoWeatherKoushiki:20181221-09-01
+setRaceBeforeInfoWeatherKoushiki:20181221-09-02
+setRaceBeforeInfoWeatherKoushiki:20181221-09-03
+setRaceBeforeInfoWeatherKoushiki:20181221-09-04
+setRaceBeforeInfoWeatherKoushiki:20181221-09-05
+setRaceBeforeInfoWeatherKoushiki:20181221-09-06
+setRaceBeforeInfoWeatherKoushiki:20181221-09-07
+setRaceBeforeInfoWeatherKoushiki:20181221-09-08
+setRaceBeforeInfoWeatherKoushiki:20181221-09-09
+setRaceBeforeInfoWeatherKoushiki:20181221-09-10
+setRaceBeforeInfoWeatherKoushiki:20181221-09-11
+setRaceBeforeInfoWeatherKoushiki:20181221-09-12
+setRaceBeforeInfoWeatherKoushiki:20181221-11-01
+setRaceBeforeInfoWeatherKoushiki:20181221-11-02
+setRaceBeforeInfoWeatherKoushiki:20181221-11-03
+setRaceBeforeInfoWeatherKoushiki:20181221-11-04
+setRaceBeforeInfoWeatherKoushiki:20181221-11-05
+setRaceBeforeInfoWeatherKoushiki:20181221-11-06
+setRaceBeforeInfoWeatherKoushiki:20181221-11-07
+setRaceBeforeInfoWeatherKoushiki:20181221-11-08
+setRaceBeforeInfoWeatherKoushiki:20181221-11-09
+setRaceBeforeInfoWeatherKoushiki:20181221-11-10
+setRaceBeforeInfoWeatherKoushiki:20181221-11-11
+setRaceBeforeInfoWeatherKoushiki:20181221-11-12
+setRaceBeforeInfoWeatherKoushiki:20181221-12-01
+setRaceBeforeInfoWeatherKoushiki:20181221-12-02
+setRaceBeforeInfoWeatherKoushiki:20181221-12-03
+setRaceBeforeInfoWeatherKoushiki:20181221-12-04
+setRaceBeforeInfoWeatherKoushiki:20181221-12-05
+setRaceBeforeInfoWeatherKoushiki:20181221-12-06
+setRaceBeforeInfoWeatherKoushiki:20181221-12-07
+setRaceBeforeInfoWeatherKoushiki:20181221-12-08
+setRaceBeforeInfoWeatherKoushiki:20181221-12-09
+setRaceBeforeInfoWeatherKoushiki:20181221-12-10
+setRaceBeforeInfoWeatherKoushiki:20181221-12-11
+setRaceBeforeInfoWeatherKoushiki:20181221-12-12
+setRaceBeforeInfoWeatherKoushiki:20181221-14-01
+setRaceBeforeInfoWeatherKoushiki:20181221-14-02
+setRaceBeforeInfoWeatherKoushiki:20181221-14-03
+setRaceBeforeInfoWeatherKoushiki:20181221-14-04
+setRaceBeforeInfoWeatherKoushiki:20181221-14-05
+setRaceBeforeInfoWeatherKoushiki:20181221-14-06
+setRaceBeforeInfoWeatherKoushiki:20181221-14-07
+setRaceBeforeInfoWeatherKoushiki:20181221-14-08
+setRaceBeforeInfoWeatherKoushiki:20181221-14-09
+setRaceBeforeInfoWeatherKoushiki:20181221-14-10
+setRaceBeforeInfoWeatherKoushiki:20181221-14-11
+setRaceBeforeInfoWeatherKoushiki:20181221-14-12
+setRaceBeforeInfoWeatherKoushiki:20181221-15-01
+setRaceBeforeInfoWeatherKoushiki:20181221-15-02
+setRaceBeforeInfoWeatherKoushiki:20181221-15-03
+setRaceBeforeInfoWeatherKoushiki:20181221-15-04
+setRaceBeforeInfoWeatherKoushiki:20181221-15-05
+setRaceBeforeInfoWeatherKoushiki:20181221-15-06
+setRaceBeforeInfoWeatherKoushiki:20181221-15-07
+setRaceBeforeInfoWeatherKoushiki:20181221-15-08
+setRaceBeforeInfoWeatherKoushiki:20181221-15-09
+setRaceBeforeInfoWeatherKoushiki:20181221-15-10
+setRaceBeforeInfoWeatherKoushiki:20181221-15-11
+setRaceBeforeInfoWeatherKoushiki:20181221-15-12
+setRaceBeforeInfoWeatherKoushiki:20181221-16-01
+setRaceBeforeInfoWeatherKoushiki:20181221-16-02
+setRaceBeforeInfoWeatherKoushiki:20181221-16-03
+setRaceBeforeInfoWeatherKoushiki:20181221-16-04
+setRaceBeforeInfoWeatherKoushiki:20181221-16-05
+setRaceBeforeInfoWeatherKoushiki:20181221-16-06
+setRaceBeforeInfoWeatherKoushiki:20181221-16-07
+setRaceBeforeInfoWeatherKoushiki:20181221-16-08
+setRaceBeforeInfoWeatherKoushiki:20181221-16-09
+setRaceBeforeInfoWeatherKoushiki:20181221-16-10
+setRaceBeforeInfoWeatherKoushiki:20181221-16-11
+setRaceBeforeInfoWeatherKoushiki:20181221-16-12
+setRaceBeforeInfoWeatherKoushiki:20181221-17-01
+setRaceBeforeInfoWeatherKoushiki:20181221-17-02
+setRaceBeforeInfoWeatherKoushiki:20181221-17-03
+setRaceBeforeInfoWeatherKoushiki:20181221-17-04
+setRaceBeforeInfoWeatherKoushiki:20181221-17-05
+setRaceBeforeInfoWeatherKoushiki:20181221-17-06
+setRaceBeforeInfoWeatherKoushiki:20181221-17-07
+setRaceBeforeInfoWeatherKoushiki:20181221-17-08
+setRaceBeforeInfoWeatherKoushiki:20181221-17-09
+setRaceBeforeInfoWeatherKoushiki:20181221-17-10
+setRaceBeforeInfoWeatherKoushiki:20181221-17-11
+setRaceBeforeInfoWeatherKoushiki:20181221-17-12
+setRaceBeforeInfoWeatherKoushiki:20181221-19-01
+setRaceBeforeInfoWeatherKoushiki:20181221-19-02
+setRaceBeforeInfoWeatherKoushiki:20181221-19-03
+setRaceBeforeInfoWeatherKoushiki:20181221-19-04
+setRaceBeforeInfoWeatherKoushiki:20181221-19-05
+setRaceBeforeInfoWeatherKoushiki:20181221-19-06
+setRaceBeforeInfoWeatherKoushiki:20181221-19-07
+setRaceBeforeInfoWeatherKoushiki:20181221-19-08
+setRaceBeforeInfoWeatherKoushiki:20181221-19-09
+setRaceBeforeInfoWeatherKoushiki:20181221-19-10
+setRaceBeforeInfoWeatherKoushiki:20181221-19-11
+setRaceBeforeInfoWeatherKoushiki:20181221-19-12
+setRaceBeforeInfoWeatherKoushiki:20181221-20-01
+setRaceBeforeInfoWeatherKoushiki:20181221-20-02
+setRaceBeforeInfoWeatherKoushiki:20181221-20-03
+setRaceBeforeInfoWeatherKoushiki:20181221-20-04
+setRaceBeforeInfoWeatherKoushiki:20181221-20-05
+setRaceBeforeInfoWeatherKoushiki:20181221-20-06
+setRaceBeforeInfoWeatherKoushiki:20181221-20-07
+setRaceBeforeInfoWeatherKoushiki:20181221-20-08
+setRaceBeforeInfoWeatherKoushiki:20181221-20-09
+setRaceBeforeInfoWeatherKoushiki:20181221-20-10
+setRaceBeforeInfoWeatherKoushiki:20181221-20-11
+setRaceBeforeInfoWeatherKoushiki:20181221-20-12
+setRaceBeforeInfoWeatherKoushiki:20181221-23-01
+setRaceBeforeInfoWeatherKoushiki:20181221-23-02
+setRaceBeforeInfoWeatherKoushiki:20181221-23-03
+setRaceBeforeInfoWeatherKoushiki:20181221-23-04
+setRaceBeforeInfoWeatherKoushiki:20181221-23-05
+setRaceBeforeInfoWeatherKoushiki:20181221-23-06
+setRaceBeforeInfoWeatherKoushiki:20181221-23-07
+setRaceBeforeInfoWeatherKoushiki:20181221-23-08
+setRaceBeforeInfoWeatherKoushiki:20181221-23-09
+setRaceBeforeInfoWeatherKoushiki:20181221-23-10
+setRaceBeforeInfoWeatherKoushiki:20181221-23-11
+setRaceBeforeInfoWeatherKoushiki:20181221-23-12
+setRaceBeforeInfoWeatherKoushiki:20181221-24-01
+setRaceBeforeInfoWeatherKoushiki:20181221-24-02
+setRaceBeforeInfoWeatherKoushiki:20181221-24-03
+setRaceBeforeInfoWeatherKoushiki:20181221-24-04
+setRaceBeforeInfoWeatherKoushiki:20181221-24-05
+setRaceBeforeInfoWeatherKoushiki:20181221-24-06
+setRaceBeforeInfoWeatherKoushiki:20181221-24-07
+setRaceBeforeInfoWeatherKoushiki:20181221-24-08
+setRaceBeforeInfoWeatherKoushiki:20181221-24-09
+setRaceBeforeInfoWeatherKoushiki:20181221-24-10
+setRaceBeforeInfoWeatherKoushiki:20181221-24-11
+setRaceBeforeInfoWeatherKoushiki:20181221-24-12
+setRaceMemberKoushiki:20181221-01-01
+setRaceMemberKoushiki:20181221-01-02
+setRaceMemberKoushiki:20181221-01-03
+setRaceMemberKoushiki:20181221-01-04
+setRaceMemberKoushiki:20181221-01-05
+setRaceMemberKoushiki:20181221-01-06
+setRaceMemberKoushiki:20181221-01-07
+setRaceMemberKoushiki:20181221-01-08
+setRaceMemberKoushiki:20181221-01-09
+setRaceMemberKoushiki:20181221-01-10
+setRaceMemberKoushiki:20181221-01-11
+setRaceMemberKoushiki:20181221-01-12
+setRaceMemberKoushiki:20181221-05-01
+setRaceMemberKoushiki:20181221-05-02
+setRaceMemberKoushiki:20181221-05-03
+setRaceMemberKoushiki:20181221-05-04
+setRaceMemberKoushiki:20181221-05-05
+setRaceMemberKoushiki:20181221-05-06
+setRaceMemberKoushiki:20181221-05-07
+setRaceMemberKoushiki:20181221-05-08
+setRaceMemberKoushiki:20181221-05-09
+setRaceMemberKoushiki:20181221-05-10
+setRaceMemberKoushiki:20181221-05-11
+setRaceMemberKoushiki:20181221-05-12
+setRaceMemberKoushiki:20181221-06-01
+setRaceMemberKoushiki:20181221-06-02
+setRaceMemberKoushiki:20181221-06-03
+setRaceMemberKoushiki:20181221-06-04
+setRaceMemberKoushiki:20181221-06-05
+setRaceMemberKoushiki:20181221-06-06
+setRaceMemberKoushiki:20181221-06-07
+setRaceMemberKoushiki:20181221-06-08
+setRaceMemberKoushiki:20181221-06-09
+setRaceMemberKoushiki:20181221-06-10
+setRaceMemberKoushiki:20181221-06-11
+setRaceMemberKoushiki:20181221-06-12
+setRaceMemberKoushiki:20181221-08-01
+setRaceMemberKoushiki:20181221-08-02
+setRaceMemberKoushiki:20181221-08-03
+setRaceMemberKoushiki:20181221-08-04
+setRaceMemberKoushiki:20181221-08-05
+setRaceMemberKoushiki:20181221-08-06
+setRaceMemberKoushiki:20181221-08-07
+setRaceMemberKoushiki:20181221-08-08
+setRaceMemberKoushiki:20181221-08-09
+setRaceMemberKoushiki:20181221-08-10
+setRaceMemberKoushiki:20181221-08-11
+setRaceMemberKoushiki:20181221-08-12
+setRaceMemberKoushiki:20181221-09-01
+setRaceMemberKoushiki:20181221-09-02
+setRaceMemberKoushiki:20181221-09-03
+setRaceMemberKoushiki:20181221-09-04
+setRaceMemberKoushiki:20181221-09-05
+setRaceMemberKoushiki:20181221-09-06
+setRaceMemberKoushiki:20181221-09-07
+setRaceMemberKoushiki:20181221-09-08
+setRaceMemberKoushiki:20181221-09-09
+setRaceMemberKoushiki:20181221-09-10
+setRaceMemberKoushiki:20181221-09-11
+setRaceMemberKoushiki:20181221-09-12
+setRaceMemberKoushiki:20181221-11-01
+setRaceMemberKoushiki:20181221-11-02
+setRaceMemberKoushiki:20181221-11-03
+setRaceMemberKoushiki:20181221-11-04
+setRaceMemberKoushiki:20181221-11-05
+setRaceMemberKoushiki:20181221-11-06
+setRaceMemberKoushiki:20181221-11-07
+setRaceMemberKoushiki:20181221-11-08
+setRaceMemberKoushiki:20181221-11-09
+setRaceMemberKoushiki:20181221-11-10
+setRaceMemberKoushiki:20181221-11-11
+setRaceMemberKoushiki:20181221-11-12
+setRaceMemberKoushiki:20181221-12-01
+setRaceMemberKoushiki:20181221-12-02
+setRaceMemberKoushiki:20181221-12-03
+setRaceMemberKoushiki:20181221-12-04
+setRaceMemberKoushiki:20181221-12-05
+setRaceMemberKoushiki:20181221-12-06
+setRaceMemberKoushiki:20181221-12-07
+setRaceMemberKoushiki:20181221-12-08
+setRaceMemberKoushiki:20181221-12-09
+setRaceMemberKoushiki:20181221-12-10
+setRaceMemberKoushiki:20181221-12-11
+setRaceMemberKoushiki:20181221-12-12
+setRaceMemberKoushiki:20181221-14-01
+setRaceMemberKoushiki:20181221-14-02
+setRaceMemberKoushiki:20181221-14-03
+setRaceMemberKoushiki:20181221-14-04
+setRaceMemberKoushiki:20181221-14-05
+setRaceMemberKoushiki:20181221-14-06
+setRaceMemberKoushiki:20181221-14-07
+setRaceMemberKoushiki:20181221-14-08
+setRaceMemberKoushiki:20181221-14-09
+setRaceMemberKoushiki:20181221-14-10
+setRaceMemberKoushiki:20181221-14-11
+setRaceMemberKoushiki:20181221-14-12
+setRaceMemberKoushiki:20181221-15-01
+setRaceMemberKoushiki:20181221-15-02
+setRaceMemberKoushiki:20181221-15-03
+setRaceMemberKoushiki:20181221-15-04
+setRaceMemberKoushiki:20181221-15-05
+setRaceMemberKoushiki:20181221-15-06
+setRaceMemberKoushiki:20181221-15-07
+setRaceMemberKoushiki:20181221-15-08
+setRaceMemberKoushiki:20181221-15-09
+setRaceMemberKoushiki:20181221-15-10
+setRaceMemberKoushiki:20181221-15-11
+setRaceMemberKoushiki:20181221-15-12
+setRaceMemberKoushiki:20181221-16-01
+setRaceMemberKoushiki:20181221-16-02
+setRaceMemberKoushiki:20181221-16-03
+setRaceMemberKoushiki:20181221-16-04
+setRaceMemberKoushiki:20181221-16-05
+setRaceMemberKoushiki:20181221-16-06
+setRaceMemberKoushiki:20181221-16-07
+setRaceMemberKoushiki:20181221-16-08
+setRaceMemberKoushiki:20181221-16-09
+setRaceMemberKoushiki:20181221-16-10
+setRaceMemberKoushiki:20181221-16-11
+setRaceMemberKoushiki:20181221-16-12
+setRaceMemberKoushiki:20181221-17-01
+setRaceMemberKoushiki:20181221-17-02
+setRaceMemberKoushiki:20181221-17-03
+setRaceMemberKoushiki:20181221-17-04
+setRaceMemberKoushiki:20181221-17-05
+setRaceMemberKoushiki:20181221-17-06
+setRaceMemberKoushiki:20181221-17-07
+setRaceMemberKoushiki:20181221-17-08
+setRaceMemberKoushiki:20181221-17-09
+setRaceMemberKoushiki:20181221-17-10
+setRaceMemberKoushiki:20181221-17-11
+setRaceMemberKoushiki:20181221-17-12
+setRaceMemberKoushiki:20181221-19-01
+setRaceMemberKoushiki:20181221-19-02
+setRaceMemberKoushiki:20181221-19-03
+setRaceMemberKoushiki:20181221-19-04
+setRaceMemberKoushiki:20181221-19-05
+setRaceMemberKoushiki:20181221-19-06
+setRaceMemberKoushiki:20181221-19-07
+setRaceMemberKoushiki:20181221-19-08
+setRaceMemberKoushiki:20181221-19-09
+setRaceMemberKoushiki:20181221-19-10
+setRaceMemberKoushiki:20181221-19-11
+setRaceMemberKoushiki:20181221-19-12
+setRaceMemberKoushiki:20181221-20-01
+setRaceMemberKoushiki:20181221-20-02
+setRaceMemberKoushiki:20181221-20-03
+setRaceMemberKoushiki:20181221-20-04
+setRaceMemberKoushiki:20181221-20-05
+setRaceMemberKoushiki:20181221-20-06
+setRaceMemberKoushiki:20181221-20-07
+setRaceMemberKoushiki:20181221-20-08
+setRaceMemberKoushiki:20181221-20-09
+setRaceMemberKoushiki:20181221-20-10
+setRaceMemberKoushiki:20181221-20-11
+setRaceMemberKoushiki:20181221-20-12
+setRaceMemberKoushiki:20181221-23-01
+setRaceMemberKoushiki:20181221-23-02
+setRaceMemberKoushiki:20181221-23-03
+setRaceMemberKoushiki:20181221-23-04
+setRaceMemberKoushiki:20181221-23-05
+setRaceMemberKoushiki:20181221-23-06
+setRaceMemberKoushiki:20181221-23-07
+setRaceMemberKoushiki:20181221-23-08
+</pre>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getOldOddsKoushiki3renfuku</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-    <span class="n">raceNumber</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">raceId</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">placeId</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/odds3f?rno=</span><span class="si">%d</span><span class="s2">&amp;jcd=</span><span class="si">%s</span><span class="s2">&amp;hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">placeId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-    
-    <span class="c1"># 3連複の組み合わせリストをサイトからの取得可能順に作成</span>
-    <span class="n">sanrenfukuList</span><span class="o">=</span><span class="p">[]</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">sanrenfukuList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">sanrenfukuList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">sanrenfukuList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">sanrenfukuList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
-    
-    <span class="c1">#print(sanrenfukuList)</span>
-    <span class="n">sanrenfukuOddsList</span><span class="o">=</span><span class="p">[]</span>
-    <span class="k">for</span> <span class="n">oddspoint</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.oddsPoint&quot;</span><span class="p">):</span>
-        <span class="n">sanrenfukuOddsList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">oddspoint</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
-    
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sanrenfukuList</span><span class="p">)):</span>
-            <span class="k">yield</span> <span class="n">sanrenfukuList</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">sanrenfukuOddsList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]IndexError発生 at 3連複オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-    
-</pre></div>
+<div class="output_area">
 
-    </div>
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyboardInterrupt</span>                         Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-4-4045b9fff386&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">     14</span>     setInfoKoushiki<span class="ansi-blue-fg">.</span>setRaceBeforeInfoWeatherKoushiki<span class="ansi-blue-fg">(</span>dbh<span class="ansi-blue-fg">,</span>raceDate<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     15</span>     <span class="ansi-red-fg"># racemanegementをもとに、レースのメンバー情報を取得する。</span>
+<span class="ansi-green-fg">---&gt; 16</span><span class="ansi-red-fg">     </span>setInfoKoushiki<span class="ansi-blue-fg">.</span>setRaceMemberKoushiki<span class="ansi-blue-fg">(</span>dbh<span class="ansi-blue-fg">,</span>raceDate<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     17</span>     <span class="ansi-red-fg"># 3連単のオッズ情報を取得する</span>
+<span class="ansi-green-intense-fg ansi-bold">     18</span>     setInfoKoushiki<span class="ansi-blue-fg">.</span>setOldOddsKoushiki3rentan<span class="ansi-blue-fg">(</span>dbh<span class="ansi-blue-fg">,</span>raceDate<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/boatrace/boatrace/setup/getDataFromKoushiki/setInfoKoushiki.py</span> in <span class="ansi-cyan-fg">setRaceMemberKoushiki</span><span class="ansi-blue-fg">(dbh, raceDate)</span>
+<span class="ansi-green-intense-fg ansi-bold">     69</span>             print<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;setRaceMemberKoushiki:&#34;</span><span class="ansi-blue-fg">+</span>raceId<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     70</span>             <span class="ansi-green-fg">with</span> dbh<span class="ansi-blue-fg">.</span>cursor<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">as</span> ins_cursor<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">---&gt; 71</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">for</span> ret <span class="ansi-green-fg">in</span> getInfoKoushiki<span class="ansi-blue-fg">.</span>getRaceMemberKoushiki<span class="ansi-blue-fg">(</span>raceId<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     72</span>                     <span class="ansi-red-fg">#print(ret)</span>
+<span class="ansi-green-intense-fg ansi-bold">     73</span>                     ins_sql<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#34;INSERT INTO racemember (raceId,rmLane,rmToban,rmRank) VALUES (&#39;%s&#39; ,%d,&#39;%s&#39;,&#39;%s&#39;)&#34;</span> <span class="ansi-blue-fg">%</span> <span class="ansi-blue-fg">(</span>raceId<span class="ansi-blue-fg">,</span>int<span class="ansi-blue-fg">(</span>ret<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span>ret<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span>ret<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">2</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/boatrace/boatrace/setup/getDataFromKoushiki/getInfoKoushiki.py</span> in <span class="ansi-cyan-fg">getRaceMemberKoushiki</span><span class="ansi-blue-fg">(raceId)</span>
+<span class="ansi-green-intense-fg ansi-bold">    116</span>     raceNumber<span class="ansi-blue-fg">=</span>int<span class="ansi-blue-fg">(</span>raceId<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">12</span><span class="ansi-blue-fg">:</span><span class="ansi-cyan-fg">14</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    117</span>     placeId<span class="ansi-blue-fg">=</span>raceId<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">9</span><span class="ansi-blue-fg">:</span><span class="ansi-cyan-fg">11</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-fg">--&gt; 118</span><span class="ansi-red-fg">     </span>html <span class="ansi-blue-fg">=</span> u<span class="ansi-blue-fg">.</span>urlopen<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;https://www.boatrace.jp/owpc/pc/race/racelist?rno=%d&amp;jcd=%s&amp;hd=%s&#34;</span> <span class="ansi-blue-fg">%</span><span class="ansi-blue-fg">(</span>raceNumber<span class="ansi-blue-fg">,</span>placeId<span class="ansi-blue-fg">,</span>raceDate<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    119</span>     time<span class="ansi-blue-fg">.</span>sleep<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    120</span>     soup <span class="ansi-blue-fg">=</span> BeautifulSoup<span class="ansi-blue-fg">(</span>html<span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#34;html.parser&#34;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">urlopen</span><span class="ansi-blue-fg">(url, data, timeout, cafile, capath, cadefault, context)</span>
+<span class="ansi-green-intense-fg ansi-bold">    221</span>     <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    222</span>         opener <span class="ansi-blue-fg">=</span> _opener
+<span class="ansi-green-fg">--&gt; 223</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">return</span> opener<span class="ansi-blue-fg">.</span>open<span class="ansi-blue-fg">(</span>url<span class="ansi-blue-fg">,</span> data<span class="ansi-blue-fg">,</span> timeout<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    224</span> 
+<span class="ansi-green-intense-fg ansi-bold">    225</span> <span class="ansi-green-fg">def</span> install_opener<span class="ansi-blue-fg">(</span>opener<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">open</span><span class="ansi-blue-fg">(self, fullurl, data, timeout)</span>
+<span class="ansi-green-intense-fg ansi-bold">    524</span>             req <span class="ansi-blue-fg">=</span> meth<span class="ansi-blue-fg">(</span>req<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    525</span> 
+<span class="ansi-green-fg">--&gt; 526</span><span class="ansi-red-fg">         </span>response <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_open<span class="ansi-blue-fg">(</span>req<span class="ansi-blue-fg">,</span> data<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    527</span> 
+<span class="ansi-green-intense-fg ansi-bold">    528</span>         <span class="ansi-red-fg"># post-process response</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">_open</span><span class="ansi-blue-fg">(self, req, data)</span>
+<span class="ansi-green-intense-fg ansi-bold">    542</span>         protocol <span class="ansi-blue-fg">=</span> req<span class="ansi-blue-fg">.</span>type
+<span class="ansi-green-intense-fg ansi-bold">    543</span>         result = self._call_chain(self.handle_open, protocol, protocol +
+<span class="ansi-green-fg">--&gt; 544</span><span class="ansi-red-fg">                                   &#39;_open&#39;, req)
+</span><span class="ansi-green-intense-fg ansi-bold">    545</span>         <span class="ansi-green-fg">if</span> result<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    546</span>             <span class="ansi-green-fg">return</span> result
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">_call_chain</span><span class="ansi-blue-fg">(self, chain, kind, meth_name, *args)</span>
+<span class="ansi-green-intense-fg ansi-bold">    502</span>         <span class="ansi-green-fg">for</span> handler <span class="ansi-green-fg">in</span> handlers<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    503</span>             func <span class="ansi-blue-fg">=</span> getattr<span class="ansi-blue-fg">(</span>handler<span class="ansi-blue-fg">,</span> meth_name<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 504</span><span class="ansi-red-fg">             </span>result <span class="ansi-blue-fg">=</span> func<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    505</span>             <span class="ansi-green-fg">if</span> result <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    506</span>                 <span class="ansi-green-fg">return</span> result
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">https_open</span><span class="ansi-blue-fg">(self, req)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1359</span>         <span class="ansi-green-fg">def</span> https_open<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> req<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   1360</span>             return self.do_open(http.client.HTTPSConnection, req,
+<span class="ansi-green-fg">-&gt; 1361</span><span class="ansi-red-fg">                 context=self._context, check_hostname=self._check_hostname)
+</span><span class="ansi-green-intense-fg ansi-bold">   1362</span> 
+<span class="ansi-green-intense-fg ansi-bold">   1363</span>         https_request <span class="ansi-blue-fg">=</span> AbstractHTTPHandler<span class="ansi-blue-fg">.</span>do_request_
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/urllib/request.py</span> in <span class="ansi-cyan-fg">do_open</span><span class="ansi-blue-fg">(self, http_class, req, **http_conn_args)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1319</span>             <span class="ansi-green-fg">except</span> OSError <span class="ansi-green-fg">as</span> err<span class="ansi-blue-fg">:</span> <span class="ansi-red-fg"># timeout error</span>
+<span class="ansi-green-intense-fg ansi-bold">   1320</span>                 <span class="ansi-green-fg">raise</span> URLError<span class="ansi-blue-fg">(</span>err<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">-&gt; 1321</span><span class="ansi-red-fg">             </span>r <span class="ansi-blue-fg">=</span> h<span class="ansi-blue-fg">.</span>getresponse<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1322</span>         <span class="ansi-green-fg">except</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   1323</span>             h<span class="ansi-blue-fg">.</span>close<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">getresponse</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1329</span>         <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   1330</span>             <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 1331</span><span class="ansi-red-fg">                 </span>response<span class="ansi-blue-fg">.</span>begin<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1332</span>             <span class="ansi-green-fg">except</span> ConnectionError<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   1333</span>                 self<span class="ansi-blue-fg">.</span>close<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">begin</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    295</span>         <span class="ansi-red-fg"># read until we get a non-100 response</span>
+<span class="ansi-green-intense-fg ansi-bold">    296</span>         <span class="ansi-green-fg">while</span> <span class="ansi-green-fg">True</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 297</span><span class="ansi-red-fg">             </span>version<span class="ansi-blue-fg">,</span> status<span class="ansi-blue-fg">,</span> reason <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_read_status<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    298</span>             <span class="ansi-green-fg">if</span> status <span class="ansi-blue-fg">!=</span> CONTINUE<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    299</span>                 <span class="ansi-green-fg">break</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">_read_status</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    256</span> 
+<span class="ansi-green-intense-fg ansi-bold">    257</span>     <span class="ansi-green-fg">def</span> _read_status<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 258</span><span class="ansi-red-fg">         </span>line <span class="ansi-blue-fg">=</span> str<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>fp<span class="ansi-blue-fg">.</span>readline<span class="ansi-blue-fg">(</span>_MAXLINE <span class="ansi-blue-fg">+</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#34;iso-8859-1&#34;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    259</span>         <span class="ansi-green-fg">if</span> len<span class="ansi-blue-fg">(</span>line<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">&gt;</span> _MAXLINE<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    260</span>             <span class="ansi-green-fg">raise</span> LineTooLong<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;status line&#34;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/socket.py</span> in <span class="ansi-cyan-fg">readinto</span><span class="ansi-blue-fg">(self, b)</span>
+<span class="ansi-green-intense-fg ansi-bold">    584</span>         <span class="ansi-green-fg">while</span> <span class="ansi-green-fg">True</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    585</span>             <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 586</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_sock<span class="ansi-blue-fg">.</span>recv_into<span class="ansi-blue-fg">(</span>b<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    587</span>             <span class="ansi-green-fg">except</span> timeout<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    588</span>                 self<span class="ansi-blue-fg">.</span>_timeout_occurred <span class="ansi-blue-fg">=</span> <span class="ansi-green-fg">True</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/ssl.py</span> in <span class="ansi-cyan-fg">recv_into</span><span class="ansi-blue-fg">(self, buffer, nbytes, flags)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1010</span>                   <span class="ansi-blue-fg">&#34;non-zero flags not allowed in calls to recv_into() on %s&#34;</span> <span class="ansi-blue-fg">%</span>
+<span class="ansi-green-intense-fg ansi-bold">   1011</span>                   self.__class__)
+<span class="ansi-green-fg">-&gt; 1012</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>read<span class="ansi-blue-fg">(</span>nbytes<span class="ansi-blue-fg">,</span> buffer<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1013</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   1014</span>             <span class="ansi-green-fg">return</span> socket<span class="ansi-blue-fg">.</span>recv_into<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> buffer<span class="ansi-blue-fg">,</span> nbytes<span class="ansi-blue-fg">,</span> flags<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/ssl.py</span> in <span class="ansi-cyan-fg">read</span><span class="ansi-blue-fg">(self, len, buffer)</span>
+<span class="ansi-green-intense-fg ansi-bold">    872</span>             <span class="ansi-green-fg">raise</span> ValueError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;Read on closed or unwrapped SSL socket.&#34;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    873</span>         <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 874</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_sslobj<span class="ansi-blue-fg">.</span>read<span class="ansi-blue-fg">(</span>len<span class="ansi-blue-fg">,</span> buffer<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    875</span>         <span class="ansi-green-fg">except</span> SSLError <span class="ansi-green-fg">as</span> x<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    876</span>             <span class="ansi-green-fg">if</span> x<span class="ansi-blue-fg">.</span>args<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">==</span> SSL_ERROR_EOF <span class="ansi-green-fg">and</span> self<span class="ansi-blue-fg">.</span>suppress_ragged_eofs<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/ssl.py</span> in <span class="ansi-cyan-fg">read</span><span class="ansi-blue-fg">(self, len, buffer)</span>
+<span class="ansi-green-intense-fg ansi-bold">    629</span>         &#34;&#34;&#34;
+<span class="ansi-green-intense-fg ansi-bold">    630</span>         <span class="ansi-green-fg">if</span> buffer <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 631</span><span class="ansi-red-fg">             </span>v <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_sslobj<span class="ansi-blue-fg">.</span>read<span class="ansi-blue-fg">(</span>len<span class="ansi-blue-fg">,</span> buffer<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    632</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    633</span>             v <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_sslobj<span class="ansi-blue-fg">.</span>read<span class="ansi-blue-fg">(</span>len<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">KeyboardInterrupt</span>: </pre>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getOldOddsKoushiki2rentan</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-    <span class="n">raceNumber</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">raceId</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">placeId</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/odds2tf?rno=</span><span class="si">%d</span><span class="s2">&amp;jcd=</span><span class="si">%s</span><span class="s2">&amp;hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">placeId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-    
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">block</span> <span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-p3-0&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">tmpcnt1</span><span class="o">=</span><span class="mi">1</span>
-        <span class="k">for</span> <span class="n">trs</span> <span class="ow">in</span> <span class="n">block</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;tr&quot;</span><span class="p">):</span>
-            <span class="n">tmpcnt2</span><span class="o">=</span><span class="mi">0</span>
-            <span class="n">tmp1stlane</span><span class="o">=</span><span class="mi">1</span>
-            <span class="k">for</span> <span class="n">tds</span> <span class="ow">in</span> <span class="n">trs</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;td&quot;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">tmpcnt2</span><span class="o">%</span><span class="k">2</span>==0:
-                    <span class="n">cs</span><span class="o">=</span><span class="n">tds</span><span class="o">.</span><span class="n">string</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">odds</span><span class="o">=</span><span class="n">tds</span><span class="o">.</span><span class="n">string</span>
-                    <span class="k">yield</span> <span class="nb">str</span><span class="p">(</span><span class="n">tmp1stlane</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">cs</span><span class="p">),</span><span class="n">odds</span>
-                    <span class="n">tmp1stlane</span><span class="o">+=</span><span class="mi">1</span>
-                <span class="n">tmpcnt2</span><span class="o">+=</span><span class="mi">1</span>
-            <span class="n">tmpcnt1</span><span class="o">+=</span><span class="mi">1</span>
-    <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]IndexError発生 at 2連単オッズ取得 raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getOldOddsKoushiki2renfuku</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-    <span class="n">raceNumber</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">raceId</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">placeId</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/odds2tf?rno=</span><span class="si">%d</span><span class="s2">&amp;jcd=</span><span class="si">%s</span><span class="s2">&amp;hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">placeId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-    
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">block</span> <span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-p3-0&quot;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">tmpcnt1</span><span class="o">=</span><span class="mi">1</span>
-        <span class="k">for</span> <span class="n">trs</span> <span class="ow">in</span> <span class="n">block</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;tr&quot;</span><span class="p">):</span>
-            <span class="n">tmpcnt2</span><span class="o">=</span><span class="mi">0</span>
-            <span class="n">tmp1stlane</span><span class="o">=</span><span class="mi">1</span>
-            <span class="k">for</span> <span class="n">tds</span> <span class="ow">in</span> <span class="n">trs</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;td&quot;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">tmpcnt2</span><span class="o">%</span><span class="k">2</span>==0:
-                    <span class="n">cs</span><span class="o">=</span><span class="n">tds</span><span class="o">.</span><span class="n">string</span>
-                <span class="k">elif</span> <span class="n">tds</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;oddsPoint&quot;</span><span class="p">:</span>
-                    <span class="n">odds</span><span class="o">=</span><span class="n">tds</span><span class="o">.</span><span class="n">string</span>
-                    <span class="k">yield</span> <span class="nb">str</span><span class="p">(</span><span class="n">tmp1stlane</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">cs</span><span class="p">),</span><span class="n">odds</span>
-                    <span class="n">tmp1stlane</span><span class="o">+=</span><span class="mi">1</span>
-                <span class="n">tmpcnt2</span><span class="o">+=</span><span class="mi">1</span>
-            <span class="n">tmpcnt1</span><span class="o">+=</span><span class="mi">1</span>
-    <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]IndexError発生 at 2連複オッズ取得　raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getOldOddsKoushikiTansho</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-    <span class="n">raceNumber</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">raceId</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">placeId</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
-    <span class="c1">#print(raceDate,raceNumber,placeId)</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/oddstf?rno=</span><span class="si">%d</span><span class="s2">&amp;jcd=</span><span class="si">%s</span><span class="s2">&amp;hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">placeId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-    
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">block</span> <span class="o">=</span><span class="p">((</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.grid_unit&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.oddsPoint&quot;</span><span class="p">)</span>
-        <span class="n">i</span><span class="o">=</span><span class="mi">1</span>
-        <span class="k">for</span> <span class="n">tds</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">i</span><span class="p">,</span><span class="n">tds</span><span class="o">.</span><span class="n">string</span>
-            <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
-    <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]IndexError発生 at 単勝オッズ取得　raceId:&#39;</span><span class="o">+</span><span class="n">raceId</span> <span class="p">)</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
 
@@ -13469,49 +15382,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">getOldOddsKoushikiResult</span><span class="p">(</span><span class="n">raceId</span><span class="p">):</span>
-    <span class="n">raceDate</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
-    <span class="n">raceNumber</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">raceId</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">])</span>
-    <span class="n">placeId</span><span class="o">=</span><span class="n">raceId</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
-    <span class="c1">#print(raceDate,raceNumber,placeId)</span>
-    <span class="n">html</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;https://www.boatrace.jp/owpc/pc/race/raceresult?rno=</span><span class="si">%d</span><span class="s2">&amp;jcd=</span><span class="si">%s</span><span class="s2">&amp;hd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">raceNumber</span><span class="p">,</span><span class="n">placeId</span><span class="p">,</span><span class="n">raceDate</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">blocks_time</span> <span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-w495&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;tr&quot;</span><span class="p">)</span>
-        <span class="n">blocks_start</span> <span class="o">=</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-w495&quot;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;tr&quot;</span><span class="p">)</span>
-        <span class="c1">#print(blocks_start)</span>
-        <span class="k">del</span> <span class="n">blocks_time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 1行目のヘッダは削除</span>
-        <span class="k">del</span> <span class="n">blocks_start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 1行目のヘッダは削除</span>
-
-        <span class="n">tds_start</span><span class="o">=</span><span class="p">[]</span>
-        <span class="k">for</span> <span class="n">block_start</span> <span class="ow">in</span> <span class="n">blocks_start</span><span class="p">:</span>
-            <span class="n">tmp_starttime</span><span class="o">=</span><span class="p">((</span><span class="n">block_start</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.table1_boatImage1TimeInner&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">tmp_starttime</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;F&#39;</span><span class="p">:</span>
-                <span class="n">tmp_starttime</span><span class="o">=</span><span class="s1">&#39;-0&#39;</span><span class="o">+</span><span class="n">tmp_starttime</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">tmp_starttime</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="o">+</span><span class="n">tmp_starttime</span>
-            <span class="n">tds_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_starttime</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
-            <span class="n">block_time</span><span class="o">=</span><span class="n">blocks_time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">tds_time</span> <span class="o">=</span> <span class="n">block_time</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;td&quot;</span><span class="p">)</span>
-            <span class="n">goalRank</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span>
-            <span class="n">lane</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">tds_time</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
-            <span class="n">toban</span><span class="o">=</span><span class="p">(</span><span class="n">tds_time</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;.is-fs12&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-            <span class="n">startTime</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">tds_start</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">tds_time</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="c1"># 1&#39;51&quot;2 のようなレースタイム表記をFLOATに変換。空白の場合はinfにする</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tds_time</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>  <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">gl_m</span><span class="p">,</span><span class="n">gl_s</span><span class="p">,</span><span class="n">gl_ms</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[</span><span class="se">\&#39;\&quot;</span><span class="s1">]&#39;</span><span class="p">,</span><span class="n">tds_time</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="n">goalTime</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">gl_m</span><span class="p">)</span><span class="o">*</span><span class="mi">60</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">gl_s</span><span class="p">)</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">gl_ms</span><span class="p">)</span><span class="o">/</span><span class="mf">10.0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">goalTime</span><span class="o">=</span><span class="mf">999.9</span>
-            <span class="c1">#print(block)</span>
-            <span class="k">yield</span> <span class="n">goalRank</span><span class="p">,</span><span class="n">lane</span><span class="p">,</span><span class="n">toban</span><span class="p">,</span><span class="n">startTime</span><span class="p">,</span><span class="n">goalTime</span>
-    <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[SKIP]IndexError発生 at 結果取得 raceid:&#39;</span><span class="o">+</span><span class="n">raceId</span><span class="p">)</span>
-    
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>

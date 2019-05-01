@@ -37,6 +37,7 @@ def getRaceManagementKoushiki(ymd):
                 tmp=tds[2]
                 gradePattern=r'class=\"is-(.*?)\"'
                 grade=re.search(gradePattern,str(tmp)).group(1)
+                grade=(grade.split(' '))[0]
                 #print(grade)
                 
                 rname=tds[4].string
@@ -243,7 +244,6 @@ def getOldOddsKoushiki2renfuku(raceId):
     raceDate=raceId[0:8]
     raceNumber=int(raceId[12:14])
     placeId=raceId[9:11]
-    print(raceDate,raceNumber,placeId)
     html = u.urlopen("https://www.boatrace.jp/owpc/pc/race/odds2tf?rno=%d&jcd=%s&hd=%s" %(raceNumber,placeId,raceDate) )
     time.sleep(1)
     soup = BeautifulSoup(html,"html.parser")
