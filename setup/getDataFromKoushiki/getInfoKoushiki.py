@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[3]:
 
 
+# Todo 結果を取得するところで、startTimeの紐づけが間違っているので直す。
+#      ついでに、スタートの侵入レーン情報を追加する
 import os
 from bs4 import BeautifulSoup
 import json
@@ -309,21 +311,31 @@ def getOldOddsKoushikiResult(raceId):
         del blocks_start[0] # 1行目のヘッダは削除
 
         tds_start=[]
+        #print(blocks_start)
         for block_start in blocks_start:
+            tmp_start_originlane=((block_start.select(".table1_boatImage1Number "))[0].string)[0]
             tmp_starttime=((block_start.select(".table1_boatImage1TimeInner"))[0].string.split(' '))[0]
+            #print(tmp_start_originlane)
             if tmp_starttime[0]=='F':
                 tmp_starttime='-0'+tmp_starttime[1:]
             else:
                 tmp_starttime='0'+tmp_starttime
-            tds_start.append(tmp_starttime.strip())
-            
+            tds_start.append([int(tmp_start_originlane),tmp_starttime.strip()])
+        #print(tds_start)
+        
         for i in range(6):
             block_time=blocks_time[i]
             tds_time = block_time.select("td")
             goalRank=i+1
             lane=int(tds_time[1].string)
             toban=(tds_time[2].select(".is-fs12"))[0].string
-            startTime=float(tds_start[int(tds_time[1].string)-1])
+            startLane=9 # 欠場時
+            startTime=9.99 # 欠場時
+            for j in range(len(tds_start)):
+                if lane == tds_start[j][0]:
+                    startLane=j+1
+                    startTime=float(tds_start[j][1])
+            #startTime=float(tds_start[int(tds_time[1].string)-1])
             # 1'51"2 のようなレースタイム表記をFLOATに変換。空白の場合はinfにする
             if len(tds_time[3].string.strip())  > 0:
                 gl_m,gl_s,gl_ms = re.split('[\'\"]',tds_time[3].string.strip())
@@ -331,8 +343,20 @@ def getOldOddsKoushikiResult(raceId):
             else:
                 goalTime=999.9
             #print(block)
-            yield goalRank,lane,toban,startTime,goalTime
+            yield goalRank,lane,startLane,toban,startTime,goalTime
     except IndexError as e:
         print('[SKIP]IndexError発生 at 結果取得 raceid:'+raceId)
-    
+        
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 

@@ -216,7 +216,7 @@ def setOldOddsKoushikiResult(dbh,raceDate):
             print("setOldOddsKoushikiResult"+raceId)
             with dbh.cursor() as ins_cursor:
                 for ret in getInfoKoushiki.getOldOddsKoushikiResult(raceId):
-                    ins_sql="INSERT INTO raceresult (raceId,goalRank,lane,toban,startTime,goalTime) VALUES ('%s' ,%d, %d, '%s',%f,%f)" % (raceId,ret[0],ret[1],ret[2],ret[3],ret[4])
+                    ins_sql="INSERT INTO raceresult (raceId,goalRank,lane,startLane,toban,startTime,goalTime) VALUES ('%s' ,%d, %d, %d, '%s',%f,%f)" % (raceId,ret[0],ret[1],ret[2],ret[3],ret[4],ret[5])
                     ins_cursor.execute(ins_sql)
                 upd_sql = "UPDATE racemanagement SET raceresult_flg = TRUE where raceId ='%s'" % (raceId)
                 ins_cursor.execute(upd_sql)
