@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[18]:
 
+
+# ToDo 分類別のオッズ分布を見てみる
 
 # 汎用ライブラリのimport
 import sys
@@ -12,7 +14,7 @@ import pandas as pd
 import numpy as np
 
 
-# In[3]:
+# In[19]:
 
 
 # 自作ライブラリのimport
@@ -23,7 +25,7 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[4]:
+# In[20]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
@@ -31,13 +33,13 @@ analyzeStartDate="20180101"
 analyzeEndDate="20180131"
 
 
-# In[5]:
+# In[21]:
 
 
 dbh=dbHandler.getDBHandle()
 
 
-# In[6]:
+# In[22]:
 
 
 # 疎通
@@ -55,7 +57,7 @@ with dbh.cursor() as cursor:
 
 
 
-# In[8]:
+# In[23]:
 
 
 with dbh.cursor() as cursor:
@@ -65,35 +67,35 @@ with dbh.cursor() as cursor:
 print(len(raceInfoList))
 
 
-# In[9]:
+# In[24]:
 
 
 df = pd.io.json.json_normalize(raceInfoList)
 df.head()
 
 
-# In[45]:
+# In[25]:
 
 
 # 的中オッズの頻度分布
 df['odds'].plot(kind='hist',bins=np.logspace(0,3,100))
 
 
-# In[34]:
+# In[26]:
 
 
 # 水面温度の頻度分布
 df['raceSurfaceTemperature'].plot(kind='hist')
 
 
-# In[38]:
+# In[27]:
 
 
 # 波高の頻度分布
 df['raceWaveHeight'].plot(kind='hist')
 
 
-# In[41]:
+# In[28]:
 
 
 # 風速の分布
