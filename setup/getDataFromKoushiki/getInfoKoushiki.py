@@ -121,39 +121,18 @@ def getRaceMemberKoushiki(raceId):
     time.sleep(1)
     soup = BeautifulSoup(html,"html.parser")
     for block in soup.select(".is-fs12"):
-        #print(block)
-        recs=block.select("tr")
-        rec=recs[0]
-        tds=rec.select("td")
-        lane=unicodedata.normalize('NFKC', tds[0].string)        
-        tobanId=((tds[2].select(".is-fs11"))[0].contents[0].strip())[0:4]
-        rank=(tds[2].select("span"))[0].string
-        #print("lane:",lane)
-        #print("tobanId:",tobanId)
-        #print("rank:",rank)
-        #print(tds[2]) ※　他に取りたい項目があればここからとってくる
-        
-        yield lane,tobanId,rank
-
-
-# In[58]:
-
-
-def getRaceMemberKoushiki2(raceId):
-    #html = u.urlopen("https://www.boatrace.jp/owpc/pc/race/index?hd=%s" % ymd)
-    raceDate=raceId[0:8]
-    raceNumber=int(raceId[12:14])
-    placeId=raceId[9:11]
-    html = u.urlopen("https://www.boatrace.jp/owpc/pc/race/racelist?rno=%d&jcd=%s&hd=%s" %(raceNumber,placeId,raceDate) )
-    time.sleep(1)
-    soup = BeautifulSoup(html,"html.parser")
-    for block in soup.select(".is-fs12"):
         motorblocks=block.select(".is-lineH2")
         tmp=str(motorblocks[0]).replace(' ','')
         FLPattern=r'<td.*>\r\nF(\d+)\r\n<br/>L(\d+)\r\n<br/>(\d+\.\d+)'
-        Fcnt=re.search(FLPattern,tmp).group(1)
-        Lcnt=re.search(FLPattern,tmp).group(2)
-        avgStart=re.search(FLPattern,tmp).group(3)
+        try:
+            Fcnt=re.search(FLPattern,tmp).group(1)
+            Lcnt=re.search(FLPattern,tmp).group(2)
+            avgStart=re.search(FLPattern,tmp).group(3)
+        except AttributeError as e:
+            print("[WARN]:フライング関連情報の取得に失敗しました。平均スタートは9.99に設定します。")
+            Fcnt=0
+            Lcnt=0
+            avgStart=9.99
         #print(Fcnt,Lcnt,avgStart)
         del motorblocks[0:3]
         motors=[]
@@ -179,8 +158,11 @@ def getRaceMemberKoushiki2(raceId):
         
         yield lane,tobanId,rank,Fcnt,Lcnt,avgStart,motor2r,motor3r,boat2r,boat3r
 
-for ret in getRaceMemberKoushiki2('20180110-03-04'):
-    print(ret)
+
+# In[ ]:
+
+
+
 
 
 # In[5]:

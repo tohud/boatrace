@@ -70,7 +70,7 @@ def setRaceMemberKoushiki(dbh,raceDate):
             with dbh.cursor() as ins_cursor:
                 for ret in getInfoKoushiki.getRaceMemberKoushiki(raceId):
                     #print(ret)
-                    ins_sql="INSERT INTO racemember (raceId,rmLane,rmToban,rmRank) VALUES ('%s' ,%d,'%s','%s')" % (raceId,int(ret[0]),ret[1],ret[2])
+                    ins_sql="INSERT INTO racemember (raceId,rmLane,rmToban,rmRank,Fcnt,Lcnt,avgStart,motor2r,motor3r,boat2r,boat3r) VALUES ('%s' ,%d,'%s','%s',%d,%d,%f,%f,%f,%f,%f)" % (raceId,int(ret[0]),ret[1],ret[2],int(ret[3]),int(ret[4]),float(ret[5]),float(ret[6]),float(ret[7]),float(ret[8]),float(ret[9]) ) 
                     #print(ins_sql)
                     ins_cursor.execute(ins_sql)
                 upd_sql="UPDATE racemanagement SET racemember_flg = TRUE where raceId ='%s'" % (raceId)
