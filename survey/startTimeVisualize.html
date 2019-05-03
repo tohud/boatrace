@@ -13115,7 +13115,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ToDo </span>
@@ -13126,6 +13126,7 @@ div#notebook {
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
 </pre></div>
 
     </div>
@@ -13135,7 +13136,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 自作ライブラリのimport</span>
@@ -13153,7 +13154,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 分析期間の指定は一旦ここでまとめてみる。</span>
@@ -13168,7 +13169,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbh</span><span class="o">=</span><span class="n">dbHandler</span><span class="o">.</span><span class="n">getDBHandle</span><span class="p">()</span>
@@ -13182,12 +13183,12 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 日付と登録番号を与えて、該当選手の直近30回のスタート時刻の、各レース平均に対する偏差平均を出す。フライング除く。</span>
 <span class="c1"># 現在は、各レース平均に対する偏差のリストを返している。</span>
-<span class="n">raceDate</span> <span class="o">=</span> <span class="s2">&quot;20180131&quot;</span>
+<span class="n">raceDate</span> <span class="o">=</span> <span class="n">analyzeEndDate</span>
 <span class="n">toban</span><span class="o">=</span><span class="s2">&quot;4337&quot;</span>
 <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
     <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select v.raceId,(s.startTime-v.starttime_avg) as startTime_dev,s.startTime,v.starttime_avg </span><span class="se">\</span>
@@ -13206,7 +13207,7 @@ div#notebook {
     <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
     <span class="n">startInfoList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">startInfoList</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">startInfoList</span><span class="p">)</span>
+<span class="c1">#print(startInfoList)</span>
 </pre></div>
 
     </div>
@@ -13223,8 +13224,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>11
-[{&#39;raceId&#39;: &#39;20180109-03-12&#39;, &#39;startTime_dev&#39;: -0.061667, &#39;startTime&#39;: 0.11, &#39;starttime_avg&#39;: 0.171667}, {&#39;raceId&#39;: &#39;20180109-03-08&#39;, &#39;startTime_dev&#39;: -0.025, &#39;startTime&#39;: 0.3, &#39;starttime_avg&#39;: 0.325}, {&#39;raceId&#39;: &#39;20180105-08-12&#39;, &#39;startTime_dev&#39;: 0.016667, &#39;startTime&#39;: 0.23, &#39;starttime_avg&#39;: 0.213333}, {&#39;raceId&#39;: &#39;20180104-08-10&#39;, &#39;startTime_dev&#39;: -0.003333, &#39;startTime&#39;: 0.13, &#39;starttime_avg&#39;: 0.133333}, {&#39;raceId&#39;: &#39;20180104-08-03&#39;, &#39;startTime_dev&#39;: 0.021667, &#39;startTime&#39;: 0.09, &#39;starttime_avg&#39;: 0.068333}, {&#39;raceId&#39;: &#39;20180103-08-11&#39;, &#39;startTime_dev&#39;: -0.068333, &#39;startTime&#39;: 0.12, &#39;starttime_avg&#39;: 0.188333}, {&#39;raceId&#39;: &#39;20180103-08-04&#39;, &#39;startTime_dev&#39;: -0.01, &#39;startTime&#39;: 0.06, &#39;starttime_avg&#39;: 0.07}, {&#39;raceId&#39;: &#39;20180102-08-12&#39;, &#39;startTime_dev&#39;: -0.021667, &#39;startTime&#39;: 0.12, &#39;starttime_avg&#39;: 0.141667}, {&#39;raceId&#39;: &#39;20180102-08-07&#39;, &#39;startTime_dev&#39;: -0.006667, &#39;startTime&#39;: 0.1, &#39;starttime_avg&#39;: 0.106667}, {&#39;raceId&#39;: &#39;20180101-08-12&#39;, &#39;startTime_dev&#39;: -0.025, &#39;startTime&#39;: 0.09, &#39;starttime_avg&#39;: 0.115}, {&#39;raceId&#39;: &#39;20180101-08-08&#39;, &#39;startTime_dev&#39;: -0.013333, &#39;startTime&#39;: 0.15, &#39;starttime_avg&#39;: 0.163333}]
+<pre>23
 </pre>
 </div>
 </div>
@@ -13235,12 +13235,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 他の人よりどれだけスタートが早いと、進入コース別に、結果（1着、2着、3着、それ以下）にどれだけ影響があるのか。</span>
-<span class="c1"># 進入コースとスタート偏差にはどれだけ関係があるのか。アウトになるほどばらつきが大きくなる？</span>
-<span class="c1"># </span>
 </pre></div>
 
     </div>
@@ -13250,13 +13248,1066 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 進入コースとスタート偏差にはどれだけ関係があるのか。アウトになるほどばらつきが大きくなる？</span>
+<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select v.raceId,(s.startTime-v.starttime_avg) as startTime_dev,s.startLane,s.goalRank,s.lane </span><span class="se">\</span>
+<span class="s2">               from raceresult s, racemanagement m, </span><span class="se">\</span>
+<span class="s2">                    (select raceId,avg(startTime) as starttime_avg from raceresult </span><span class="se">\</span>
+<span class="s2">                     where startTime between 0 and 9.9 </span><span class="se">\</span>
+<span class="s2">                     group by raceId </span><span class="se">\</span>
+<span class="s2">                     having count(*) = 6 ) v </span><span class="se">\</span>
+<span class="s2">               where s.raceId = v.raceId </span><span class="se">\</span>
+<span class="s2">                 and s.raceId = m.raceId </span><span class="se">\</span>
+<span class="s2">                 and m.raceDate between &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39; &quot;</span> \
+              <span class="o">%</span> <span class="p">(</span><span class="n">analyzeStartDate</span><span class="p">,</span><span class="n">analyzeEndDate</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+    <span class="n">startInfoList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">startInfoList</span><span class="p">))</span>
+<span class="c1">#print(startInfoList)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>29124
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">startInfoList</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[26]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>goalRank</th>
+      <th>lane</th>
+      <th>raceId</th>
+      <th>startLane</th>
+      <th>startTime_dev</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2</td>
+      <td>20180101-06-01</td>
+      <td>2</td>
+      <td>-0.066667</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>20180101-06-01</td>
+      <td>1</td>
+      <td>-0.056667</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>3</td>
+      <td>20180101-06-01</td>
+      <td>3</td>
+      <td>-0.056667</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>4</td>
+      <td>20180101-06-01</td>
+      <td>4</td>
+      <td>0.023333</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>5</td>
+      <td>20180101-06-01</td>
+      <td>5</td>
+      <td>0.173333</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># まずは素朴に順位別にstartTime_devを見てみる。</span>
+<span class="c1"># 着順別の傾向。明らかに、ゴールした順位とスタートタイムは影響する。0.01秒でも十分な違いと見て良さそう。</span>
+<span class="n">groupeddf</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;goalRank&#39;</span><span class="p">)</span>
+<span class="n">groupeddf</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[28]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="8" halign="left">lane</th>
+      <th colspan="5" halign="left">startLane</th>
+      <th colspan="8" halign="left">startTime_dev</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+      <th>count</th>
+      <th>mean</th>
+      <th>...</th>
+      <th>75%</th>
+      <th>max</th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>goalRank</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>4854.0</td>
+      <td>2.121961</td>
+      <td>1.466839</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>2.080758</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>-0.029108</td>
+      <td>0.041357</td>
+      <td>-0.195000</td>
+      <td>-0.055000</td>
+      <td>-0.028333</td>
+      <td>-0.002084</td>
+      <td>0.143333</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4854.0</td>
+      <td>3.056242</td>
+      <td>1.521848</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>3.014421</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>-0.012872</td>
+      <td>0.041296</td>
+      <td>-0.190000</td>
+      <td>-0.038333</td>
+      <td>-0.013333</td>
+      <td>0.011667</td>
+      <td>0.218333</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4854.0</td>
+      <td>3.618459</td>
+      <td>1.560735</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>3.579110</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>-0.000857</td>
+      <td>0.044010</td>
+      <td>-0.186667</td>
+      <td>-0.028333</td>
+      <td>-0.003333</td>
+      <td>0.023333</td>
+      <td>0.505000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4854.0</td>
+      <td>3.894726</td>
+      <td>1.578185</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>3.885867</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>0.006011</td>
+      <td>0.046596</td>
+      <td>-0.148333</td>
+      <td>-0.023333</td>
+      <td>0.003333</td>
+      <td>0.031667</td>
+      <td>0.295000</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>4854.0</td>
+      <td>4.064689</td>
+      <td>1.572330</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>4.079316</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>0.014388</td>
+      <td>0.050459</td>
+      <td>-0.191667</td>
+      <td>-0.018333</td>
+      <td>0.010000</td>
+      <td>0.040000</td>
+      <td>0.580000</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>4854.0</td>
+      <td>4.243923</td>
+      <td>1.580663</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>4.360527</td>
+      <td>...</td>
+      <td>6.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>0.022439</td>
+      <td>0.056625</td>
+      <td>-0.166667</td>
+      <td>-0.013333</td>
+      <td>0.015000</td>
+      <td>0.050000</td>
+      <td>0.536667</td>
+    </tr>
+  </tbody>
+</table>
+<p>6 rows × 24 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 上記をグラフ化。グラフにするとあまり見えない。</span>
+<span class="c1">#df[[&#39;goalRank&#39;,&#39;startTime_dev&#39;]].plot(kind=&#39;scatter&#39;,x=&#39;goalRank&#39;,y=&#39;startTime_dev&#39;)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># まずは素朴に順位別にstartTime_devを見てみる。</span>
+<span class="c1"># 進入コース別の傾向。平均で、1レーンからスタートが早く、順に6レーンは遅い傾向がある。インの方が合わせやすいということか。</span>
+<span class="c1"># しかし標準偏差ははっきりしない。外側だとぶれやすいわけではない。</span>
+<span class="n">groupeddf</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;startLane&#39;</span><span class="p">)</span>
+<span class="n">groupeddf</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[30]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="8" halign="left">goalRank</th>
+      <th colspan="5" halign="left">lane</th>
+      <th colspan="8" halign="left">startTime_dev</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+      <th>count</th>
+      <th>mean</th>
+      <th>...</th>
+      <th>75%</th>
+      <th>max</th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>startLane</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>4854.0</td>
+      <td>2.142151</td>
+      <td>1.566568</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>1.036259</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>-0.013391</td>
+      <td>0.052951</td>
+      <td>-0.183333</td>
+      <td>-0.046667</td>
+      <td>-0.016667</td>
+      <td>0.015000</td>
+      <td>0.536667</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4854.0</td>
+      <td>3.233828</td>
+      <td>1.585895</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>2.136794</td>
+      <td>...</td>
+      <td>2.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>0.000138</td>
+      <td>0.047509</td>
+      <td>-0.176667</td>
+      <td>-0.030000</td>
+      <td>-0.003333</td>
+      <td>0.026667</td>
+      <td>0.501667</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4854.0</td>
+      <td>3.428513</td>
+      <td>1.582454</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>3.066131</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>-0.002351</td>
+      <td>0.046815</td>
+      <td>-0.186667</td>
+      <td>-0.030000</td>
+      <td>-0.006667</td>
+      <td>0.020000</td>
+      <td>0.580000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4854.0</td>
+      <td>3.545529</td>
+      <td>1.591203</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>4.050680</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>-0.001366</td>
+      <td>0.044485</td>
+      <td>-0.195000</td>
+      <td>-0.030000</td>
+      <td>-0.003333</td>
+      <td>0.023333</td>
+      <td>0.410000</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>4854.0</td>
+      <td>4.027194</td>
+      <td>1.488496</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>4.980016</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>0.001363</td>
+      <td>0.045773</td>
+      <td>-0.190000</td>
+      <td>-0.026667</td>
+      <td>0.000000</td>
+      <td>0.028333</td>
+      <td>0.391667</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>4854.0</td>
+      <td>4.622785</td>
+      <td>1.349674</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>5.730119</td>
+      <td>...</td>
+      <td>6.0</td>
+      <td>6.0</td>
+      <td>4854.0</td>
+      <td>0.015607</td>
+      <td>0.057255</td>
+      <td>-0.191667</td>
+      <td>-0.021667</td>
+      <td>0.011667</td>
+      <td>0.050000</td>
+      <td>0.390000</td>
+    </tr>
+  </tbody>
+</table>
+<p>6 rows × 24 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># まずは素朴に順位別にstartTime_devを見てみる。</span>
+<span class="c1"># 枠別の傾向。進入コース別と同じ傾向。枠と進入コースがほぼ同等？なので、当然といえば当然。</span>
+<span class="c1"># ToDo 枠と進入コースの関係を表示する</span>
+<span class="n">groupeddf</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;lane&#39;</span><span class="p">)</span>
+<span class="n">groupeddf</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[13]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="8" halign="left">goalRank</th>
+      <th colspan="5" halign="left">startLane</th>
+      <th colspan="8" halign="left">startTime_dev</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+      <th>count</th>
+      <th>mean</th>
+      <th>...</th>
+      <th>75%</th>
+      <th>max</th>
+      <th>count</th>
+      <th>mean</th>
+      <th>std</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>lane</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>13145.0</td>
+      <td>2.129099</td>
+      <td>1.560845</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>1.020844</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>-0.012689</td>
+      <td>0.052768</td>
+      <td>-0.200000</td>
+      <td>-0.046667</td>
+      <td>-0.016667</td>
+      <td>0.016667</td>
+      <td>0.536667</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>13145.0</td>
+      <td>3.255306</td>
+      <td>1.609400</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>2.092507</td>
+      <td>...</td>
+      <td>2.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>0.000209</td>
+      <td>0.047761</td>
+      <td>-0.200000</td>
+      <td>-0.030000</td>
+      <td>-0.003333</td>
+      <td>0.026667</td>
+      <td>0.501667</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>13145.0</td>
+      <td>3.447471</td>
+      <td>1.586231</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>3.095474</td>
+      <td>...</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>-0.002958</td>
+      <td>0.045706</td>
+      <td>-0.186667</td>
+      <td>-0.030000</td>
+      <td>-0.006667</td>
+      <td>0.020000</td>
+      <td>0.588333</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>13145.0</td>
+      <td>3.659414</td>
+      <td>1.583836</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>4.126664</td>
+      <td>...</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>-0.001641</td>
+      <td>0.045298</td>
+      <td>-0.216667</td>
+      <td>-0.030000</td>
+      <td>-0.003333</td>
+      <td>0.023333</td>
+      <td>0.488333</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>13145.0</td>
+      <td>4.114492</td>
+      <td>1.503462</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>4.985546</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>0.003540</td>
+      <td>0.048676</td>
+      <td>-0.205000</td>
+      <td>-0.026667</td>
+      <td>0.001667</td>
+      <td>0.030000</td>
+      <td>0.505000</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>13145.0</td>
+      <td>4.394218</td>
+      <td>1.430026</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>5.678965</td>
+      <td>...</td>
+      <td>6.0</td>
+      <td>6.0</td>
+      <td>13145.0</td>
+      <td>0.013538</td>
+      <td>0.056127</td>
+      <td>-0.195000</td>
+      <td>-0.023333</td>
+      <td>0.010000</td>
+      <td>0.045000</td>
+      <td>0.700000</td>
+    </tr>
+  </tbody>
+</table>
+<p>6 rows × 24 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 枠と進入コースがどれだけ一致するかをチェックする。</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 過去のstartTime_devから未来は予測できるのか？自己相関があるか、どのくらいの期間影響するのか、を検証。</span>
+<span class="c1"># 30レース以上に出場している選手に限定する ←データが集まってないのでいったん、20レースにする。</span>
+<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select (s.startTime-v.starttime_avg) as startTime_dev,s.toban </span><span class="se">\</span>
+<span class="s2">               from raceresult s,racemanagement m, </span><span class="se">\</span>
+<span class="s2">                    (select toban from raceresult </span><span class="se">\</span>
+<span class="s2">                     where startTime between 0 and 9.9 </span><span class="se">\</span>
+<span class="s2">                     group by toban having count(*) &gt; 20) t,</span><span class="se">\</span>
+<span class="s2">                    (select raceId,avg(startTime) as starttime_avg from raceresult </span><span class="se">\</span>
+<span class="s2">                     where startTime between 0 and 9.9 </span><span class="se">\</span>
+<span class="s2">                     group by raceId </span><span class="se">\</span>
+<span class="s2">                     having count(*) = 6 ) v </span><span class="se">\</span>
+<span class="s2">               where s.raceId = v.raceId </span><span class="se">\</span>
+<span class="s2">                 and s.toban  = t.toban </span><span class="se">\</span>
+<span class="s2">                 and s.raceId = m.raceId </span><span class="se">\</span>
+<span class="s2">                 and m.raceDate between &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39; </span><span class="se">\</span>
+<span class="s2">               order by s.toban,s.raceId desc&quot;</span> \
+              <span class="o">%</span> <span class="p">(</span><span class="n">analyzeStartDate</span><span class="p">,</span><span class="n">analyzeEndDate</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+    <span class="n">startInfoList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">startInfoList</span><span class="p">))</span>
+<span class="c1">#print(startInfoList)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">startInfoList</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>78188
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[15]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>startTime_dev</th>
+      <th>toban</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.056667</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.050000</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.105000</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.038333</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.068333</td>
+      <td>2014</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13264,6 +14315,453 @@ div#notebook {
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">groupeddf</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;toban&#39;</span><span class="p">)</span>
+<span class="n">groupeddf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[16]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>startTime_dev</th>
+      <th>toban</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-0.056667</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.050000</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-0.105000</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.038333</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.068333</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td>0.018333</td>
+      <td>2538</td>
+    </tr>
+    <tr>
+      <th>53</th>
+      <td>0.036667</td>
+      <td>2538</td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td>0.055000</td>
+      <td>2538</td>
+    </tr>
+    <tr>
+      <th>55</th>
+      <td>0.008333</td>
+      <td>2538</td>
+    </tr>
+    <tr>
+      <th>56</th>
+      <td>-0.128333</td>
+      <td>2538</td>
+    </tr>
+    <tr>
+      <th>101</th>
+      <td>0.165000</td>
+      <td>2568</td>
+    </tr>
+    <tr>
+      <th>102</th>
+      <td>-0.031667</td>
+      <td>2568</td>
+    </tr>
+    <tr>
+      <th>103</th>
+      <td>-0.001667</td>
+      <td>2568</td>
+    </tr>
+    <tr>
+      <th>104</th>
+      <td>-0.045000</td>
+      <td>2568</td>
+    </tr>
+    <tr>
+      <th>105</th>
+      <td>0.058333</td>
+      <td>2568</td>
+    </tr>
+    <tr>
+      <th>149</th>
+      <td>-0.001667</td>
+      <td>2698</td>
+    </tr>
+    <tr>
+      <th>150</th>
+      <td>0.005000</td>
+      <td>2698</td>
+    </tr>
+    <tr>
+      <th>151</th>
+      <td>-0.038333</td>
+      <td>2698</td>
+    </tr>
+    <tr>
+      <th>152</th>
+      <td>0.010000</td>
+      <td>2698</td>
+    </tr>
+    <tr>
+      <th>153</th>
+      <td>0.031667</td>
+      <td>2698</td>
+    </tr>
+    <tr>
+      <th>186</th>
+      <td>-0.011667</td>
+      <td>2785</td>
+    </tr>
+    <tr>
+      <th>187</th>
+      <td>-0.041667</td>
+      <td>2785</td>
+    </tr>
+    <tr>
+      <th>188</th>
+      <td>0.003333</td>
+      <td>2785</td>
+    </tr>
+    <tr>
+      <th>189</th>
+      <td>0.005000</td>
+      <td>2785</td>
+    </tr>
+    <tr>
+      <th>190</th>
+      <td>-0.030000</td>
+      <td>2785</td>
+    </tr>
+    <tr>
+      <th>220</th>
+      <td>-0.045000</td>
+      <td>2787</td>
+    </tr>
+    <tr>
+      <th>221</th>
+      <td>-0.063333</td>
+      <td>2787</td>
+    </tr>
+    <tr>
+      <th>222</th>
+      <td>0.030000</td>
+      <td>2787</td>
+    </tr>
+    <tr>
+      <th>223</th>
+      <td>-0.010000</td>
+      <td>2787</td>
+    </tr>
+    <tr>
+      <th>224</th>
+      <td>0.051667</td>
+      <td>2787</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>78023</th>
+      <td>-0.013333</td>
+      <td>5014</td>
+    </tr>
+    <tr>
+      <th>78024</th>
+      <td>-0.063333</td>
+      <td>5014</td>
+    </tr>
+    <tr>
+      <th>78025</th>
+      <td>-0.036667</td>
+      <td>5014</td>
+    </tr>
+    <tr>
+      <th>78026</th>
+      <td>0.063333</td>
+      <td>5014</td>
+    </tr>
+    <tr>
+      <th>78027</th>
+      <td>0.033333</td>
+      <td>5014</td>
+    </tr>
+    <tr>
+      <th>78049</th>
+      <td>0.038333</td>
+      <td>5015</td>
+    </tr>
+    <tr>
+      <th>78050</th>
+      <td>-0.023333</td>
+      <td>5015</td>
+    </tr>
+    <tr>
+      <th>78051</th>
+      <td>0.001667</td>
+      <td>5015</td>
+    </tr>
+    <tr>
+      <th>78052</th>
+      <td>-0.021667</td>
+      <td>5015</td>
+    </tr>
+    <tr>
+      <th>78053</th>
+      <td>0.131667</td>
+      <td>5015</td>
+    </tr>
+    <tr>
+      <th>78082</th>
+      <td>0.031667</td>
+      <td>5016</td>
+    </tr>
+    <tr>
+      <th>78083</th>
+      <td>0.008333</td>
+      <td>5016</td>
+    </tr>
+    <tr>
+      <th>78084</th>
+      <td>0.021667</td>
+      <td>5016</td>
+    </tr>
+    <tr>
+      <th>78085</th>
+      <td>-0.095000</td>
+      <td>5016</td>
+    </tr>
+    <tr>
+      <th>78086</th>
+      <td>0.046667</td>
+      <td>5016</td>
+    </tr>
+    <tr>
+      <th>78111</th>
+      <td>-0.023333</td>
+      <td>5017</td>
+    </tr>
+    <tr>
+      <th>78112</th>
+      <td>0.075000</td>
+      <td>5017</td>
+    </tr>
+    <tr>
+      <th>78113</th>
+      <td>-0.035000</td>
+      <td>5017</td>
+    </tr>
+    <tr>
+      <th>78114</th>
+      <td>-0.018333</td>
+      <td>5017</td>
+    </tr>
+    <tr>
+      <th>78115</th>
+      <td>-0.025000</td>
+      <td>5017</td>
+    </tr>
+    <tr>
+      <th>78142</th>
+      <td>-0.040000</td>
+      <td>5018</td>
+    </tr>
+    <tr>
+      <th>78143</th>
+      <td>0.018333</td>
+      <td>5018</td>
+    </tr>
+    <tr>
+      <th>78144</th>
+      <td>-0.018333</td>
+      <td>5018</td>
+    </tr>
+    <tr>
+      <th>78145</th>
+      <td>0.015000</td>
+      <td>5018</td>
+    </tr>
+    <tr>
+      <th>78146</th>
+      <td>-0.050000</td>
+      <td>5018</td>
+    </tr>
+    <tr>
+      <th>78166</th>
+      <td>0.065000</td>
+      <td>5019</td>
+    </tr>
+    <tr>
+      <th>78167</th>
+      <td>0.071667</td>
+      <td>5019</td>
+    </tr>
+    <tr>
+      <th>78168</th>
+      <td>-0.036667</td>
+      <td>5019</td>
+    </tr>
+    <tr>
+      <th>78169</th>
+      <td>-0.001667</td>
+      <td>5019</td>
+    </tr>
+    <tr>
+      <th>78170</th>
+      <td>0.043333</td>
+      <td>5019</td>
+    </tr>
+  </tbody>
+</table>
+<p>7505 rows × 2 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;toban&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;4873&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="c1"># todo 次に、自己相関を見てみる。</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>startTime_dev</th>
+      <th>toban</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>72573</th>
+      <td>-0.066667</td>
+      <td>4873</td>
+    </tr>
+    <tr>
+      <th>72574</th>
+      <td>0.041667</td>
+      <td>4873</td>
+    </tr>
+    <tr>
+      <th>72575</th>
+      <td>0.070000</td>
+      <td>4873</td>
+    </tr>
+    <tr>
+      <th>72576</th>
+      <td>0.015000</td>
+      <td>4873</td>
+    </tr>
+    <tr>
+      <th>72577</th>
+      <td>0.018333</td>
+      <td>4873</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># メモリ使用チェック</span>
@@ -13290,10 +14788,38 @@ div#notebook {
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>|            Variable Name|    Memory|
  ------------------------------------ 
+|                       df|   5395076|
+|            startInfoList|    651352|
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
 </div>
 </div>
 
