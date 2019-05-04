@@ -13115,7 +13115,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ToDo 選手情報・過去レース情報から3連単舟券120種をクラス分類する</span>
@@ -13187,7 +13187,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># trainの元データを取得</span>
@@ -13199,7 +13199,16 @@ div#notebook {
                <span class="o">%</span> <span class="p">(</span><span class="n">trainStartDate</span><span class="p">,</span><span class="n">trainEndDate</span><span class="p">)</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
     <span class="n">loadList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">loadList</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;traindata:&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">loadList</span><span class="p">))</span>
+
+<span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select * from raceabst_forml_v </span><span class="se">\</span>
+<span class="s2">               where raceDate between &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39; </span><span class="se">\</span>
+<span class="s2">               order by raceId &quot;</span>\
+               <span class="o">%</span> <span class="p">(</span><span class="n">testStartDate</span><span class="p">,</span><span class="n">testEndDate</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+    <span class="n">testLoadList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;testdatta:&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">testLoadList</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13216,7 +13225,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>3843
+<pre>traindata: 3843
+testdatta: 4689
 </pre>
 </div>
 </div>
@@ -13227,7 +13237,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">loadList</span><span class="p">)</span>
@@ -13244,7 +13254,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[7]:</div>
+    <div class="prompt output_prompt">Out[27]:</div>
 
 
 
@@ -13425,7 +13435,205 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">testdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">testLoadList</span><span class="p">)</span>
+<span class="n">testdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[28]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>funaken</th>
+      <th>l1Fcnt</th>
+      <th>l1boat2r</th>
+      <th>l1boat3r</th>
+      <th>l1motor2r</th>
+      <th>l1motor3r</th>
+      <th>l1score</th>
+      <th>l2Fcnt</th>
+      <th>l2boat2r</th>
+      <th>l2boat3r</th>
+      <th>...</th>
+      <th>l6boat2r</th>
+      <th>l6boat3r</th>
+      <th>l6motor2r</th>
+      <th>l6motor3r</th>
+      <th>l6score</th>
+      <th>odds</th>
+      <th>raceDate</th>
+      <th>raceId</th>
+      <th>raceWaveHeight</th>
+      <th>raceWindSpeed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1-4-3</td>
+      <td>0</td>
+      <td>36.23</td>
+      <td>53.62</td>
+      <td>45.95</td>
+      <td>64.86</td>
+      <td>5.806358</td>
+      <td>0</td>
+      <td>36.92</td>
+      <td>55.38</td>
+      <td>...</td>
+      <td>33.33</td>
+      <td>37.88</td>
+      <td>28.13</td>
+      <td>43.75</td>
+      <td>1.680446</td>
+      <td>17.3</td>
+      <td>2018-03-01</td>
+      <td>20180301-01-01</td>
+      <td>7</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2-5-3</td>
+      <td>0</td>
+      <td>42.65</td>
+      <td>61.76</td>
+      <td>36.36</td>
+      <td>45.45</td>
+      <td>5.351027</td>
+      <td>0</td>
+      <td>13.46</td>
+      <td>30.77</td>
+      <td>...</td>
+      <td>20.00</td>
+      <td>36.67</td>
+      <td>33.33</td>
+      <td>54.55</td>
+      <td>0.749662</td>
+      <td>87.8</td>
+      <td>2018-03-01</td>
+      <td>20180301-01-02</td>
+      <td>9</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2-1-5</td>
+      <td>0</td>
+      <td>29.23</td>
+      <td>44.62</td>
+      <td>22.58</td>
+      <td>38.71</td>
+      <td>6.271362</td>
+      <td>1</td>
+      <td>40.30</td>
+      <td>62.69</td>
+      <td>...</td>
+      <td>33.82</td>
+      <td>42.65</td>
+      <td>32.35</td>
+      <td>41.18</td>
+      <td>1.085281</td>
+      <td>23.9</td>
+      <td>2018-03-01</td>
+      <td>20180301-01-03</td>
+      <td>8</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3-2-1</td>
+      <td>1</td>
+      <td>37.50</td>
+      <td>59.38</td>
+      <td>31.43</td>
+      <td>48.57</td>
+      <td>5.466572</td>
+      <td>0</td>
+      <td>27.14</td>
+      <td>41.43</td>
+      <td>...</td>
+      <td>39.13</td>
+      <td>52.17</td>
+      <td>23.53</td>
+      <td>32.35</td>
+      <td>1.405639</td>
+      <td>18.0</td>
+      <td>2018-03-01</td>
+      <td>20180301-01-04</td>
+      <td>8</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5-2-3</td>
+      <td>0</td>
+      <td>29.85</td>
+      <td>47.76</td>
+      <td>44.12</td>
+      <td>70.59</td>
+      <td>3.064101</td>
+      <td>0</td>
+      <td>17.91</td>
+      <td>38.81</td>
+      <td>...</td>
+      <td>29.41</td>
+      <td>44.12</td>
+      <td>25.71</td>
+      <td>48.57</td>
+      <td>0.753276</td>
+      <td>94.6</td>
+      <td>2018-03-01</td>
+      <td>20180301-01-05</td>
+      <td>8</td>
+      <td>9.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 42 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 入力のデータ整形</span>
@@ -13443,7 +13651,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[20]:</div>
+    <div class="prompt output_prompt">Out[29]:</div>
 
 
 
@@ -13624,7 +13832,206 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 入力のデータ整形</span>
+<span class="n">testxdf</span><span class="o">=</span><span class="n">testdf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;funaken&#39;</span><span class="p">,</span><span class="s1">&#39;odds&#39;</span><span class="p">,</span><span class="s1">&#39;raceId&#39;</span><span class="p">,</span><span class="s1">&#39;raceDate&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">testxdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[30]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>l1Fcnt</th>
+      <th>l1boat2r</th>
+      <th>l1boat3r</th>
+      <th>l1motor2r</th>
+      <th>l1motor3r</th>
+      <th>l1score</th>
+      <th>l2Fcnt</th>
+      <th>l2boat2r</th>
+      <th>l2boat3r</th>
+      <th>l2motor2r</th>
+      <th>...</th>
+      <th>l5motor3r</th>
+      <th>l5score</th>
+      <th>l6Fcnt</th>
+      <th>l6boat2r</th>
+      <th>l6boat3r</th>
+      <th>l6motor2r</th>
+      <th>l6motor3r</th>
+      <th>l6score</th>
+      <th>raceWaveHeight</th>
+      <th>raceWindSpeed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>36.23</td>
+      <td>53.62</td>
+      <td>45.95</td>
+      <td>64.86</td>
+      <td>5.806358</td>
+      <td>0</td>
+      <td>36.92</td>
+      <td>55.38</td>
+      <td>32.50</td>
+      <td>...</td>
+      <td>50.00</td>
+      <td>1.187500</td>
+      <td>0</td>
+      <td>33.33</td>
+      <td>37.88</td>
+      <td>28.13</td>
+      <td>43.75</td>
+      <td>1.680446</td>
+      <td>7</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>42.65</td>
+      <td>61.76</td>
+      <td>36.36</td>
+      <td>45.45</td>
+      <td>5.351027</td>
+      <td>0</td>
+      <td>13.46</td>
+      <td>30.77</td>
+      <td>34.38</td>
+      <td>...</td>
+      <td>69.70</td>
+      <td>4.246375</td>
+      <td>0</td>
+      <td>20.00</td>
+      <td>36.67</td>
+      <td>33.33</td>
+      <td>54.55</td>
+      <td>0.749662</td>
+      <td>9</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>29.23</td>
+      <td>44.62</td>
+      <td>22.58</td>
+      <td>38.71</td>
+      <td>6.271362</td>
+      <td>1</td>
+      <td>40.30</td>
+      <td>62.69</td>
+      <td>40.43</td>
+      <td>...</td>
+      <td>53.13</td>
+      <td>4.856609</td>
+      <td>0</td>
+      <td>33.82</td>
+      <td>42.65</td>
+      <td>32.35</td>
+      <td>41.18</td>
+      <td>1.085281</td>
+      <td>8</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>37.50</td>
+      <td>59.38</td>
+      <td>31.43</td>
+      <td>48.57</td>
+      <td>5.466572</td>
+      <td>0</td>
+      <td>27.14</td>
+      <td>41.43</td>
+      <td>21.21</td>
+      <td>...</td>
+      <td>41.18</td>
+      <td>2.248833</td>
+      <td>0</td>
+      <td>39.13</td>
+      <td>52.17</td>
+      <td>23.53</td>
+      <td>32.35</td>
+      <td>1.405639</td>
+      <td>8</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>29.85</td>
+      <td>47.76</td>
+      <td>44.12</td>
+      <td>70.59</td>
+      <td>3.064101</td>
+      <td>0</td>
+      <td>17.91</td>
+      <td>38.81</td>
+      <td>33.33</td>
+      <td>...</td>
+      <td>83.78</td>
+      <td>5.159426</td>
+      <td>0</td>
+      <td>29.41</td>
+      <td>44.12</td>
+      <td>25.71</td>
+      <td>48.57</td>
+      <td>0.753276</td>
+      <td>8</td>
+      <td>9.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 38 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 結果のOne-Hot表現を作る</span>
@@ -13643,7 +14050,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[22]:</div>
+    <div class="prompt output_prompt">Out[8]:</div>
 
 
 
@@ -13824,7 +14231,207 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 結果のOne-Hot表現を作る</span>
+<span class="n">testydf</span><span class="o">=</span><span class="n">testdf</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span>
+<span class="n">testydf</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">testydf</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">])</span>
+<span class="n">testydf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[31]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1-2-3</th>
+      <th>1-2-4</th>
+      <th>1-2-5</th>
+      <th>1-2-6</th>
+      <th>1-3-2</th>
+      <th>1-3-4</th>
+      <th>1-3-5</th>
+      <th>1-3-6</th>
+      <th>1-4-2</th>
+      <th>1-4-3</th>
+      <th>...</th>
+      <th>6-3-4</th>
+      <th>6-3-5</th>
+      <th>6-4-1</th>
+      <th>6-4-2</th>
+      <th>6-4-3</th>
+      <th>6-4-5</th>
+      <th>6-5-1</th>
+      <th>6-5-2</th>
+      <th>6-5-3</th>
+      <th>6-5-4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 120 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">xAtrNum</span><span class="o">=</span><span class="mi">38</span>
@@ -13835,7 +14442,7 @@ div#notebook {
 <span class="c1">#b = tf.Variable(tf.zeros([yclassNum]))</span>
 <span class="n">W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">xAtrNum</span><span class="p">,</span><span class="n">yclassNum</span><span class="p">],</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">yclassNum</span><span class="p">],</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span> <span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>  <span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13845,13 +14452,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># define loss and optimizer</span>
 <span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,[</span><span class="kc">None</span><span class="p">,</span><span class="n">yclassNum</span><span class="p">])</span>
-<span class="c1">#cross_entropy=-tf.reduce_sum(y_*tf.log(y))</span>
-<span class="n">cross_entropy</span><span class="o">=-</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span> <span class="p">(</span><span class="n">y_</span><span class="o">-</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+<span class="n">cross_entropy</span><span class="o">=-</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">y_</span><span class="o">*</span><span class="n">tf</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="n">tf</span><span class="o">.</span><span class="n">clip_by_value</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="mf">1e-10</span><span class="p">,</span><span class="mf">1e+10</span><span class="p">)</span> <span class="p">))</span>
+<span class="c1">#cross_entropy=-tf.reduce_sum( (y_-y)**2 )</span>
 <span class="n">train_step</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">)</span>
 </pre></div>
 
@@ -13862,16 +14469,20 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># train</span>
 <span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span>
 <span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
     <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_step</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">})</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cross_entropy:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">})</span> <span class="p">))</span>
+        <span class="n">correct_prediction</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">accuracy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">correct_prediction</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y_</span><span class="p">:</span> <span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">})))</span>
 </pre></div>
 
     </div>
@@ -13888,106 +14499,26 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>-7658.207
--7660.885
--7662.2466
--7663.108
--7663.8853
--7664.5654
--7665.104
--7665.5347
--7665.8906
--7666.201
--7666.4224
--7666.587
--7666.7246
--7666.847
--7666.9575
--7667.0586
--7667.152
--7667.24
--7667.323
--7667.401
--7667.474
--7667.543
--7667.609
--7667.671
--7667.729
--7667.784
--7667.8374
--7667.8877
--7667.9365
--7667.983
--7668.027
--7668.0693
--7668.1104
--7668.1494
--7668.187
--7668.2236
--7668.259
--7668.292
--7668.324
--7668.3555
--7668.386
--7668.415
--7668.4434
--7668.4707
--7668.4966
--7668.522
--7668.547
--7668.5703
--7668.5938
--7668.616
--7668.638
--7668.6587
--7668.679
--7668.699
--7668.7188
--7668.7373
--7668.7554
--7668.773
--7668.79
--7668.8066
--7668.8228
--7668.838
--7668.8535
--7668.868
--7668.8833
--7668.8975
--7668.911
--7668.9243
--7668.9375
--7668.95
--7668.963
--7668.975
--7668.9873
--7668.999
--7669.01
--7669.0215
--7669.032
--7669.043
--7669.0527
--7669.0635
--7669.073
--7669.083
--7669.093
--7669.1016
--7669.1104
--7669.12
--7669.1284
--7669.137
--7669.1455
--7669.1543
--7669.162
--7669.17
--7669.1777
--7669.1855
--7669.193
--7669.2007
--7669.208
--7669.215
--7669.2217
--7669.2285
+<pre>cross_entropy:86120.24
+accuracy:0.026541764
+cross_entropy:85408.97
+accuracy:0.034087952
+cross_entropy:85400.234
+accuracy:0.032786883
+cross_entropy:85399.81
+accuracy:0.034087952
+cross_entropy:85380.39
+accuracy:0.035128806
+cross_entropy:85379.93
+accuracy:0.035128806
+cross_entropy:85379.766
+accuracy:0.035128806
+cross_entropy:85379.64
+accuracy:0.035128806
+cross_entropy:85379.55
+accuracy:0.035128806
+cross_entropy:85379.484
+accuracy:0.035128806
 </pre>
 </div>
 </div>
@@ -13998,20 +14529,41 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># test_trained_data</span>
+<span class="n">correct_prediction</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">correct_prediction</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">testxdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y_</span><span class="p">:</span> <span class="n">testydf</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0.030283643
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># メモリ使用チェック</span>
@@ -14039,11 +14591,12 @@ div#notebook {
 <pre>|            Variable Name|    Memory|
  ------------------------------------ 
 |                       df|   1863959|
-|                      df2|    461264|
 |                 loadList|     33928|
-|            startInfoList|     33928|
+|             testLoadList|     38216|
+|                   testdf|   2274269|
+|                  testxdf|   1425560|
+|                  testydf|    562784|
 |                      xdf|   1168376|
-|                      xin|   1168376|
 |                      ydf|    461264|
 </pre>
 </div>
