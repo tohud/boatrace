@@ -13115,7 +13115,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ToDo 選手情報・過去レース情報から3連単舟券120種をクラス分類する</span>
@@ -13138,7 +13138,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 自作ライブラリのimport</span>
@@ -13156,14 +13156,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 分析期間の指定は一旦ここでまとめてみる。</span>
-<span class="n">trainStartDate</span><span class="o">=</span><span class="s2">&quot;20180201&quot;</span>
-<span class="n">trainEndDate</span><span class="o">=</span><span class="s2">&quot;20180228&quot;</span>
-<span class="n">testStartDate</span><span class="o">=</span><span class="s2">&quot;20180301&quot;</span>
-<span class="n">testEndDate</span><span class="o">=</span><span class="s2">&quot;20180331&quot;</span>
+<span class="n">trainStartDate</span><span class="o">=</span><span class="s2">&quot;20180101&quot;</span>
+<span class="n">trainEndDate</span><span class="o">=</span><span class="s2">&quot;20180531&quot;</span>
+<span class="n">testStartDate</span><span class="o">=</span><span class="s2">&quot;20180401&quot;</span>
+<span class="n">testEndDate</span><span class="o">=</span><span class="s2">&quot;20180430&quot;</span>
 </pre></div>
 
     </div>
@@ -13173,7 +13173,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbh</span><span class="o">=</span><span class="n">dbHandler</span><span class="o">.</span><span class="n">getDBHandle</span><span class="p">()</span>
@@ -13187,7 +13187,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># trainの元データを取得</span>
@@ -13225,8 +13225,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>traindata: 3843
-testdatta: 4689
+<pre>traindata: 22761
+testdatta: 4449
 </pre>
 </div>
 </div>
@@ -13237,7 +13237,7 @@ testdatta: 4689
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">loadList</span><span class="p">)</span>
@@ -13254,7 +13254,7 @@ testdatta: 4689
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[27]:</div>
+    <div class="prompt output_prompt">Out[41]:</div>
 
 
 
@@ -13283,15 +13283,15 @@ testdatta: 4689
       <th>l1boat3r</th>
       <th>l1motor2r</th>
       <th>l1motor3r</th>
+      <th>l1rank</th>
       <th>l1score</th>
       <th>l2Fcnt</th>
       <th>l2boat2r</th>
-      <th>l2boat3r</th>
       <th>...</th>
-      <th>l6boat2r</th>
       <th>l6boat3r</th>
       <th>l6motor2r</th>
       <th>l6motor3r</th>
+      <th>l6rank</th>
       <th>l6score</th>
       <th>odds</th>
       <th>raceDate</th>
@@ -13303,127 +13303,127 @@ testdatta: 4689
   <tbody>
     <tr>
       <th>0</th>
-      <td>4-3-2</td>
+      <td>2-1-3</td>
       <td>1</td>
-      <td>20.95</td>
-      <td>35.24</td>
-      <td>34.82</td>
-      <td>54.46</td>
-      <td>17.032873</td>
+      <td>0.3636</td>
+      <td>0.5152</td>
+      <td>0.3558</td>
+      <td>0.5092</td>
+      <td>A1</td>
+      <td>13.871549</td>
       <td>0</td>
-      <td>32.46</td>
-      <td>50.00</td>
+      <td>0.4746</td>
       <td>...</td>
-      <td>26.09</td>
-      <td>41.74</td>
-      <td>30.57</td>
-      <td>47.77</td>
-      <td>2.630091</td>
-      <td>207.0</td>
-      <td>2018-02-01</td>
-      <td>20180201-02-01</td>
-      <td>0</td>
-      <td>0.0</td>
+      <td>0.4545</td>
+      <td>0.5421</td>
+      <td>0.6789</td>
+      <td>B2</td>
+      <td>0.851669</td>
+      <td>30.9</td>
+      <td>2018-01-01</td>
+      <td>20180101-06-01</td>
+      <td>3</td>
+      <td>5.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>4-1-2</td>
+      <td>2-1-6</td>
       <td>0</td>
-      <td>25.22</td>
-      <td>40.00</td>
-      <td>21.00</td>
-      <td>38.00</td>
-      <td>3.813810</td>
+      <td>0.2462</td>
+      <td>0.4462</td>
+      <td>0.3466</td>
+      <td>0.4830</td>
+      <td>B1</td>
+      <td>3.409304</td>
       <td>0</td>
-      <td>37.59</td>
-      <td>54.89</td>
+      <td>0.3636</td>
       <td>...</td>
-      <td>33.05</td>
-      <td>51.69</td>
-      <td>28.87</td>
-      <td>47.89</td>
-      <td>0.762340</td>
-      <td>10.7</td>
-      <td>2018-02-01</td>
-      <td>20180201-02-02</td>
-      <td>1</td>
-      <td>1.0</td>
+      <td>0.4925</td>
+      <td>0.3392</td>
+      <td>0.5088</td>
+      <td>B1</td>
+      <td>0.886552</td>
+      <td>26.2</td>
+      <td>2018-01-01</td>
+      <td>20180101-06-02</td>
+      <td>3</td>
+      <td>5.0</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>3-2-1</td>
+      <td>3-5-4</td>
       <td>0</td>
-      <td>36.57</td>
-      <td>51.49</td>
-      <td>29.61</td>
-      <td>45.39</td>
-      <td>7.815553</td>
+      <td>0.3692</td>
+      <td>0.5231</td>
+      <td>0.3135</td>
+      <td>0.4108</td>
+      <td>B2</td>
+      <td>2.836839</td>
       <td>0</td>
-      <td>29.31</td>
-      <td>49.14</td>
+      <td>0.2714</td>
       <td>...</td>
-      <td>33.33</td>
-      <td>44.44</td>
-      <td>36.61</td>
-      <td>62.50</td>
-      <td>2.067739</td>
-      <td>39.1</td>
-      <td>2018-02-01</td>
-      <td>20180201-02-03</td>
-      <td>1</td>
-      <td>1.0</td>
+      <td>0.4091</td>
+      <td>0.3472</td>
+      <td>0.4870</td>
+      <td>B1</td>
+      <td>0.580764</td>
+      <td>99.2</td>
+      <td>2018-01-01</td>
+      <td>20180101-06-03</td>
+      <td>3</td>
+      <td>5.0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>1-3-4</td>
+      <td>1-5-2</td>
       <td>0</td>
-      <td>36.13</td>
-      <td>56.30</td>
-      <td>35.88</td>
-      <td>46.56</td>
-      <td>5.418879</td>
+      <td>0.4308</td>
+      <td>0.6308</td>
+      <td>0.3676</td>
+      <td>0.5514</td>
+      <td>A2</td>
+      <td>7.488113</td>
       <td>0</td>
-      <td>32.80</td>
-      <td>48.00</td>
+      <td>0.3636</td>
       <td>...</td>
-      <td>36.84</td>
-      <td>50.38</td>
-      <td>33.12</td>
-      <td>48.41</td>
-      <td>2.355796</td>
-      <td>36.7</td>
-      <td>2018-02-01</td>
-      <td>20180201-02-04</td>
-      <td>1</td>
-      <td>1.0</td>
+      <td>0.3939</td>
+      <td>0.3176</td>
+      <td>0.4706</td>
+      <td>B1</td>
+      <td>0.583266</td>
+      <td>16.8</td>
+      <td>2018-01-01</td>
+      <td>20180101-06-04</td>
+      <td>3</td>
+      <td>5.0</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>2-1-4</td>
+      <td>4-1-3</td>
       <td>0</td>
-      <td>31.67</td>
-      <td>44.17</td>
-      <td>37.96</td>
-      <td>52.78</td>
-      <td>13.861935</td>
+      <td>0.3636</td>
+      <td>0.5152</td>
+      <td>0.4469</td>
+      <td>0.5754</td>
+      <td>B1</td>
+      <td>6.454111</td>
       <td>0</td>
-      <td>27.03</td>
-      <td>44.14</td>
+      <td>0.3231</td>
       <td>...</td>
-      <td>36.67</td>
-      <td>55.83</td>
-      <td>24.14</td>
-      <td>51.72</td>
-      <td>2.645608</td>
-      <td>11.9</td>
-      <td>2018-02-01</td>
-      <td>20180201-02-05</td>
-      <td>1</td>
-      <td>1.0</td>
+      <td>0.4925</td>
+      <td>0.3916</td>
+      <td>0.5663</td>
+      <td>B2</td>
+      <td>0.470489</td>
+      <td>51.5</td>
+      <td>2018-01-01</td>
+      <td>20180101-06-05</td>
+      <td>3</td>
+      <td>5.0</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 42 columns</p>
+<p>5 rows × 48 columns</p>
 </div>
 </div>
 
@@ -13435,7 +13435,7 @@ testdatta: 4689
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">testdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">testLoadList</span><span class="p">)</span>
@@ -13452,7 +13452,7 @@ testdatta: 4689
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[28]:</div>
+    <div class="prompt output_prompt">Out[42]:</div>
 
 
 
@@ -13481,15 +13481,15 @@ testdatta: 4689
       <th>l1boat3r</th>
       <th>l1motor2r</th>
       <th>l1motor3r</th>
+      <th>l1rank</th>
       <th>l1score</th>
       <th>l2Fcnt</th>
       <th>l2boat2r</th>
-      <th>l2boat3r</th>
       <th>...</th>
-      <th>l6boat2r</th>
       <th>l6boat3r</th>
       <th>l6motor2r</th>
       <th>l6motor3r</th>
+      <th>l6rank</th>
       <th>l6score</th>
       <th>odds</th>
       <th>raceDate</th>
@@ -13501,127 +13501,127 @@ testdatta: 4689
   <tbody>
     <tr>
       <th>0</th>
-      <td>1-4-3</td>
+      <td>1-5-2</td>
       <td>0</td>
-      <td>36.23</td>
-      <td>53.62</td>
-      <td>45.95</td>
-      <td>64.86</td>
-      <td>5.806358</td>
+      <td>0.3750</td>
+      <td>0.5714</td>
+      <td>0.3152</td>
+      <td>0.5163</td>
+      <td>B1</td>
+      <td>6.582412</td>
       <td>0</td>
-      <td>36.92</td>
-      <td>55.38</td>
+      <td>0.3354</td>
       <td>...</td>
-      <td>33.33</td>
-      <td>37.88</td>
-      <td>28.13</td>
-      <td>43.75</td>
-      <td>1.680446</td>
-      <td>17.3</td>
-      <td>2018-03-01</td>
-      <td>20180301-01-01</td>
-      <td>7</td>
-      <td>7.0</td>
+      <td>0.5723</td>
+      <td>0.3669</td>
+      <td>0.5089</td>
+      <td>B2</td>
+      <td>0.666744</td>
+      <td>40.6</td>
+      <td>2018-04-01</td>
+      <td>20180401-02-01</td>
+      <td>1</td>
+      <td>2.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>2-5-3</td>
+      <td>4-6-1</td>
       <td>0</td>
-      <td>42.65</td>
-      <td>61.76</td>
-      <td>36.36</td>
-      <td>45.45</td>
-      <td>5.351027</td>
-      <td>0</td>
-      <td>13.46</td>
-      <td>30.77</td>
+      <td>0.4034</td>
+      <td>0.5625</td>
+      <td>0.3297</td>
+      <td>0.4835</td>
+      <td>B1</td>
+      <td>7.479711</td>
+      <td>1</td>
+      <td>0.3247</td>
       <td>...</td>
-      <td>20.00</td>
-      <td>36.67</td>
-      <td>33.33</td>
-      <td>54.55</td>
-      <td>0.749662</td>
-      <td>87.8</td>
-      <td>2018-03-01</td>
-      <td>20180301-01-02</td>
-      <td>9</td>
-      <td>9.0</td>
+      <td>0.4765</td>
+      <td>0.4934</td>
+      <td>0.5987</td>
+      <td>B1</td>
+      <td>1.950668</td>
+      <td>26.0</td>
+      <td>2018-04-01</td>
+      <td>20180401-02-02</td>
+      <td>1</td>
+      <td>2.0</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>2-1-5</td>
+      <td>3-2-5</td>
       <td>0</td>
-      <td>29.23</td>
-      <td>44.62</td>
-      <td>22.58</td>
-      <td>38.71</td>
-      <td>6.271362</td>
-      <td>1</td>
-      <td>40.30</td>
-      <td>62.69</td>
+      <td>0.4045</td>
+      <td>0.5955</td>
+      <td>0.3664</td>
+      <td>0.5954</td>
+      <td>B1</td>
+      <td>2.656783</td>
+      <td>0</td>
+      <td>0.3609</td>
       <td>...</td>
-      <td>33.82</td>
-      <td>42.65</td>
-      <td>32.35</td>
-      <td>41.18</td>
-      <td>1.085281</td>
-      <td>23.9</td>
-      <td>2018-03-01</td>
-      <td>20180301-01-03</td>
-      <td>8</td>
-      <td>9.0</td>
+      <td>0.5465</td>
+      <td>0.3702</td>
+      <td>0.5240</td>
+      <td>A2</td>
+      <td>1.499352</td>
+      <td>9.3</td>
+      <td>2018-04-01</td>
+      <td>20180401-02-03</td>
+      <td>1</td>
+      <td>2.0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>3-2-1</td>
-      <td>1</td>
-      <td>37.50</td>
-      <td>59.38</td>
-      <td>31.43</td>
-      <td>48.57</td>
-      <td>5.466572</td>
+      <td>3-1-2</td>
       <td>0</td>
-      <td>27.14</td>
-      <td>41.43</td>
+      <td>0.4121</td>
+      <td>0.5818</td>
+      <td>0.4138</td>
+      <td>0.5655</td>
+      <td>B1</td>
+      <td>8.429216</td>
+      <td>1</td>
+      <td>0.4653</td>
       <td>...</td>
-      <td>39.13</td>
-      <td>52.17</td>
-      <td>23.53</td>
-      <td>32.35</td>
-      <td>1.405639</td>
-      <td>18.0</td>
-      <td>2018-03-01</td>
-      <td>20180301-01-04</td>
-      <td>8</td>
-      <td>9.0</td>
+      <td>0.5724</td>
+      <td>0.3627</td>
+      <td>0.5699</td>
+      <td>A2</td>
+      <td>2.021243</td>
+      <td>85.3</td>
+      <td>2018-04-01</td>
+      <td>20180401-02-04</td>
+      <td>1</td>
+      <td>2.0</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>5-2-3</td>
+      <td>3-4-2</td>
       <td>0</td>
-      <td>29.85</td>
-      <td>47.76</td>
-      <td>44.12</td>
-      <td>70.59</td>
-      <td>3.064101</td>
-      <td>0</td>
-      <td>17.91</td>
-      <td>38.81</td>
+      <td>0.3125</td>
+      <td>0.5125</td>
+      <td>0.3200</td>
+      <td>0.4400</td>
+      <td>B1</td>
+      <td>3.230705</td>
+      <td>1</td>
+      <td>0.3106</td>
       <td>...</td>
-      <td>29.41</td>
-      <td>44.12</td>
-      <td>25.71</td>
-      <td>48.57</td>
-      <td>0.753276</td>
-      <td>94.6</td>
-      <td>2018-03-01</td>
-      <td>20180301-01-05</td>
-      <td>8</td>
-      <td>9.0</td>
+      <td>0.5284</td>
+      <td>0.4260</td>
+      <td>0.6036</td>
+      <td>B1</td>
+      <td>0.478606</td>
+      <td>15.9</td>
+      <td>2018-04-01</td>
+      <td>20180401-02-05</td>
+      <td>1</td>
+      <td>2.0</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 42 columns</p>
+<p>5 rows × 48 columns</p>
 </div>
 </div>
 
@@ -13633,210 +13633,32 @@ testdatta: 4689
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[87]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 入力のデータ整形</span>
 <span class="n">xdf</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;funaken&#39;</span><span class="p">,</span><span class="s1">&#39;odds&#39;</span><span class="p">,</span><span class="s1">&#39;raceId&#39;</span><span class="p">,</span><span class="s1">&#39;raceDate&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">xdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="n">xdf</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">xdf</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;l1rank&#39;</span><span class="p">,</span><span class="s1">&#39;l2rank&#39;</span><span class="p">,</span><span class="s1">&#39;l3rank&#39;</span><span class="p">,</span><span class="s1">&#39;l4rank&#39;</span><span class="p">,</span><span class="s1">&#39;l5rank&#39;</span><span class="p">,</span><span class="s1">&#39;l6rank&#39;</span><span class="p">])</span>
+<span class="c1">#xdf.head()</span>
+<span class="n">xdf</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+
+<span class="c1"># サンプル確認用</span>
+<span class="n">xdf_sample</span><span class="o">=</span><span class="n">xdf</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[29]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>l1Fcnt</th>
-      <th>l1boat2r</th>
-      <th>l1boat3r</th>
-      <th>l1motor2r</th>
-      <th>l1motor3r</th>
-      <th>l1score</th>
-      <th>l2Fcnt</th>
-      <th>l2boat2r</th>
-      <th>l2boat3r</th>
-      <th>l2motor2r</th>
-      <th>...</th>
-      <th>l5motor3r</th>
-      <th>l5score</th>
-      <th>l6Fcnt</th>
-      <th>l6boat2r</th>
-      <th>l6boat3r</th>
-      <th>l6motor2r</th>
-      <th>l6motor3r</th>
-      <th>l6score</th>
-      <th>raceWaveHeight</th>
-      <th>raceWindSpeed</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1</td>
-      <td>20.95</td>
-      <td>35.24</td>
-      <td>34.82</td>
-      <td>54.46</td>
-      <td>17.032873</td>
-      <td>0</td>
-      <td>32.46</td>
-      <td>50.00</td>
-      <td>26.60</td>
-      <td>...</td>
-      <td>34.31</td>
-      <td>1.600358</td>
-      <td>0</td>
-      <td>26.09</td>
-      <td>41.74</td>
-      <td>30.57</td>
-      <td>47.77</td>
-      <td>2.630091</td>
-      <td>0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0</td>
-      <td>25.22</td>
-      <td>40.00</td>
-      <td>21.00</td>
-      <td>38.00</td>
-      <td>3.813810</td>
-      <td>0</td>
-      <td>37.59</td>
-      <td>54.89</td>
-      <td>34.85</td>
-      <td>...</td>
-      <td>50.98</td>
-      <td>3.090330</td>
-      <td>1</td>
-      <td>33.05</td>
-      <td>51.69</td>
-      <td>28.87</td>
-      <td>47.89</td>
-      <td>0.762340</td>
-      <td>1</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0</td>
-      <td>36.57</td>
-      <td>51.49</td>
-      <td>29.61</td>
-      <td>45.39</td>
-      <td>7.815553</td>
-      <td>0</td>
-      <td>29.31</td>
-      <td>49.14</td>
-      <td>31.54</td>
-      <td>...</td>
-      <td>47.48</td>
-      <td>3.516793</td>
-      <td>0</td>
-      <td>33.33</td>
-      <td>44.44</td>
-      <td>36.61</td>
-      <td>62.50</td>
-      <td>2.067739</td>
-      <td>1</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0</td>
-      <td>36.13</td>
-      <td>56.30</td>
-      <td>35.88</td>
-      <td>46.56</td>
-      <td>5.418879</td>
-      <td>0</td>
-      <td>32.80</td>
-      <td>48.00</td>
-      <td>27.34</td>
-      <td>...</td>
-      <td>38.24</td>
-      <td>0.833385</td>
-      <td>0</td>
-      <td>36.84</td>
-      <td>50.38</td>
-      <td>33.12</td>
-      <td>48.41</td>
-      <td>2.355796</td>
-      <td>1</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0</td>
-      <td>31.67</td>
-      <td>44.17</td>
-      <td>37.96</td>
-      <td>52.78</td>
-      <td>13.861935</td>
-      <td>0</td>
-      <td>27.03</td>
-      <td>44.14</td>
-      <td>33.59</td>
-      <td>...</td>
-      <td>39.64</td>
-      <td>1.682822</td>
-      <td>0</td>
-      <td>36.67</td>
-      <td>55.83</td>
-      <td>24.14</td>
-      <td>51.72</td>
-      <td>2.645608</td>
-      <td>1</td>
-      <td>1.0</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 38 columns</p>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 入力のデータ整形</span>
 <span class="n">testxdf</span><span class="o">=</span><span class="n">testdf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;funaken&#39;</span><span class="p">,</span><span class="s1">&#39;odds&#39;</span><span class="p">,</span><span class="s1">&#39;raceId&#39;</span><span class="p">,</span><span class="s1">&#39;raceDate&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">testxdf</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">testxdf</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;l1rank&#39;</span><span class="p">,</span><span class="s1">&#39;l2rank&#39;</span><span class="p">,</span><span class="s1">&#39;l3rank&#39;</span><span class="p">,</span><span class="s1">&#39;l4rank&#39;</span><span class="p">,</span><span class="s1">&#39;l5rank&#39;</span><span class="p">,</span><span class="s1">&#39;l6rank&#39;</span><span class="p">])</span>
 <span class="n">testxdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
@@ -13850,7 +13672,7 @@ testdatta: 4689
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[30]:</div>
+    <div class="prompt output_prompt">Out[44]:</div>
 
 
 
@@ -13884,142 +13706,142 @@ testdatta: 4689
       <th>l2boat3r</th>
       <th>l2motor2r</th>
       <th>...</th>
-      <th>l5motor3r</th>
-      <th>l5score</th>
-      <th>l6Fcnt</th>
-      <th>l6boat2r</th>
-      <th>l6boat3r</th>
-      <th>l6motor2r</th>
-      <th>l6motor3r</th>
-      <th>l6score</th>
-      <th>raceWaveHeight</th>
-      <th>raceWindSpeed</th>
+      <th>l4rank_B1</th>
+      <th>l4rank_B2</th>
+      <th>l5rank_A1</th>
+      <th>l5rank_A2</th>
+      <th>l5rank_B1</th>
+      <th>l5rank_B2</th>
+      <th>l6rank_A1</th>
+      <th>l6rank_A2</th>
+      <th>l6rank_B1</th>
+      <th>l6rank_B2</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>0</td>
-      <td>36.23</td>
-      <td>53.62</td>
-      <td>45.95</td>
-      <td>64.86</td>
-      <td>5.806358</td>
+      <td>0.3750</td>
+      <td>0.5714</td>
+      <td>0.3152</td>
+      <td>0.5163</td>
+      <td>6.582412</td>
       <td>0</td>
-      <td>36.92</td>
-      <td>55.38</td>
-      <td>32.50</td>
+      <td>0.3354</td>
+      <td>0.4939</td>
+      <td>0.3297</td>
       <td>...</td>
-      <td>50.00</td>
-      <td>1.187500</td>
+      <td>1</td>
       <td>0</td>
-      <td>33.33</td>
-      <td>37.88</td>
-      <td>28.13</td>
-      <td>43.75</td>
-      <td>1.680446</td>
-      <td>7</td>
-      <td>7.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>1</th>
       <td>0</td>
-      <td>42.65</td>
-      <td>61.76</td>
-      <td>36.36</td>
-      <td>45.45</td>
-      <td>5.351027</td>
-      <td>0</td>
-      <td>13.46</td>
-      <td>30.77</td>
-      <td>34.38</td>
+      <td>0.4034</td>
+      <td>0.5625</td>
+      <td>0.3297</td>
+      <td>0.4835</td>
+      <td>7.479711</td>
+      <td>1</td>
+      <td>0.3247</td>
+      <td>0.4675</td>
+      <td>0.3385</td>
       <td>...</td>
-      <td>69.70</td>
-      <td>4.246375</td>
       <td>0</td>
-      <td>20.00</td>
-      <td>36.67</td>
-      <td>33.33</td>
-      <td>54.55</td>
-      <td>0.749662</td>
-      <td>9</td>
-      <td>9.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>0</td>
-      <td>29.23</td>
-      <td>44.62</td>
-      <td>22.58</td>
-      <td>38.71</td>
-      <td>6.271362</td>
-      <td>1</td>
-      <td>40.30</td>
-      <td>62.69</td>
-      <td>40.43</td>
-      <td>...</td>
-      <td>53.13</td>
-      <td>4.856609</td>
+      <td>0.4045</td>
+      <td>0.5955</td>
+      <td>0.3664</td>
+      <td>0.5954</td>
+      <td>2.656783</td>
       <td>0</td>
-      <td>33.82</td>
-      <td>42.65</td>
-      <td>32.35</td>
-      <td>41.18</td>
-      <td>1.085281</td>
-      <td>8</td>
-      <td>9.0</td>
+      <td>0.3609</td>
+      <td>0.5030</td>
+      <td>0.3831</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>3</th>
+      <td>0</td>
+      <td>0.4121</td>
+      <td>0.5818</td>
+      <td>0.4138</td>
+      <td>0.5655</td>
+      <td>8.429216</td>
       <td>1</td>
-      <td>37.50</td>
-      <td>59.38</td>
-      <td>31.43</td>
-      <td>48.57</td>
-      <td>5.466572</td>
-      <td>0</td>
-      <td>27.14</td>
-      <td>41.43</td>
-      <td>21.21</td>
+      <td>0.4653</td>
+      <td>0.5972</td>
+      <td>0.3846</td>
       <td>...</td>
-      <td>41.18</td>
-      <td>2.248833</td>
       <td>0</td>
-      <td>39.13</td>
-      <td>52.17</td>
-      <td>23.53</td>
-      <td>32.35</td>
-      <td>1.405639</td>
-      <td>8</td>
-      <td>9.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>0</td>
-      <td>29.85</td>
-      <td>47.76</td>
-      <td>44.12</td>
-      <td>70.59</td>
-      <td>3.064101</td>
-      <td>0</td>
-      <td>17.91</td>
-      <td>38.81</td>
-      <td>33.33</td>
+      <td>0.3125</td>
+      <td>0.5125</td>
+      <td>0.3200</td>
+      <td>0.4400</td>
+      <td>3.230705</td>
+      <td>1</td>
+      <td>0.3106</td>
+      <td>0.4783</td>
+      <td>0.3125</td>
       <td>...</td>
-      <td>83.78</td>
-      <td>5.159426</td>
       <td>0</td>
-      <td>29.41</td>
-      <td>44.12</td>
-      <td>25.71</td>
-      <td>48.57</td>
-      <td>0.753276</td>
-      <td>8</td>
-      <td>9.0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 38 columns</p>
+<p>5 rows × 62 columns</p>
 </div>
 </div>
 
@@ -14031,13 +13853,18 @@ testdatta: 4689
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[130]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 結果のOne-Hot表現を作る</span>
 <span class="n">ydf</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span>
 <span class="n">ydf</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">ydf</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">])</span>
-<span class="n">ydf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="c1">#ydf.head()</span>
+<span class="n">ydf</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+
+<span class="c1"># サンプル確認用</span>
+<span class="c1">#ydf_sample=ydf[0:5]</span>
+<span class="c1">#ydf.head()</span>
 </pre></div>
 
     </div>
@@ -14050,7 +13877,7 @@ testdatta: 4689
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[8]:</div>
+    <div class="prompt output_prompt">Out[130]:</div>
 
 
 
@@ -14098,128 +13925,200 @@ testdatta: 4689
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <th>count</th>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
       <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
+      <td>22761.000000</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <th>mean</th>
+      <td>0.069461</td>
+      <td>0.050876</td>
+      <td>0.035895</td>
+      <td>0.028162</td>
+      <td>0.049954</td>
+      <td>0.043979</td>
+      <td>0.028777</td>
+      <td>0.023681</td>
+      <td>0.036158</td>
+      <td>0.030666</td>
       <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <td>0.001274</td>
+      <td>0.001274</td>
+      <td>0.001582</td>
+      <td>0.001626</td>
+      <td>0.001054</td>
+      <td>0.001142</td>
+      <td>0.001713</td>
+      <td>0.001362</td>
+      <td>0.001186</td>
+      <td>0.000879</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <th>std</th>
+      <td>0.254242</td>
+      <td>0.219750</td>
+      <td>0.186032</td>
+      <td>0.165440</td>
+      <td>0.217854</td>
+      <td>0.205052</td>
+      <td>0.167184</td>
+      <td>0.152056</td>
+      <td>0.186688</td>
+      <td>0.172416</td>
       <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <td>0.035673</td>
+      <td>0.035673</td>
+      <td>0.039739</td>
+      <td>0.040287</td>
+      <td>0.032456</td>
+      <td>0.033779</td>
+      <td>0.041359</td>
+      <td>0.036881</td>
+      <td>0.034422</td>
+      <td>0.029630</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <th>min</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
       <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <th>25%</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
       <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>...</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 120 columns</p>
+<p>8 rows × 120 columns</p>
 </div>
 </div>
 
@@ -14231,7 +14130,7 @@ testdatta: 4689
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[46]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 結果のOne-Hot表現を作る</span>
@@ -14250,7 +14149,7 @@ testdatta: 4689
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[31]:</div>
+    <div class="prompt output_prompt">Out[46]:</div>
 
 
 
@@ -14308,7 +14207,7 @@ testdatta: 4689
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>1</td>
+      <td>0</td>
       <td>...</td>
       <td>0</td>
       <td>0</td>
@@ -14431,18 +14330,18 @@ testdatta: 4689
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[47]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">xAtrNum</span><span class="o">=</span><span class="mi">38</span>
-<span class="n">yclassNum</span><span class="o">=</span><span class="mi">120</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#xAtrNum=62</span>
+<span class="c1">#yclassNum=120</span>
+
 <span class="c1"># create the model</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,[</span><span class="kc">None</span><span class="p">,</span><span class="n">xAtrNum</span><span class="p">])</span>
-<span class="c1">#W = tf.Variable(tf.zeros([xAtrNum,yclassNum]))</span>
-<span class="c1">#b = tf.Variable(tf.zeros([yclassNum]))</span>
-<span class="n">W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">xAtrNum</span><span class="p">,</span><span class="n">yclassNum</span><span class="p">],</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">yclassNum</span><span class="p">],</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>  <span class="p">)</span>
+<span class="c1">## 保存しておく</span>
+<span class="c1">#x = tf.placeholder(tf.float32,[None,xAtrNum])</span>
+<span class="c1">#W = tf.Variable(tf.random_uniform([xAtrNum,yclassNum],-1.0,1.0))</span>
+<span class="c1">#b = tf.Variable(tf.random_uniform([yclassNum],-1.0,1.0))</span>
+<span class="c1">#y = tf.nn.softmax( (tf.matmul(x,W)+b) - tf.reduce_max(tf.matmul(x,W)+b)  )</span>
 </pre></div>
 
     </div>
@@ -14452,14 +14351,81 @@ testdatta: 4689
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[123]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">xAtrNum</span><span class="o">=</span><span class="mi">62</span>
+<span class="n">yclassNum</span><span class="o">=</span><span class="mi">120</span>
+
+<span class="c1"># create the model</span>
+<span class="c1">## 保存しておく</span>
+<span class="c1">#x = tf.placeholder(tf.float32,[None,xAtrNum])</span>
+<span class="c1">#W = tf.Variable(tf.random_uniform([xAtrNum,yclassNum],-1.0,1.0))</span>
+<span class="c1">#b = tf.Variable(tf.random_uniform([yclassNum],-1.0,1.0))</span>
+<span class="c1">#y = tf.nn.softmax( (tf.matmul(x,W)+b) - tf.reduce_max(tf.matmul(x,W)+b)  )</span>
+
+<span class="c1"># layerNumは2以上。</span>
+<span class="n">layerNum</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">layerClassNum</span><span class="o">=</span><span class="mi">360</span>
+<span class="n">wInitMin</span><span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span>
+<span class="n">wInitMax</span><span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">bInitMin</span><span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span>
+<span class="n">bInitMax</span><span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="c1">## 多層化</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,[</span><span class="kc">None</span><span class="p">,</span><span class="n">xAtrNum</span><span class="p">])</span>
+<span class="n">x_hidden</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">W_hidden</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">b_hidden</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="c1"># 0 と最後については形が違うので個別に設定。</span>
+<span class="n">x_hidden</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">loadList</span><span class="p">),</span><span class="n">layerClassNum</span><span class="p">],</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)))</span>
+<span class="n">W_hidden</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">xAtrNum</span><span class="p">,</span><span class="n">layerClassNum</span><span class="p">],</span><span class="n">wInitMin</span><span class="p">,</span><span class="n">wInitMax</span><span class="p">)))</span>
+<span class="n">b_hidden</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">layerClassNum</span><span class="p">],</span><span class="n">bInitMin</span><span class="p">,</span><span class="n">bInitMax</span><span class="p">)))</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">layerNum</span><span class="p">):</span>
+    <span class="n">x_hidden</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">loadList</span><span class="p">),</span><span class="n">layerClassNum</span><span class="p">],</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)))</span>
+    <span class="n">W_hidden</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">layerClassNum</span><span class="p">,</span><span class="n">layerClassNum</span><span class="p">],</span><span class="n">wInitMin</span><span class="p">,</span><span class="n">wInitMax</span><span class="p">)))</span>
+    <span class="n">b_hidden</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">layerClassNum</span><span class="p">],</span><span class="n">bInitMin</span><span class="p">,</span><span class="n">bInitMax</span><span class="p">)))</span>
+
+<span class="n">x_hidden</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W_hidden</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">b_hidden</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">layerNum</span><span class="p">):</span>
+    <span class="n">x_hidden</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">W_hidden</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">+</span><span class="n">b_hidden</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+<span class="c1"># 0 と最後については形が違うので個別に設定。</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">layerClassNum</span><span class="p">,</span><span class="n">yclassNum</span><span class="p">],</span><span class="n">wInitMin</span><span class="p">,</span><span class="n">wInitMax</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">yclassNum</span><span class="p">],</span><span class="n">bInitMin</span><span class="p">,</span><span class="n">bInitMax</span><span class="p">))</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">[</span><span class="n">layerNum</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">[</span><span class="n">layerNum</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">W</span><span class="p">)</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>  <span class="p">)</span>
+<span class="c1">#y = tf.nn.softmax( tf.sigmoid(tf.matmul(x_hidden[layerNum-1],W)+b))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[124]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># define loss and optimizer</span>
 <span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,[</span><span class="kc">None</span><span class="p">,</span><span class="n">yclassNum</span><span class="p">])</span>
-<span class="n">cross_entropy</span><span class="o">=-</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">y_</span><span class="o">*</span><span class="n">tf</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="n">tf</span><span class="o">.</span><span class="n">clip_by_value</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="mf">1e-10</span><span class="p">,</span><span class="mf">1e+10</span><span class="p">)</span> <span class="p">))</span>
+<span class="n">cross_entropy</span><span class="o">=-</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">y_</span><span class="o">*</span><span class="n">tf</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="n">tf</span><span class="o">.</span><span class="n">clip_by_value</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="mf">1e-5</span><span class="p">,</span><span class="mf">1e+5</span><span class="p">)</span> <span class="p">))</span>
+
+<span class="c1"># L2正則化</span>
+<span class="n">lambda_2</span><span class="o">=</span><span class="mf">0.01</span>
+<span class="n">L2_sqr</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_loss</span><span class="p">(</span><span class="n">W</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layerNum</span><span class="p">):</span>
+    <span class="n">L2_sqr</span><span class="o">+=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">l2_loss</span><span class="p">(</span><span class="n">W_hidden</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+<span class="n">loss</span><span class="o">=</span><span class="n">cross_entropy</span><span class="o">+</span><span class="n">lambda_2</span><span class="o">*</span><span class="n">L2_sqr</span>
+
 <span class="c1">#cross_entropy=-tf.reduce_sum( (y_-y)**2 )</span>
-<span class="n">train_step</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">)</span>
+<span class="n">train_step</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+
+<span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -14469,20 +14435,48 @@ testdatta: 4689
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[125]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># tensorboard</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">):</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">scalar</span><span class="p">(</span><span class="s1">&#39;cross_entropy&#39;</span><span class="p">,</span> <span class="n">cross_entropy</span><span class="p">)</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">merge_all</span><span class="p">()</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">FileWriter</span><span class="p">(</span><span class="s1">&#39;/home/ec2-user/boatrace/log/tensorboard&#39;</span><span class="p">,</span> <span class="n">sess</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[126]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># train</span>
-<span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span>
-<span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+<span class="n">maxEpochs</span><span class="o">=</span><span class="mi">1000</span>
+
+<span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxEpochs</span><span class="p">):</span>
     <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_step</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">})</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cross_entropy:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">})</span> <span class="p">))</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="p">(</span><span class="n">maxEpochs</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">correct_prediction</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">accuracy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">correct_prediction</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y_</span><span class="p">:</span> <span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">})))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cross_entropy:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">})</span> <span class="p">),</span> \
+              <span class="s2">&quot;loss:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">})),</span>  \
+              <span class="s2">&quot;accuracy:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y_</span><span class="p">:</span> <span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span> <span class="p">)</span>
+        <span class="c1">#print(&quot;w:&quot;,sess.run(tf.reduce_sum(W),feed_dict={x: xdf.values, y_: ydf.values}))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ymax:&quot;</span><span class="p">,</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ymin:&quot;</span><span class="p">,</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;W:&quot;</span><span class="p">,</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">W</span><span class="p">)</span> <span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">layerNum</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;X</span><span class="si">%d</span><span class="s2">:&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">j</span><span class="p">),</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
+        <span class="c1">#print(&quot;b:&quot;,sess.run(tf.reduce_sum(b) ,feed_dict={x:xdf.values,y_:ydf.values}))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sample:&quot;</span><span class="p">,</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf_sample</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf_sample</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
+        
 </pre></div>
 
     </div>
@@ -14499,26 +14493,101 @@ testdatta: 4689
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>cross_entropy:86120.24
-accuracy:0.026541764
-cross_entropy:85408.97
-accuracy:0.034087952
-cross_entropy:85400.234
-accuracy:0.032786883
-cross_entropy:85399.81
-accuracy:0.034087952
-cross_entropy:85380.39
-accuracy:0.035128806
-cross_entropy:85379.93
-accuracy:0.035128806
-cross_entropy:85379.766
-accuracy:0.035128806
-cross_entropy:85379.64
-accuracy:0.035128806
-cross_entropy:85379.55
-accuracy:0.035128806
-cross_entropy:85379.484
-accuracy:0.035128806
+<pre>cross_entropy:243847.5 loss:290123.88 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -37.052734
+X0: 38.832775
+X1: 20.49167
+X2: 95.9155
+X3: 235.78658
+X4: 934.91016
+cross_entropy:243847.5 loss:281731.62 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -33.515625
+X0: 35.13779
+X1: 18.493923
+X2: 86.74421
+X3: 213.60846
+X4: 846.7575
+cross_entropy:243847.5 loss:274861.28 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -30.289062
+X0: 31.794563
+X1: 16.686396
+X2: 78.44456
+X3: 193.56561
+X4: 767.04486
+cross_entropy:243847.5 loss:269236.88 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -27.445312
+X0: 28.769648
+X1: 15.051909
+X2: 70.9341
+X3: 175.452
+X4: 694.9602
+cross_entropy:243847.5 loss:264632.47 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -24.853516
+X0: 26.032726
+X1: 13.595392
+X2: 64.13818
+X3: 159.08066
+X4: 629.76953
+cross_entropy:243847.5 loss:260863.1 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -22.388672
+X0: 23.556389
+X1: 12.29231
+X2: 57.989174
+X3: 144.28223
+X4: 570.8069
+cross_entropy:243847.5 loss:257777.3 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -20.361328
+X0: 21.315817
+X1: 11.119814
+X2: 52.426105
+X3: 130.90283
+X4: 517.4702
+cross_entropy:243847.5 loss:255251.14 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -18.37793
+X0: 19.288551
+X1: 10.0564995
+X2: 47.3938
+X3: 118.80351
+X4: 469.2168
+cross_entropy:243847.5 loss:253183.05 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -16.597656
+X0: 17.454308
+X1: 9.0926075
+X2: 42.84253
+X3: 107.86064
+X4: 425.5561
+cross_entropy:243847.5 loss:251490.03 accuracy:0.06946092
+Ymax: 1.0
+Ymin: 0.0
+W: -14.994141
+X0: 15.79469
+X1: 8.220292
+X2: 38.727455
+X3: 97.95944
+X4: 386.04605
+sample: [[0.57388747 0.4534757  0.18919125 ... 0.21323615 0.57652175 0.4990517 ]
+ [0.5002452  0.5428723  0.28427112 ... 0.32861373 0.52814746 0.51004744]
+ [0.49864593 0.58109254 0.2830192  ... 0.34066907 0.57644933 0.49129122]
+ [0.54909223 0.5071391  0.26669455 ... 0.3257557  0.549734   0.4570238 ]
+ [0.5501631  0.5045274  0.2773626  ... 0.30150196 0.58221555 0.4739402 ]]
 </pre>
 </div>
 </div>
@@ -14529,10 +14598,76 @@ accuracy:0.035128806
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[128]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># test_trained_data</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sample:&quot;</span><span class="p">,</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">x_hidden</span><span class="p">[</span><span class="n">layerNum</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf_sample</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf_sample</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Y:&quot;</span><span class="p">,</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span><span class="n">xdf_sample</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">y_</span><span class="p">:</span><span class="n">ydf_sample</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>sample: [[1.00000000e+00 0.00000000e+00 1.86143715e-31 ... 1.00000000e+00
+  0.00000000e+00 1.25156396e-26]
+ [1.00000000e+00 0.00000000e+00 1.86150815e-31 ... 1.00000000e+00
+  0.00000000e+00 1.25159747e-26]
+ [1.00000000e+00 0.00000000e+00 1.86149393e-31 ... 1.00000000e+00
+  0.00000000e+00 1.25159747e-26]
+ [1.00000000e+00 0.00000000e+00 1.86142293e-31 ... 1.00000000e+00
+  0.00000000e+00 1.25157359e-26]
+ [1.00000000e+00 0.00000000e+00 1.86142293e-31 ... 1.00000000e+00
+  0.00000000e+00 1.25156873e-26]]
+Y: [[1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+  0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[80]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># evaluate trained_data</span>
 <span class="n">correct_prediction</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="n">accuracy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">correct_prediction</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">testxdf</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y_</span><span class="p">:</span> <span class="n">testydf</span><span class="o">.</span><span class="n">values</span><span class="p">}))</span>
@@ -14552,7 +14687,7 @@ accuracy:0.035128806
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.030283643
+<pre>0.0636098
 </pre>
 </div>
 </div>
@@ -14563,7 +14698,7 @@ accuracy:0.035128806
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[53]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># メモリ使用チェック</span>
@@ -14590,14 +14725,14 @@ accuracy:0.035128806
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>|            Variable Name|    Memory|
  ------------------------------------ 
-|                       df|   1863959|
-|                 loadList|     33928|
+|                       df|  19096583|
+|                 loadList|    200320|
 |             testLoadList|     38216|
-|                   testdf|   2274269|
-|                  testxdf|   1425560|
-|                  testydf|    562784|
-|                      xdf|   1168376|
-|                      ydf|    461264|
+|                   testdf|   3732815|
+|                  testxdf|   1459376|
+|                  testydf|    533984|
+|                      xdf|   7465712|
+|                      ydf|   2731424|
 </pre>
 </div>
 </div>
