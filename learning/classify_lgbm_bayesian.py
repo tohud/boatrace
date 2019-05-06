@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[97]:
 
 
 # 選手情報・過去レース情報から3連単舟券120種をクラス分類する
 # こちらではパラメタのベイズ最適化を試みる。
+# todo データの項目を増やしてみる。スタートタイムや過去の連対率。逆に、オッズは消す。
 
 # 汎用ライブラリのimport
 import sys
@@ -22,8 +23,14 @@ import lightgbm as lgb
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
+from bayes_opt import BayesianOptimization
+from sklearn.model_selection import StratifiedKFold
+from scipy.stats import rankdata
+from sklearn import metrics
+import warnings
 
-# In[2]:
+
+# In[80]:
 
 
 # 自作ライブラリのimport
@@ -34,7 +41,7 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[3]:
+# In[81]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
@@ -43,14 +50,14 @@ trainEndDate="20180731"
 # test はtrainからsplitする
 
 
-# In[4]:
+# In[82]:
 
 
 dbh=dbHandler.getDBHandle()
 #dbHandler.closeDBHandle(dbh)
 
 
-# In[5]:
+# In[83]:
 
 
 # trainの元データを取得
@@ -61,14 +68,14 @@ with dbh.cursor() as cursor:
 print("traindata:",len(loadList))
 
 
-# In[6]:
+# In[84]:
 
 
 df = pd.io.json.json_normalize(loadList)
 df.head()
 
 
-# In[37]:
+# In[85]:
 
 
 # 入力のデータ整形
@@ -85,15 +92,15 @@ xdf['l6rank']=rankLabel.transform(xdf['l6rank'])
 xdf.head()
 
 
-# In[38]:
+# In[162]:
 
 
 # 結果のOne-Hot表現を作る⇒LGBMは数値配列なので数字にする。
 ydf=df['funaken']
 yLabel = LabelEncoder()
 yLabel = yLabel.fit(ydf)
-#ydf = pd.DataFrame(yLabel.transform(ydf))
-ydf = yLabel.transform(ydf)
+ydf = pd.DataFrame(yLabel.transform(ydf))
+#ydf = yLabel.transform(ydf)
 #ydf=pd.get_dummies(ydf,columns=['funaken'])
 #ydf.head()
 #ydf.describe()
@@ -105,134 +112,123 @@ ydf = yLabel.transform(ydf)
 
 
 
-# In[39]:
+# In[163]:
 
 
 # 重み付けのため、オッズのリストを作る
-odf=df['odds'].values
-#odf=pd.DataFrame(df['odds'])
+#odf=df['odds'].values
+odf=pd.DataFrame(df['odds'])
 #odf.describe()
 print(type(odf))
 
 
-# In[40]:
+# In[164]:
 
 
-X_train, X_test, y_train, y_test,o_train,o_test = train_test_split(xdf, ydf,odf)
+bayesian_tr_index, bayesian_val_index  = list(StratifiedKFold(n_splits=2, shuffle=True, random_state=1).split(xdf, ydf))[0]
 
 
-# In[41]:
+# In[221]:
 
 
-lgb_train = lgb.Dataset(X_train, y_train)
-lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
+def LGB_bayesian(
+    num_leaves, #int
+    min_data_in_leaf, #int
+    reg_alpha,
+    reg_lambda,
+    max_depth #int
+):
+    
+    # 整数じゃないといけないパラメータ。
+    num_leaves = int(num_leaves)
+    min_data_in_leaf = int(min_data_in_leaf)
+    max_depth = int(max_depth)    
+    assert type(num_leaves)==int
+    assert type(min_data_in_leaf)==int
+    assert type(max_depth)==int
+    
+    params={
+        # 多値分類問題
+        'objective': 'multiclass',
+        # クラス数は 120
+        'num_class': 120,
+        #'class_weight':'balanced',
+        'random_state':999,
+        # 以下、ハイパーパラメタ
+        'max_depth':max_depth,
+        'num_leaves':num_leaves,
+        'min_data_in_leaf':min_data_in_leaf,
+        # 正則化
+        'reg_alpha':reg_alpha,
+        'reg_lambda':reg_lambda,
+    }
+
+    xg_train = lgb.Dataset(xdf.iloc[bayesian_tr_index],ydf.iloc[bayesian_tr_index])
+    xg_valid = lgb.Dataset(xdf.iloc[bayesian_val_index],ydf.iloc[bayesian_val_index])
+
+    evals_result = {}
+    num_round = 5000
+    clf = lgb.train(params, xg_train, num_round, valid_sets = [xg_valid], verbose_eval = 250 ,early_stopping_rounds = 50,evals_result=evals_result)
+    #print(evals_result['eval']['multi_logloss'])
+    #print(evals_result['valid_0']['multi_logloss'])
+    print(min(evals_result['valid_0']['multi_logloss']))
+
+    predictions = clf.predict(xdf.iloc[bayesian_val_index], num_iteration=clf.best_iteration)   
+    
+    #score = metrics.roc_auc_score(xdf.iloc[bayesian_val_index],predictions)
+    # 精度 (Accuracy) を計算する
+    #print(predictions)
+    score=1/min(evals_result['valid_0']['multi_logloss'])
+ 
+    return score
 
 
-# In[60]:
+# In[222]:
 
 
-lgbm_params = {
-    # 多値分類問題
-    'objective': 'multiclass',
-    # クラス数は 120
-    'num_class': 120,
-    #'class_weight':'balanced',
-    'random_state':999,
-    # 以下、ハイパーパラメタ
-    'max_depth':7,
-    'num_leaves':31,
-    # 正則化
-    'reg_alpha':10,
-    'reg_lambda':10,
+bounds_LGB={
+    'max_depth':(3,15),
+    'min_data_in_leaf':(0,300),
+    'num_leaves':(5,20),
+    'reg_alpha':(0,10.0),
+    'reg_lambda':(0,10.0)
 }
 
 
-# In[61]:
+# In[223]:
 
 
-# デフォルトを見ているだけ。
-lgb.LGBMClassifier()
+LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)
+print(LGB_BO.space.keys)
 
 
-# In[62]:
+# In[ ]:
 
 
-model = lgb.train(lgbm_params, lgb_train, valid_sets=lgb_eval,num_boost_round=200,early_stopping_rounds=10)
 
 
-# In[67]:
+
+# In[ ]:
 
 
-y_pred = model.predict(X_test, num_iteration=model.best_iteration)
-y_pred_max = np.argmax(y_pred, axis=1)  # 最尤と判断したクラスの値にする
-
-# 精度 (Accuracy) を計算する
-accuracy = sum(y_test == y_pred_max) / len(y_test)
-print("accuracy:",accuracy)
-
-# 回収率を計算
-res=0
-resTrueList =[]
-resFalseList =[]
-for i in range(len(y_test)):
-
-    if y_test[i]==y_pred_max[i]:
-        print("i:",i,"result:",y_test[i],"forecast:",y_pred_max[i],"forecastProb:",y_pred[i][y_pred_max[i]],"return:",o_test[i],"expect:",y_pred[i][y_pred_max[i]]*o_test[i])
-        res += o_test[i] -1
-        resTrueList.append(y_pred_max[i])
-    else:
-        #print("i:",i,"result:",y_test[i],"forecast:",y_pred_max[i],"forecastProb:",y_pred[i][y_pred_max[i]],"return:",o_test[i],"expect:",y_pred[i][y_pred_max[i]]*o_test[i])
-        resFalseList.append(y_pred_max[i])
-        pass
-print("resultReturn:",res/len(y_test))
 
 
-# In[75]:
+
+# In[224]:
 
 
-ct=collections.Counter(resTrueList)
-cf=collections.Counter(resFalseList)
-print(ct)
-print(len(resTrueList))
-print(cf)
-print(len(resFalseList))
+init_points = 5
+n_iter = 5
+
+with warnings.catch_warnings():
+    warnings.filterwarnings('ignore')
+    LGB_BO.maximize(init_points=init_points, n_iter=n_iter, acq='ucb', xi=0.0, alpha=1e-6)
 
 
-# In[64]:
+# In[ ]:
 
 
-# trainの回収率を計算
-y_pred = model.predict(X_train, num_iteration=model.best_iteration)
-y_pred_max = np.argmax(y_pred, axis=1)  # 最尤と判断したクラスの値にする
 
-#print(X_train.head())
-#print(y_train[0:5])
-#print(y_pred_max[0:5])
-#c = collections.Counter(y_pred_max)
-#print(len(c) )
-
-# 精度 (Accuracy) を計算する
-accuracy = sum(y_train == y_pred_max) / len(y_train)
-print(accuracy)
-
-# 回収率を計算
-res=0
-for i in range(len(y_train)):
-    if y_train[i]==y_pred_max[i]:
-        res += o_train[i] -1
-    else:
-        pass
-print(res/len(y_train))
-
-
-# In[65]:
-
-
-# Feature Importance
-fti = model.feature_importance()
-
-print('Feature Importances:')
-print(fti )
 
 
 # In[ ]:
