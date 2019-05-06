@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[120]:
+# In[4]:
 
 
-# ToDo 選手情報・過去レース情報から3連単舟券120種をクラス分類する
+# 選手情報・過去レース情報から3連単舟券120種をクラス分類する
+# biasだけに集約されてしまってうまくいかない。。
 
 # 汎用ライブラリのimport
 import sys
@@ -17,7 +18,7 @@ import math
 import tensorflow as tf
 
 
-# In[2]:
+# In[5]:
 
 
 # 自作ライブラリのimport
@@ -28,7 +29,7 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[3]:
+# In[6]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
@@ -38,18 +39,17 @@ testStartDate="20180401"
 testEndDate="20180430"
 
 
-# In[4]:
+# In[7]:
 
 
 dbh=dbHandler.getDBHandle()
 #dbHandler.closeDBHandle(dbh)
 
 
-# In[5]:
+# In[8]:
 
 
 # trainの元データを取得
-# Todo 階級も入れて、get_dummiesする。
 with dbh.cursor() as cursor:
     sel_sql = "select * from raceabst_forml_v                where raceDate between '%s' and '%s'                order by raceId "               % (trainStartDate,trainEndDate)
     cursor.execute(sel_sql)
@@ -63,21 +63,21 @@ with dbh.cursor() as cursor:
 print("testdatta:",len(testLoadList))
 
 
-# In[6]:
+# In[9]:
 
 
 df = pd.io.json.json_normalize(loadList)
 df.head()
 
 
-# In[7]:
+# In[10]:
 
 
 testdf = pd.io.json.json_normalize(testLoadList)
 testdf.head()
 
 
-# In[8]:
+# In[11]:
 
 
 # 入力のデータ整形
@@ -90,7 +90,7 @@ xdf.describe()
 xdf_sample=xdf[0:5]
 
 
-# In[9]:
+# In[12]:
 
 
 # 入力のデータ整形
@@ -99,10 +99,10 @@ testxdf=pd.get_dummies(testxdf,columns=['l1rank','l2rank','l3rank','l4rank','l5r
 testxdf.head()
 
 
-# In[10]:
+# In[13]:
 
 
-# 結果のOne-Hot表現を作る
+# 結果を整数化する
 ydf=df['funaken']
 ydf=pd.get_dummies(ydf,columns=['funaken'])
 #ydf.head()
@@ -112,7 +112,7 @@ ydf.describe()
 ydf_sample=ydf[0:5]
 
 
-# In[11]:
+# In[14]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -123,14 +123,14 @@ odf.describe()
 odf_sample=odf[0:5]
 
 
-# In[12]:
+# In[15]:
 
 
 print(type(df['odds']) )
 print(type(odf))
 
 
-# In[13]:
+# In[16]:
 
 
 # 結果のOne-Hot表現を作る
@@ -139,7 +139,7 @@ testydf=pd.get_dummies(testydf,columns=['funaken'])
 testydf.head()
 
 
-# In[14]:
+# In[17]:
 
 
 #xAtrNum=62
@@ -153,7 +153,7 @@ testydf.head()
 #y = tf.nn.softmax( (tf.matmul(x,W)+b) - tf.reduce_max(tf.matmul(x,W)+b)  )
 
 
-# In[142]:
+# In[18]:
 
 
 xAtrNum=62
@@ -204,7 +204,7 @@ y = tf.nn.softmax( x_last - tf.reduce_max(x_last) )
 #y = tf.nn.softmax( tf.sigmoid(tf.matmul(x_hidden[layerNum-1],W)+b))
 
 
-# In[143]:
+# In[19]:
 
 
 # define loss and optimizer
@@ -228,7 +228,7 @@ train_step=tf.train.GradientDescentOptimizer(0.0001).minimize(loss)
 sess = tf.Session()
 
 
-# In[144]:
+# In[20]:
 
 
 # tensorboard
@@ -238,7 +238,7 @@ with tf.name_scope('summary'):
     writer = tf.summary.FileWriter('/home/ec2-user/boatrace/log/tensorboard', sess.graph)
 
 
-# In[145]:
+# In[21]:
 
 
 # train
@@ -266,7 +266,7 @@ print("sample:",sess.run(x_hidden[0],feed_dict={x:xdf_sample.values,y_:ydf_sampl
         
 
 
-# In[146]:
+# In[22]:
 
 
 print("sample:",sess.run(x_hidden[layerNum-1],feed_dict={x:xdf_sample.values,y_:ydf_sample.values,o_:odf_sample.values}))
@@ -275,7 +275,7 @@ print("Y:",sess.run(y,feed_dict={x:xdf.values,y_:ydf.values,o_:odf.values}))
 print("x_last:",sess.run(y,feed_dict={x:xdf_sample.values,y_:ydf_sample.values,o_:odf_sample.values}))
 
 
-# In[ ]:
+# In[23]:
 
 
 # evaluate trained_data
@@ -284,7 +284,7 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 print(sess.run(accuracy, feed_dict={x: testxdf.values, y_: testydf.values}))
 
 
-# In[ ]:
+# In[24]:
 
 
 # メモリ使用チェック
