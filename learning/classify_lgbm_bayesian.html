@@ -13115,7 +13115,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[97]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 選手情報・過去レース情報から3連単舟券120種をクラス分類する</span>
@@ -13151,7 +13151,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[80]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 自作ライブラリのimport</span>
@@ -13169,12 +13169,12 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[81]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 分析期間の指定は一旦ここでまとめてみる。</span>
 <span class="n">trainStartDate</span><span class="o">=</span><span class="s2">&quot;20180101&quot;</span>
-<span class="n">trainEndDate</span><span class="o">=</span><span class="s2">&quot;20180731&quot;</span>
+<span class="n">trainEndDate</span><span class="o">=</span><span class="s2">&quot;20181231&quot;</span>
 <span class="c1"># test はtrainからsplitする</span>
 </pre></div>
 
@@ -13185,7 +13185,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[82]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbh</span><span class="o">=</span><span class="n">dbHandler</span><span class="o">.</span><span class="n">getDBHandle</span><span class="p">()</span>
@@ -13199,7 +13199,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[83]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># trainの元データを取得</span>
@@ -13227,7 +13227,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>traindata: 31824
+<pre>traindata: 54083
 </pre>
 </div>
 </div>
@@ -13238,7 +13238,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[84]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">loadList</span><span class="p">)</span>
@@ -13255,7 +13255,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[84]:</div>
+    <div class="prompt output_prompt">Out[6]:</div>
 
 
 
@@ -13436,7 +13436,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[85]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 入力のデータ整形</span>
@@ -13463,7 +13463,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[85]:</div>
+    <div class="prompt output_prompt">Out[7]:</div>
 
 
 
@@ -13644,7 +13644,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[162]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 結果のOne-Hot表現を作る⇒LGBMは数値配列なので数字にする。</span>
@@ -13678,7 +13678,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[163]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 重み付けのため、オッズのリストを作る</span>
@@ -13713,7 +13713,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[164]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bayesian_tr_index</span><span class="p">,</span> <span class="n">bayesian_val_index</span>  <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">xdf</span><span class="p">,</span> <span class="n">ydf</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
@@ -13726,7 +13726,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[221]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">LGB_bayesian</span><span class="p">(</span>
@@ -13788,7 +13788,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[222]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bounds_LGB</span><span class="o">=</span><span class="p">{</span>
@@ -13807,7 +13807,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[223]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">LGB_BO</span> <span class="o">=</span> <span class="n">BayesianOptimization</span><span class="p">(</span><span class="n">LGB_bayesian</span><span class="p">,</span> <span class="n">bounds_LGB</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
@@ -13865,11 +13865,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[224]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">init_points</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">n_iter</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">n_iter</span> <span class="o">=</span> <span class="mi">10</span>
 
 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
@@ -13894,54 +13894,79 @@ div#notebook {
 -------------------------------------------------------------------------------------
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[81]	valid_0&#39;s multi_logloss: 3.95171
-3.951709650811107
-|  1        |  0.2531   |  12.33    |  71.26    |  17.36    |  9.657    |  9.726    |
+[86]	valid_0&#39;s multi_logloss: 3.92421
+3.924205144152011
+|  1        |  0.2548   |  12.33    |  71.26    |  17.36    |  9.657    |  9.726    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[67]	valid_0&#39;s multi_logloss: 3.94733
-3.9473283956773346
-| <span class="ansi-magenta-intense-fg"> 2       </span> | <span class="ansi-magenta-intense-fg"> 0.2533  </span> | <span class="ansi-magenta-intense-fg"> 8.441   </span> | <span class="ansi-magenta-intense-fg"> 182.7   </span> | <span class="ansi-magenta-intense-fg"> 16.63   </span> | <span class="ansi-magenta-intense-fg"> 6.416   </span> | <span class="ansi-magenta-intense-fg"> 7.22    </span> |
+[71]	valid_0&#39;s multi_logloss: 3.92111
+3.921107618662629
+| <span class="ansi-magenta-intense-fg"> 2       </span> | <span class="ansi-magenta-intense-fg"> 0.255   </span> | <span class="ansi-magenta-intense-fg"> 8.441   </span> | <span class="ansi-magenta-intense-fg"> 182.7   </span> | <span class="ansi-magenta-intense-fg"> 16.63   </span> | <span class="ansi-magenta-intense-fg"> 6.416   </span> | <span class="ansi-magenta-intense-fg"> 7.22    </span> |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[121]	valid_0&#39;s multi_logloss: 3.91457
-3.914570631980205
-| <span class="ansi-magenta-intense-fg"> 3       </span> | <span class="ansi-magenta-intense-fg"> 0.2555  </span> | <span class="ansi-magenta-intense-fg"> 3.42    </span> | <span class="ansi-magenta-intense-fg"> 89.53   </span> | <span class="ansi-magenta-intense-fg"> 5.878   </span> | <span class="ansi-magenta-intense-fg"> 8.571   </span> | <span class="ansi-magenta-intense-fg"> 3.729   </span> |
+[129]	valid_0&#39;s multi_logloss: 3.89503
+3.895029248907458
+| <span class="ansi-magenta-intense-fg"> 3       </span> | <span class="ansi-magenta-intense-fg"> 0.2567  </span> | <span class="ansi-magenta-intense-fg"> 3.42    </span> | <span class="ansi-magenta-intense-fg"> 89.53   </span> | <span class="ansi-magenta-intense-fg"> 5.878   </span> | <span class="ansi-magenta-intense-fg"> 8.571   </span> | <span class="ansi-magenta-intense-fg"> 3.729   </span> |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[52]	valid_0&#39;s multi_logloss: 3.95382
-3.9538198898200028
-|  4        |  0.2529   |  11.16    |  76.88    |  10.21    |  0.09413  |  3.583    |
+[63]	valid_0&#39;s multi_logloss: 3.92429
+3.9242939717010095
+|  4        |  0.2548   |  11.16    |  76.88    |  10.21    |  0.09413  |  3.583    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[87]	valid_0&#39;s multi_logloss: 3.93918
-3.939179767621767
-|  5        |  0.2539   |  14.39    |  65.37    |  9.791    |  9.178    |  0.319    |
+[95]	valid_0&#39;s multi_logloss: 3.9112
+3.9112041308486285
+|  5        |  0.2557   |  14.39    |  65.37    |  9.791    |  9.178    |  0.319    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[68]	valid_0&#39;s multi_logloss: 3.92036
-3.9203592830246663
-|  6        |  0.2551   |  3.431    |  299.9    |  5.131    |  1.031    |  2.772    |
+[83]	valid_0&#39;s multi_logloss: 3.89422
+3.894217981244041
+| <span class="ansi-magenta-intense-fg"> 6       </span> | <span class="ansi-magenta-intense-fg"> 0.2568  </span> | <span class="ansi-magenta-intense-fg"> 3.431   </span> | <span class="ansi-magenta-intense-fg"> 299.9   </span> | <span class="ansi-magenta-intense-fg"> 5.131   </span> | <span class="ansi-magenta-intense-fg"> 1.031   </span> | <span class="ansi-magenta-intense-fg"> 2.772   </span> |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[141]	valid_0&#39;s multi_logloss: 3.92194
-3.9219411539881457
-|  7        |  0.255    |  13.75    |  299.4    |  5.043    |  9.935    |  3.077    |
+[142]	valid_0&#39;s multi_logloss: 3.89806
+3.898062128138516
+|  7        |  0.2565   |  13.75    |  299.4    |  5.043    |  9.935    |  3.077    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[96]	valid_0&#39;s multi_logloss: 3.91733
-3.917332946290239
-|  8        |  0.2553   |  3.833    |  299.2    |  19.79    |  8.907    |  0.2894   |
+[105]	valid_0&#39;s multi_logloss: 3.89783
+3.8978309129641913
+|  8        |  0.2566   |  3.833    |  299.2    |  19.79    |  8.907    |  0.2894   |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[106]	valid_0&#39;s multi_logloss: 3.91505
-3.915046772928359
-|  9        |  0.2554   |  3.32     |  299.5    |  5.531    |  6.908    |  0.8469   |
+[81]	valid_0&#39;s multi_logloss: 3.89993
+3.899925908945318
+|  9        |  0.2564   |  14.52    |  299.1    |  5.179    |  0.4468   |  3.892    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[146]	valid_0&#39;s multi_logloss: 3.92077
-3.9207736950628993
-|  10       |  0.2551   |  14.99    |  299.0    |  5.052    |  9.98     |  7.636    |
+[121]	valid_0&#39;s multi_logloss: 3.89785
+3.897846729868223
+|  10       |  0.2566   |  3.993    |  299.6    |  19.89    |  9.658    |  6.061    |
+Training until validation scores don&#39;t improve for 50 rounds.
+Early stopping, best iteration is:
+[91]	valid_0&#39;s multi_logloss: 3.89549
+3.89549285231887
+|  11       |  0.2567   |  3.55     |  299.9    |  6.06     |  1.884    |  9.266    |
+Training until validation scores don&#39;t improve for 50 rounds.
+Early stopping, best iteration is:
+[117]	valid_0&#39;s multi_logloss: 3.89971
+3.899707131122182
+|  12       |  0.2564   |  4.745    |  299.4    |  6.026    |  9.483    |  0.1469   |
+Training until validation scores don&#39;t improve for 50 rounds.
+Early stopping, best iteration is:
+[79]	valid_0&#39;s multi_logloss: 3.92491
+3.924914796199792
+|  13       |  0.2548   |  14.57    |  299.9    |  19.98    |  9.23     |  0.8363   |
+Training until validation scores don&#39;t improve for 50 rounds.
+Early stopping, best iteration is:
+[101]	valid_0&#39;s multi_logloss: 3.89282
+3.8928236471278423
+| <span class="ansi-magenta-intense-fg"> 14      </span> | <span class="ansi-magenta-intense-fg"> 0.2569  </span> | <span class="ansi-magenta-intense-fg"> 3.544   </span> | <span class="ansi-magenta-intense-fg"> 299.2   </span> | <span class="ansi-magenta-intense-fg"> 5.566   </span> | <span class="ansi-magenta-intense-fg"> 2.425   </span> | <span class="ansi-magenta-intense-fg"> 9.473   </span> |
+Training until validation scores don&#39;t improve for 50 rounds.
+Early stopping, best iteration is:
+[89]	valid_0&#39;s multi_logloss: 3.89546
+3.895460313251315
+|  15       |  0.2567   |  5.576    |  299.4    |  5.245    |  1.027    |  9.077    |
 =====================================================================================
 </pre>
 </div>

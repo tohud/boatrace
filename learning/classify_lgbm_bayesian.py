@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[97]:
+# In[1]:
 
 
 # 選手情報・過去レース情報から3連単舟券120種をクラス分類する
@@ -30,7 +30,7 @@ from sklearn import metrics
 import warnings
 
 
-# In[80]:
+# In[2]:
 
 
 # 自作ライブラリのimport
@@ -41,23 +41,23 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[81]:
+# In[3]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
 trainStartDate="20180101"
-trainEndDate="20180731"
+trainEndDate="20181231"
 # test はtrainからsplitする
 
 
-# In[82]:
+# In[4]:
 
 
 dbh=dbHandler.getDBHandle()
 #dbHandler.closeDBHandle(dbh)
 
 
-# In[83]:
+# In[5]:
 
 
 # trainの元データを取得
@@ -68,14 +68,14 @@ with dbh.cursor() as cursor:
 print("traindata:",len(loadList))
 
 
-# In[84]:
+# In[6]:
 
 
 df = pd.io.json.json_normalize(loadList)
 df.head()
 
 
-# In[85]:
+# In[7]:
 
 
 # 入力のデータ整形
@@ -92,7 +92,7 @@ xdf['l6rank']=rankLabel.transform(xdf['l6rank'])
 xdf.head()
 
 
-# In[162]:
+# In[8]:
 
 
 # 結果のOne-Hot表現を作る⇒LGBMは数値配列なので数字にする。
@@ -112,7 +112,7 @@ ydf = pd.DataFrame(yLabel.transform(ydf))
 
 
 
-# In[163]:
+# In[9]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -122,13 +122,13 @@ odf=pd.DataFrame(df['odds'])
 print(type(odf))
 
 
-# In[164]:
+# In[10]:
 
 
 bayesian_tr_index, bayesian_val_index  = list(StratifiedKFold(n_splits=2, shuffle=True, random_state=1).split(xdf, ydf))[0]
 
 
-# In[221]:
+# In[11]:
 
 
 def LGB_bayesian(
@@ -183,7 +183,7 @@ def LGB_bayesian(
     return score
 
 
-# In[222]:
+# In[12]:
 
 
 bounds_LGB={
@@ -195,7 +195,7 @@ bounds_LGB={
 }
 
 
-# In[223]:
+# In[13]:
 
 
 LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)
@@ -214,11 +214,11 @@ print(LGB_BO.space.keys)
 
 
 
-# In[224]:
+# In[14]:
 
 
 init_points = 5
-n_iter = 5
+n_iter = 10
 
 with warnings.catch_warnings():
     warnings.filterwarnings('ignore')

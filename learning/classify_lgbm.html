@@ -13121,6 +13121,7 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 選手情報・過去レース情報から3連単舟券120種をクラス分類する</span>
 <span class="c1"># LGBMでやってみる。</span>
 <span class="c1"># todo:bayseの方と、インプットの与え方をあわせる。今はOne-Hotが一致していない。</span>
+<span class="c1"># 的中予想確率10%以上のうち、オッズで見合うものだけ買った場合のシミュレーションをする。</span>
 
 <span class="c1"># 汎用ライブラリのimport</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -13810,106 +13811,106 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1]	valid_0&#39;s multi_logloss: 4.67141
-[2]	valid_0&#39;s multi_logloss: 4.5855
-[3]	valid_0&#39;s multi_logloss: 4.51718
-[4]	valid_0&#39;s multi_logloss: 4.46016
-[5]	valid_0&#39;s multi_logloss: 4.411
-[6]	valid_0&#39;s multi_logloss: 4.36869
-[7]	valid_0&#39;s multi_logloss: 4.33168
-[8]	valid_0&#39;s multi_logloss: 4.29864
-[9]	valid_0&#39;s multi_logloss: 4.26918
-[10]	valid_0&#39;s multi_logloss: 4.2432
-[11]	valid_0&#39;s multi_logloss: 4.21928
-[12]	valid_0&#39;s multi_logloss: 4.19781
-[13]	valid_0&#39;s multi_logloss: 4.17814
-[14]	valid_0&#39;s multi_logloss: 4.15991
-[15]	valid_0&#39;s multi_logloss: 4.14304
-[16]	valid_0&#39;s multi_logloss: 4.12778
-[17]	valid_0&#39;s multi_logloss: 4.11392
-[18]	valid_0&#39;s multi_logloss: 4.10109
-[19]	valid_0&#39;s multi_logloss: 4.08927
-[20]	valid_0&#39;s multi_logloss: 4.07777
-[21]	valid_0&#39;s multi_logloss: 4.06755
-[22]	valid_0&#39;s multi_logloss: 4.05798
-[23]	valid_0&#39;s multi_logloss: 4.049
-[24]	valid_0&#39;s multi_logloss: 4.0408
-[25]	valid_0&#39;s multi_logloss: 4.03295
-[26]	valid_0&#39;s multi_logloss: 4.02572
-[27]	valid_0&#39;s multi_logloss: 4.01895
-[28]	valid_0&#39;s multi_logloss: 4.01227
-[29]	valid_0&#39;s multi_logloss: 4.00626
-[30]	valid_0&#39;s multi_logloss: 4.00022
-[31]	valid_0&#39;s multi_logloss: 3.99493
-[32]	valid_0&#39;s multi_logloss: 3.98983
-[33]	valid_0&#39;s multi_logloss: 3.98502
-[34]	valid_0&#39;s multi_logloss: 3.98051
-[35]	valid_0&#39;s multi_logloss: 3.97623
-[36]	valid_0&#39;s multi_logloss: 3.97222
-[37]	valid_0&#39;s multi_logloss: 3.96866
-[38]	valid_0&#39;s multi_logloss: 3.96479
-[39]	valid_0&#39;s multi_logloss: 3.96166
-[40]	valid_0&#39;s multi_logloss: 3.95845
-[41]	valid_0&#39;s multi_logloss: 3.95557
-[42]	valid_0&#39;s multi_logloss: 3.95263
-[43]	valid_0&#39;s multi_logloss: 3.94985
-[44]	valid_0&#39;s multi_logloss: 3.94721
-[45]	valid_0&#39;s multi_logloss: 3.94511
-[46]	valid_0&#39;s multi_logloss: 3.94286
-[47]	valid_0&#39;s multi_logloss: 3.94063
-[48]	valid_0&#39;s multi_logloss: 3.93853
-[49]	valid_0&#39;s multi_logloss: 3.93667
-[50]	valid_0&#39;s multi_logloss: 3.93474
-[51]	valid_0&#39;s multi_logloss: 3.93284
-[52]	valid_0&#39;s multi_logloss: 3.93112
-[53]	valid_0&#39;s multi_logloss: 3.92949
-[54]	valid_0&#39;s multi_logloss: 3.92777
-[55]	valid_0&#39;s multi_logloss: 3.92625
-[56]	valid_0&#39;s multi_logloss: 3.92497
-[57]	valid_0&#39;s multi_logloss: 3.92352
-[58]	valid_0&#39;s multi_logloss: 3.92228
-[59]	valid_0&#39;s multi_logloss: 3.92105
-[60]	valid_0&#39;s multi_logloss: 3.9199
-[61]	valid_0&#39;s multi_logloss: 3.91887
-[62]	valid_0&#39;s multi_logloss: 3.9178
-[63]	valid_0&#39;s multi_logloss: 3.917
-[64]	valid_0&#39;s multi_logloss: 3.91612
-[65]	valid_0&#39;s multi_logloss: 3.91525
-[66]	valid_0&#39;s multi_logloss: 3.91417
-[67]	valid_0&#39;s multi_logloss: 3.91338
-[68]	valid_0&#39;s multi_logloss: 3.9124
-[69]	valid_0&#39;s multi_logloss: 3.91163
-[70]	valid_0&#39;s multi_logloss: 3.911
-[71]	valid_0&#39;s multi_logloss: 3.91031
-[72]	valid_0&#39;s multi_logloss: 3.90955
-[73]	valid_0&#39;s multi_logloss: 3.90892
-[74]	valid_0&#39;s multi_logloss: 3.90856
-[75]	valid_0&#39;s multi_logloss: 3.90788
-[76]	valid_0&#39;s multi_logloss: 3.90723
-[77]	valid_0&#39;s multi_logloss: 3.90668
-[78]	valid_0&#39;s multi_logloss: 3.90615
-[79]	valid_0&#39;s multi_logloss: 3.90566
-[80]	valid_0&#39;s multi_logloss: 3.90515
-[81]	valid_0&#39;s multi_logloss: 3.90492
-[82]	valid_0&#39;s multi_logloss: 3.90439
-[83]	valid_0&#39;s multi_logloss: 3.90377
-[84]	valid_0&#39;s multi_logloss: 3.90342
-[85]	valid_0&#39;s multi_logloss: 3.903
-[86]	valid_0&#39;s multi_logloss: 3.90286
-[87]	valid_0&#39;s multi_logloss: 3.90258
-[88]	valid_0&#39;s multi_logloss: 3.90219
-[89]	valid_0&#39;s multi_logloss: 3.90191
-[90]	valid_0&#39;s multi_logloss: 3.9015
-[91]	valid_0&#39;s multi_logloss: 3.90118
-[92]	valid_0&#39;s multi_logloss: 3.90075
-[93]	valid_0&#39;s multi_logloss: 3.90053
-[94]	valid_0&#39;s multi_logloss: 3.90021
-[95]	valid_0&#39;s multi_logloss: 3.89991
-[96]	valid_0&#39;s multi_logloss: 3.89958
-[97]	valid_0&#39;s multi_logloss: 3.89945
-[98]	valid_0&#39;s multi_logloss: 3.89936
-[99]	valid_0&#39;s multi_logloss: 3.89928
-[100]	valid_0&#39;s multi_logloss: 3.89914
+<pre>[1]	valid_0&#39;s multi_logloss: 4.66965
+[2]	valid_0&#39;s multi_logloss: 4.58441
+[3]	valid_0&#39;s multi_logloss: 4.51549
+[4]	valid_0&#39;s multi_logloss: 4.45851
+[5]	valid_0&#39;s multi_logloss: 4.40987
+[6]	valid_0&#39;s multi_logloss: 4.36772
+[7]	valid_0&#39;s multi_logloss: 4.33043
+[8]	valid_0&#39;s multi_logloss: 4.2976
+[9]	valid_0&#39;s multi_logloss: 4.26827
+[10]	valid_0&#39;s multi_logloss: 4.24139
+[11]	valid_0&#39;s multi_logloss: 4.21753
+[12]	valid_0&#39;s multi_logloss: 4.19601
+[13]	valid_0&#39;s multi_logloss: 4.17603
+[14]	valid_0&#39;s multi_logloss: 4.15838
+[15]	valid_0&#39;s multi_logloss: 4.14168
+[16]	valid_0&#39;s multi_logloss: 4.1263
+[17]	valid_0&#39;s multi_logloss: 4.11195
+[18]	valid_0&#39;s multi_logloss: 4.09905
+[19]	valid_0&#39;s multi_logloss: 4.08704
+[20]	valid_0&#39;s multi_logloss: 4.07599
+[21]	valid_0&#39;s multi_logloss: 4.06573
+[22]	valid_0&#39;s multi_logloss: 4.05622
+[23]	valid_0&#39;s multi_logloss: 4.04735
+[24]	valid_0&#39;s multi_logloss: 4.03907
+[25]	valid_0&#39;s multi_logloss: 4.03109
+[26]	valid_0&#39;s multi_logloss: 4.02395
+[27]	valid_0&#39;s multi_logloss: 4.01709
+[28]	valid_0&#39;s multi_logloss: 4.01083
+[29]	valid_0&#39;s multi_logloss: 4.0047
+[30]	valid_0&#39;s multi_logloss: 3.9991
+[31]	valid_0&#39;s multi_logloss: 3.99381
+[32]	valid_0&#39;s multi_logloss: 3.98889
+[33]	valid_0&#39;s multi_logloss: 3.98426
+[34]	valid_0&#39;s multi_logloss: 3.97993
+[35]	valid_0&#39;s multi_logloss: 3.9757
+[36]	valid_0&#39;s multi_logloss: 3.97189
+[37]	valid_0&#39;s multi_logloss: 3.96852
+[38]	valid_0&#39;s multi_logloss: 3.96503
+[39]	valid_0&#39;s multi_logloss: 3.96178
+[40]	valid_0&#39;s multi_logloss: 3.95884
+[41]	valid_0&#39;s multi_logloss: 3.95587
+[42]	valid_0&#39;s multi_logloss: 3.95319
+[43]	valid_0&#39;s multi_logloss: 3.9506
+[44]	valid_0&#39;s multi_logloss: 3.94809
+[45]	valid_0&#39;s multi_logloss: 3.94593
+[46]	valid_0&#39;s multi_logloss: 3.94361
+[47]	valid_0&#39;s multi_logloss: 3.94165
+[48]	valid_0&#39;s multi_logloss: 3.93991
+[49]	valid_0&#39;s multi_logloss: 3.93806
+[50]	valid_0&#39;s multi_logloss: 3.93608
+[51]	valid_0&#39;s multi_logloss: 3.93444
+[52]	valid_0&#39;s multi_logloss: 3.93301
+[53]	valid_0&#39;s multi_logloss: 3.93139
+[54]	valid_0&#39;s multi_logloss: 3.93
+[55]	valid_0&#39;s multi_logloss: 3.92867
+[56]	valid_0&#39;s multi_logloss: 3.92745
+[57]	valid_0&#39;s multi_logloss: 3.92629
+[58]	valid_0&#39;s multi_logloss: 3.92497
+[59]	valid_0&#39;s multi_logloss: 3.92382
+[60]	valid_0&#39;s multi_logloss: 3.92266
+[61]	valid_0&#39;s multi_logloss: 3.92159
+[62]	valid_0&#39;s multi_logloss: 3.9209
+[63]	valid_0&#39;s multi_logloss: 3.91991
+[64]	valid_0&#39;s multi_logloss: 3.91901
+[65]	valid_0&#39;s multi_logloss: 3.91805
+[66]	valid_0&#39;s multi_logloss: 3.91724
+[67]	valid_0&#39;s multi_logloss: 3.91649
+[68]	valid_0&#39;s multi_logloss: 3.91583
+[69]	valid_0&#39;s multi_logloss: 3.91522
+[70]	valid_0&#39;s multi_logloss: 3.91447
+[71]	valid_0&#39;s multi_logloss: 3.9138
+[72]	valid_0&#39;s multi_logloss: 3.9131
+[73]	valid_0&#39;s multi_logloss: 3.91238
+[74]	valid_0&#39;s multi_logloss: 3.91188
+[75]	valid_0&#39;s multi_logloss: 3.91149
+[76]	valid_0&#39;s multi_logloss: 3.91112
+[77]	valid_0&#39;s multi_logloss: 3.91058
+[78]	valid_0&#39;s multi_logloss: 3.91008
+[79]	valid_0&#39;s multi_logloss: 3.90959
+[80]	valid_0&#39;s multi_logloss: 3.90911
+[81]	valid_0&#39;s multi_logloss: 3.90866
+[82]	valid_0&#39;s multi_logloss: 3.90823
+[83]	valid_0&#39;s multi_logloss: 3.9079
+[84]	valid_0&#39;s multi_logloss: 3.90749
+[85]	valid_0&#39;s multi_logloss: 3.90721
+[86]	valid_0&#39;s multi_logloss: 3.90692
+[87]	valid_0&#39;s multi_logloss: 3.90668
+[88]	valid_0&#39;s multi_logloss: 3.90642
+[89]	valid_0&#39;s multi_logloss: 3.90617
+[90]	valid_0&#39;s multi_logloss: 3.90595
+[91]	valid_0&#39;s multi_logloss: 3.90576
+[92]	valid_0&#39;s multi_logloss: 3.90569
+[93]	valid_0&#39;s multi_logloss: 3.90538
+[94]	valid_0&#39;s multi_logloss: 3.9052
+[95]	valid_0&#39;s multi_logloss: 3.90499
+[96]	valid_0&#39;s multi_logloss: 3.90489
+[97]	valid_0&#39;s multi_logloss: 3.90462
+[98]	valid_0&#39;s multi_logloss: 3.90448
+[99]	valid_0&#39;s multi_logloss: 3.90425
+[100]	valid_0&#39;s multi_logloss: 3.9041
 </pre>
 </div>
 </div>
@@ -13957,8 +13958,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>accuracy: 0.08597285067873303
-resultReturn: 0.6967068878833582
+<pre>accuracy: 0.08961789844142785
+resultReturn: 0.7630216189039708
 </pre>
 </div>
 </div>
@@ -14023,12 +14024,180 @@ resultReturn: 0.6967068878833582
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.15418133065191889
-1.7268686106921416
+<pre>0.15384615384615385
+1.6717864923747248
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0.16325538 0.08015782 0.09847157 0.0193496  0.07342523 0.0341735
+ 0.03888798 0.00830498 0.06171979 0.02266775 0.03685082 0.00557308
+ 0.0666263  0.01264112 0.01730488 0.00404506 0.00392837 0.00303416
+ 0.00286295 0.00155773 0.04369695 0.00799778 0.02450095 0.0053066
+ 0.00567482 0.00178753 0.00303634 0.00185662 0.00379114 0.00213292
+ 0.00114678 0.00122078 0.00242561 0.0012388  0.00238295 0.00084877
+ 0.00117216 0.00100795 0.00083239 0.0009667  0.00532319 0.00293772
+ 0.00350938 0.00257052 0.00253015 0.00215458 0.00163988 0.00114257
+ 0.00205868 0.00317003 0.00167596 0.00099296 0.00164794 0.0017303
+ 0.00138308 0.00109713 0.00080937 0.00130603 0.00068086 0.00069282
+ 0.00423586 0.00258704 0.0052843  0.00177792 0.00290934 0.00134249
+ 0.00163997 0.00110285 0.00139556 0.00180939 0.00298379 0.00096123
+ 0.00364094 0.00276216 0.00243222 0.00143256 0.0011333  0.0006861
+ 0.00107718 0.00126817 0.00682508 0.00364191 0.00467418 0.00111447
+ 0.00180396 0.00122093 0.00100456 0.00078043 0.0017301  0.00076718
+ 0.00075802 0.00095687 0.00178655 0.00169523 0.00098762 0.00097537
+ 0.0018058  0.00071287 0.00068011 0.00078683 0.001277   0.00132368
+ 0.00072805 0.00079747 0.00109832 0.00090135 0.00094821 0.00059081
+ 0.00070554 0.00062298 0.00058891 0.00072482 0.00082795 0.00071976
+ 0.00062065 0.00079111 0.0007507  0.000725   0.0006602  0.00051128]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;raceId&#39;</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>21616    20180524-24-03
+13722    20180403-07-09
+12788    20180326-17-09
+30986    20180725-20-09
+1638     20180109-14-09
+30344    20180721-18-01
+15707    20180417-02-07
+5794     20180207-04-12
+124      20180101-20-05
+15187    20180414-06-01
+5077     20180202-04-07
+30248    20180721-02-09
+4989     20180201-13-01
+8310     20180225-19-02
+4125     20180127-02-03
+29431    20180715-08-03
+9325     20180304-20-03
+13178    20180329-13-03
+8754     20180228-22-06
+8933     20180302-15-04
+3413     20180121-10-12
+31669    20180730-19-02
+6987     20180217-16-04
+8662     20180228-02-10
+7643     20180222-13-06
+12242    20180322-22-11
+11671    20180318-21-06
+16877    20180425-20-05
+10254    20180310-17-07
+15584    20180416-11-03
+              ...      
+29031    20180712-17-10
+26067    20180622-18-11
+22921    20180602-01-05
+26435    20180625-08-10
+25068    20180616-04-01
+22818    20180601-11-10
+13138    20180329-02-11
+16092    20180419-19-10
+18583    20180504-19-04
+3146     20180119-08-08
+23978    20180608-21-01
+4072     20180126-18-10
+6937     20180217-06-01
+4668     20180130-10-02
+30703    20180723-24-01
+9999     20180309-03-12
+1352     20180107-20-10
+17963    20180501-06-07
+11475    20180317-21-01
+5616     20180205-20-11
+8893     20180302-06-12
+7339     20180220-13-12
+10748    20180313-10-09
+22169    20180528-07-03
+11867    20180320-06-11
+23473    20180605-15-06
+18232    20180502-14-03
+22395    20180529-16-05
+19425    20180509-18-06
+12425    20180324-08-02
+Name: raceId, Length: 23868, dtype: object
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -14055,11 +14224,11 @@ resultReturn: 0.6967068878833582
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[  90  835 1040 1027  960 5471  127 1223  915  853 1128 5577   68  889
-  999 1056 1204 5295   74 1052  744 1054  964 6648   70 1188 1212 1143
- 1173 7272   97  935 1041  952 1019 6913  578  493   56   49  165   32
-  117   79  193   43  168  125  276   31  138   94   91   92   79   58
-   61  243  172  114  108  144]
+<pre>[  96 1031 1251  858 1106 5396   83 1181 1115  894 1210 5285   89  784
+ 1027 1090 1082 5657   69 1047  909 1158 1011 6521  139 1234 1137 1173
+ 1016 7256   94  918 1074  876  966 6603  528  502   43   48  149   55
+  140   73  130   27  164  122  318   60  119   85   96  133   88  104
+  131  245  141   85  108  145]
 </pre>
 </div>
 </div>

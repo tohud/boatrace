@@ -7,6 +7,7 @@
 # 選手情報・過去レース情報から3連単舟券120種をクラス分類する
 # LGBMでやってみる。
 # todo:bayseの方と、インプットの与え方をあわせる。今はOne-Hotが一致していない。
+# 的中予想確率10%以上のうち、オッズで見合うものだけ買った場合のシミュレーションをする。
 
 # 汎用ライブラリのimport
 import sys
@@ -206,6 +207,30 @@ for i in range(len(y_train)):
     else:
         pass
 print(res/len(y_train))
+
+
+# In[37]:
+
+
+print(y_pred[0])
+
+
+# In[36]:
+
+
+print(df.iloc[X_train.index]['raceId'])
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[17]:
