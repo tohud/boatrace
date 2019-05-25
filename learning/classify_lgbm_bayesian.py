@@ -45,7 +45,7 @@ from setup.myUtil import dbHandler
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
-trainStartDate="20180101"
+trainStartDate="20170101"
 trainEndDate="20181231"
 # test はtrainからsplitする
 
@@ -102,7 +102,7 @@ yLabel = yLabel.fit(ydf)
 ydf = pd.DataFrame(yLabel.transform(ydf))
 #ydf = yLabel.transform(ydf)
 #ydf=pd.get_dummies(ydf,columns=['funaken'])
-#ydf.head()
+ydf.head()
 #ydf.describe()
 
 
@@ -112,7 +112,7 @@ ydf = pd.DataFrame(yLabel.transform(ydf))
 
 
 
-# In[9]:
+# In[ ]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -122,13 +122,13 @@ odf=pd.DataFrame(df['odds'])
 print(type(odf))
 
 
-# In[10]:
+# In[ ]:
 
 
 bayesian_tr_index, bayesian_val_index  = list(StratifiedKFold(n_splits=2, shuffle=True, random_state=1).split(xdf, ydf))[0]
 
 
-# In[11]:
+# In[ ]:
 
 
 def LGB_bayesian(
@@ -183,7 +183,7 @@ def LGB_bayesian(
     return score
 
 
-# In[12]:
+# In[ ]:
 
 
 bounds_LGB={
@@ -195,7 +195,7 @@ bounds_LGB={
 }
 
 
-# In[13]:
+# In[ ]:
 
 
 LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)
@@ -214,7 +214,7 @@ print(LGB_BO.space.keys)
 
 
 
-# In[14]:
+# In[ ]:
 
 
 init_points = 5

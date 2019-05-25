@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>classify_lgbm</title>
+<title>classify_lgbm-rentaiAdd</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13115,7 +13115,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 選手情報・過去レース情報から3連単舟券120種をクラス分類する</span>
@@ -13147,7 +13147,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[73]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 自作ライブラリのimport</span>
@@ -13165,7 +13165,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[74]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 舟券の配列を取得</span>
@@ -13204,7 +13204,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[75]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 分析期間の指定は一旦ここでまとめてみる。</span>
@@ -13220,7 +13220,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[164]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbh</span><span class="o">=</span><span class="n">dbHandler</span><span class="o">.</span><span class="n">getDBHandle</span><span class="p">()</span>
@@ -13234,7 +13234,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[77]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># trainの元データを取得</span>
@@ -13273,7 +13273,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[78]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">loadList</span><span class="p">)</span>
@@ -13290,7 +13290,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[78]:</div>
+    <div class="prompt output_prompt">Out[7]:</div>
 
 
 
@@ -13471,7 +13471,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[80]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 入力のデータ整形</span>
@@ -13503,7 +13503,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[80]:</div>
+    <div class="prompt output_prompt">Out[8]:</div>
 
 
 
@@ -13710,7 +13710,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[109]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ファイルから作った辞書で変換する</span>
@@ -13749,7 +13749,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[110]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 重み付けのため、オッズのリストを作る</span>
@@ -13784,7 +13784,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[111]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span><span class="n">o_train</span><span class="p">,</span><span class="n">o_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">xdf</span><span class="p">,</span> <span class="n">ydf</span><span class="p">,</span><span class="n">odf</span><span class="p">)</span>
@@ -13797,7 +13797,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[112]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">lgb_train</span> <span class="o">=</span> <span class="n">lgb</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
@@ -13811,7 +13811,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[113]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">lgbm_params</span> <span class="o">=</span> <span class="p">{</span>
@@ -13838,7 +13838,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[114]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">lgb</span><span class="o">.</span><span class="n">LGBMClassifier</span><span class="p">()</span>
@@ -13854,7 +13854,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[114]:</div>
+    <div class="prompt output_prompt">Out[14]:</div>
 
 
 
@@ -13876,7 +13876,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[115]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">lgb</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">lgbm_params</span><span class="p">,</span> <span class="n">lgb_train</span><span class="p">,</span> <span class="n">valid_sets</span><span class="o">=</span><span class="n">lgb_eval</span><span class="p">)</span>
@@ -13896,106 +13896,106 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1]	valid_0&#39;s multi_logloss: 4.66987
-[2]	valid_0&#39;s multi_logloss: 4.5842
-[3]	valid_0&#39;s multi_logloss: 4.51629
-[4]	valid_0&#39;s multi_logloss: 4.45924
-[5]	valid_0&#39;s multi_logloss: 4.4101
-[6]	valid_0&#39;s multi_logloss: 4.36803
-[7]	valid_0&#39;s multi_logloss: 4.33074
-[8]	valid_0&#39;s multi_logloss: 4.29818
-[9]	valid_0&#39;s multi_logloss: 4.26811
-[10]	valid_0&#39;s multi_logloss: 4.24163
-[11]	valid_0&#39;s multi_logloss: 4.2176
-[12]	valid_0&#39;s multi_logloss: 4.19654
-[13]	valid_0&#39;s multi_logloss: 4.17694
-[14]	valid_0&#39;s multi_logloss: 4.15902
-[15]	valid_0&#39;s multi_logloss: 4.14221
-[16]	valid_0&#39;s multi_logloss: 4.12692
-[17]	valid_0&#39;s multi_logloss: 4.11272
-[18]	valid_0&#39;s multi_logloss: 4.0997
-[19]	valid_0&#39;s multi_logloss: 4.08734
-[20]	valid_0&#39;s multi_logloss: 4.07629
-[21]	valid_0&#39;s multi_logloss: 4.06605
-[22]	valid_0&#39;s multi_logloss: 4.05657
-[23]	valid_0&#39;s multi_logloss: 4.0475
-[24]	valid_0&#39;s multi_logloss: 4.03899
-[25]	valid_0&#39;s multi_logloss: 4.03117
-[26]	valid_0&#39;s multi_logloss: 4.0239
-[27]	valid_0&#39;s multi_logloss: 4.01685
-[28]	valid_0&#39;s multi_logloss: 4.01029
-[29]	valid_0&#39;s multi_logloss: 4.00399
-[30]	valid_0&#39;s multi_logloss: 3.99815
-[31]	valid_0&#39;s multi_logloss: 3.9929
-[32]	valid_0&#39;s multi_logloss: 3.98794
-[33]	valid_0&#39;s multi_logloss: 3.98313
-[34]	valid_0&#39;s multi_logloss: 3.97844
-[35]	valid_0&#39;s multi_logloss: 3.97421
-[36]	valid_0&#39;s multi_logloss: 3.97025
-[37]	valid_0&#39;s multi_logloss: 3.9664
-[38]	valid_0&#39;s multi_logloss: 3.96289
-[39]	valid_0&#39;s multi_logloss: 3.95937
-[40]	valid_0&#39;s multi_logloss: 3.95607
-[41]	valid_0&#39;s multi_logloss: 3.95306
-[42]	valid_0&#39;s multi_logloss: 3.95008
-[43]	valid_0&#39;s multi_logloss: 3.94731
-[44]	valid_0&#39;s multi_logloss: 3.94448
-[45]	valid_0&#39;s multi_logloss: 3.94216
-[46]	valid_0&#39;s multi_logloss: 3.94001
-[47]	valid_0&#39;s multi_logloss: 3.93774
-[48]	valid_0&#39;s multi_logloss: 3.93568
-[49]	valid_0&#39;s multi_logloss: 3.93375
-[50]	valid_0&#39;s multi_logloss: 3.93183
-[51]	valid_0&#39;s multi_logloss: 3.93001
-[52]	valid_0&#39;s multi_logloss: 3.92851
-[53]	valid_0&#39;s multi_logloss: 3.92695
-[54]	valid_0&#39;s multi_logloss: 3.92556
-[55]	valid_0&#39;s multi_logloss: 3.92399
-[56]	valid_0&#39;s multi_logloss: 3.92262
-[57]	valid_0&#39;s multi_logloss: 3.92118
-[58]	valid_0&#39;s multi_logloss: 3.91987
-[59]	valid_0&#39;s multi_logloss: 3.9186
-[60]	valid_0&#39;s multi_logloss: 3.91731
-[61]	valid_0&#39;s multi_logloss: 3.9162
-[62]	valid_0&#39;s multi_logloss: 3.91523
-[63]	valid_0&#39;s multi_logloss: 3.91423
-[64]	valid_0&#39;s multi_logloss: 3.91321
-[65]	valid_0&#39;s multi_logloss: 3.91241
-[66]	valid_0&#39;s multi_logloss: 3.91149
-[67]	valid_0&#39;s multi_logloss: 3.91065
-[68]	valid_0&#39;s multi_logloss: 3.90998
-[69]	valid_0&#39;s multi_logloss: 3.90913
-[70]	valid_0&#39;s multi_logloss: 3.90839
-[71]	valid_0&#39;s multi_logloss: 3.90774
-[72]	valid_0&#39;s multi_logloss: 3.90703
-[73]	valid_0&#39;s multi_logloss: 3.90641
-[74]	valid_0&#39;s multi_logloss: 3.90578
-[75]	valid_0&#39;s multi_logloss: 3.90511
-[76]	valid_0&#39;s multi_logloss: 3.90463
-[77]	valid_0&#39;s multi_logloss: 3.9041
-[78]	valid_0&#39;s multi_logloss: 3.90368
-[79]	valid_0&#39;s multi_logloss: 3.90297
-[80]	valid_0&#39;s multi_logloss: 3.90255
-[81]	valid_0&#39;s multi_logloss: 3.90205
-[82]	valid_0&#39;s multi_logloss: 3.9016
-[83]	valid_0&#39;s multi_logloss: 3.90112
-[84]	valid_0&#39;s multi_logloss: 3.90068
-[85]	valid_0&#39;s multi_logloss: 3.90019
-[86]	valid_0&#39;s multi_logloss: 3.89996
-[87]	valid_0&#39;s multi_logloss: 3.89971
-[88]	valid_0&#39;s multi_logloss: 3.89932
-[89]	valid_0&#39;s multi_logloss: 3.89895
-[90]	valid_0&#39;s multi_logloss: 3.89866
-[91]	valid_0&#39;s multi_logloss: 3.89835
-[92]	valid_0&#39;s multi_logloss: 3.8979
-[93]	valid_0&#39;s multi_logloss: 3.89768
-[94]	valid_0&#39;s multi_logloss: 3.89736
-[95]	valid_0&#39;s multi_logloss: 3.89707
-[96]	valid_0&#39;s multi_logloss: 3.89685
-[97]	valid_0&#39;s multi_logloss: 3.89662
-[98]	valid_0&#39;s multi_logloss: 3.89656
-[99]	valid_0&#39;s multi_logloss: 3.89634
-[100]	valid_0&#39;s multi_logloss: 3.89596
+<pre>[1]	valid_0&#39;s multi_logloss: 4.67019
+[2]	valid_0&#39;s multi_logloss: 4.58449
+[3]	valid_0&#39;s multi_logloss: 4.51648
+[4]	valid_0&#39;s multi_logloss: 4.45964
+[5]	valid_0&#39;s multi_logloss: 4.41087
+[6]	valid_0&#39;s multi_logloss: 4.36974
+[7]	valid_0&#39;s multi_logloss: 4.33295
+[8]	valid_0&#39;s multi_logloss: 4.2999
+[9]	valid_0&#39;s multi_logloss: 4.27105
+[10]	valid_0&#39;s multi_logloss: 4.24467
+[11]	valid_0&#39;s multi_logloss: 4.22075
+[12]	valid_0&#39;s multi_logloss: 4.19956
+[13]	valid_0&#39;s multi_logloss: 4.17996
+[14]	valid_0&#39;s multi_logloss: 4.1621
+[15]	valid_0&#39;s multi_logloss: 4.14557
+[16]	valid_0&#39;s multi_logloss: 4.13032
+[17]	valid_0&#39;s multi_logloss: 4.11617
+[18]	valid_0&#39;s multi_logloss: 4.10355
+[19]	valid_0&#39;s multi_logloss: 4.09113
+[20]	valid_0&#39;s multi_logloss: 4.08045
+[21]	valid_0&#39;s multi_logloss: 4.07019
+[22]	valid_0&#39;s multi_logloss: 4.06066
+[23]	valid_0&#39;s multi_logloss: 4.05191
+[24]	valid_0&#39;s multi_logloss: 4.04354
+[25]	valid_0&#39;s multi_logloss: 4.03563
+[26]	valid_0&#39;s multi_logloss: 4.02829
+[27]	valid_0&#39;s multi_logloss: 4.02126
+[28]	valid_0&#39;s multi_logloss: 4.01499
+[29]	valid_0&#39;s multi_logloss: 4.00888
+[30]	valid_0&#39;s multi_logloss: 4.00309
+[31]	valid_0&#39;s multi_logloss: 3.9978
+[32]	valid_0&#39;s multi_logloss: 3.99303
+[33]	valid_0&#39;s multi_logloss: 3.98836
+[34]	valid_0&#39;s multi_logloss: 3.98406
+[35]	valid_0&#39;s multi_logloss: 3.97951
+[36]	valid_0&#39;s multi_logloss: 3.97539
+[37]	valid_0&#39;s multi_logloss: 3.97154
+[38]	valid_0&#39;s multi_logloss: 3.96789
+[39]	valid_0&#39;s multi_logloss: 3.9645
+[40]	valid_0&#39;s multi_logloss: 3.96124
+[41]	valid_0&#39;s multi_logloss: 3.95814
+[42]	valid_0&#39;s multi_logloss: 3.95525
+[43]	valid_0&#39;s multi_logloss: 3.95264
+[44]	valid_0&#39;s multi_logloss: 3.94977
+[45]	valid_0&#39;s multi_logloss: 3.94731
+[46]	valid_0&#39;s multi_logloss: 3.94507
+[47]	valid_0&#39;s multi_logloss: 3.94253
+[48]	valid_0&#39;s multi_logloss: 3.94052
+[49]	valid_0&#39;s multi_logloss: 3.93836
+[50]	valid_0&#39;s multi_logloss: 3.9364
+[51]	valid_0&#39;s multi_logloss: 3.93458
+[52]	valid_0&#39;s multi_logloss: 3.93295
+[53]	valid_0&#39;s multi_logloss: 3.93132
+[54]	valid_0&#39;s multi_logloss: 3.92958
+[55]	valid_0&#39;s multi_logloss: 3.92804
+[56]	valid_0&#39;s multi_logloss: 3.92653
+[57]	valid_0&#39;s multi_logloss: 3.92511
+[58]	valid_0&#39;s multi_logloss: 3.9239
+[59]	valid_0&#39;s multi_logloss: 3.92268
+[60]	valid_0&#39;s multi_logloss: 3.92153
+[61]	valid_0&#39;s multi_logloss: 3.9204
+[62]	valid_0&#39;s multi_logloss: 3.9193
+[63]	valid_0&#39;s multi_logloss: 3.91795
+[64]	valid_0&#39;s multi_logloss: 3.91697
+[65]	valid_0&#39;s multi_logloss: 3.916
+[66]	valid_0&#39;s multi_logloss: 3.91495
+[67]	valid_0&#39;s multi_logloss: 3.91406
+[68]	valid_0&#39;s multi_logloss: 3.91322
+[69]	valid_0&#39;s multi_logloss: 3.91263
+[70]	valid_0&#39;s multi_logloss: 3.91174
+[71]	valid_0&#39;s multi_logloss: 3.91103
+[72]	valid_0&#39;s multi_logloss: 3.91034
+[73]	valid_0&#39;s multi_logloss: 3.90966
+[74]	valid_0&#39;s multi_logloss: 3.90905
+[75]	valid_0&#39;s multi_logloss: 3.9085
+[76]	valid_0&#39;s multi_logloss: 3.90773
+[77]	valid_0&#39;s multi_logloss: 3.90715
+[78]	valid_0&#39;s multi_logloss: 3.90654
+[79]	valid_0&#39;s multi_logloss: 3.90614
+[80]	valid_0&#39;s multi_logloss: 3.90558
+[81]	valid_0&#39;s multi_logloss: 3.90503
+[82]	valid_0&#39;s multi_logloss: 3.9045
+[83]	valid_0&#39;s multi_logloss: 3.90413
+[84]	valid_0&#39;s multi_logloss: 3.90367
+[85]	valid_0&#39;s multi_logloss: 3.90316
+[86]	valid_0&#39;s multi_logloss: 3.9028
+[87]	valid_0&#39;s multi_logloss: 3.90231
+[88]	valid_0&#39;s multi_logloss: 3.9018
+[89]	valid_0&#39;s multi_logloss: 3.90158
+[90]	valid_0&#39;s multi_logloss: 3.90121
+[91]	valid_0&#39;s multi_logloss: 3.90107
+[92]	valid_0&#39;s multi_logloss: 3.90071
+[93]	valid_0&#39;s multi_logloss: 3.90039
+[94]	valid_0&#39;s multi_logloss: 3.90006
+[95]	valid_0&#39;s multi_logloss: 3.8998
+[96]	valid_0&#39;s multi_logloss: 3.89955
+[97]	valid_0&#39;s multi_logloss: 3.89931
+[98]	valid_0&#39;s multi_logloss: 3.89894
+[99]	valid_0&#39;s multi_logloss: 3.89862
+[100]	valid_0&#39;s multi_logloss: 3.89846
 </pre>
 </div>
 </div>
@@ -14006,7 +14006,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[118]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">num_iteration</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">best_iteration</span><span class="p">)</span>
@@ -14042,8 +14042,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>accuracy: 0.08660130718954248
-resultReturn: 0.7279160382101564
+<pre>accuracy: 0.08584715937657114
+resultReturn: 0.6940925087983908
 </pre>
 </div>
 </div>
@@ -14054,7 +14054,7 @@ resultReturn: 0.7279160382101564
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[170]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_pred</span><span class="p">))</span>
@@ -14109,328 +14109,334 @@ resultReturn: 0.7279160382101564
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>7956
-buy: 20180314-24-12 63 11 15.4
-buy: 20180302-24-11 108 1 16.3
-buy: 20180313-08-11 123 0 12.8
-buy: 20180225-18-02 130 0 26.1
-buy: 20180225-18-02 130 1 13.7
-buy: 20180428-24-02 151 0 20.3
-buy: 20180428-24-02 151 4 23.8
-buy: 20180131-14-01 167 0 28.2
-buy: 20180319-18-10 226 1 11.4
-☆hit!☆: 20180319-18-10 1 11.4
-buy: 20180324-17-07 274 1 11.9
-buy: 20180606-07-08 276 0 41.1
-buy: 20180426-15-10 285 0 24.5
-buy: 20180103-21-05 292 0 21.9
-buy: 20180716-06-04 303 0 39.4
-buy: 20180302-20-09 330 0 64.6
-buy: 20180730-09-12 334 0 11.4
-buy: 20180216-07-06 357 2 19.2
-buy: 20180717-22-01 371 0 15.0
-buy: 20180523-20-08 373 2 14.1
-buy: 20180222-24-05 394 0 15.8
-buy: 20180707-24-03 404 0 20.4
-buy: 20180528-03-03 451 1 12.9
+buy: 20180225-16-05 6 9 16.8
+buy: 20180127-01-01 9 1 16.5
+buy: 20180719-23-02 63 2 7.5
+buy: 20180719-06-07 90 6 23.4
+buy: 20180512-07-08 197 2 13.1
+buy: 20180407-18-03 224 0 20.1
+buy: 20180225-21-06 241 8 26.9
+buy: 20180724-14-07 245 0 10.5
+☆hit!☆: 20180724-14-07 0 10.5
+buy: 20180131-16-01 331 4 22.7
+buy: 20180621-10-08 358 1 15.1
+buy: 20180719-24-01 364 0 11.3
+buy: 20180509-05-02 369 0 12.0
+buy: 20180724-20-04 388 8 11.3
+buy: 20180430-18-01 404 4 24.3
+buy: 20180716-01-06 422 0 11.6
+☆hit!☆: 20180716-01-06 0 11.6
+buy: 20180128-06-06 462 0 10.7
+buy: 20180128-06-06 462 1 30.5
+buy: 20180302-20-02 508 1 15.4
+buy: 20180602-24-06 639 0 16.4
+buy: 20180104-12-07 683 20 18.7
+buy: 20180316-24-05 684 1 14.6
+buy: 20180405-07-06 687 0 12.5
+buy: 20180622-19-10 692 0 15.7
+buy: 20180614-21-11 699 3 16.1
+buy: 20180420-11-05 710 2 13.0
+buy: 20180129-05-07 726 0 18.7
+buy: 20180126-17-08 730 0 13.8
+buy: 20180706-24-04 781 0 13.3
+buy: 20180412-09-05 867 0 14.8
+buy: 20180501-05-09 873 0 10.5
+buy: 20180518-05-03 895 41 13.6
+buy: 20180211-02-11 906 0 14.9
+buy: 20180107-13-08 910 2 16.8
+☆hit!☆: 20180107-13-08 2 16.8
+buy: 20180313-01-10 935 0 12.6
+buy: 20180409-06-09 956 0 15.3
+buy: 20180103-18-03 1001 0 20.2
+buy: 20180131-16-03 1005 23 13.7
+buy: 20180504-23-02 1082 8 30.2
+buy: 20180705-20-06 1106 0 18.3
+buy: 20180602-22-07 1134 0 10.1
+buy: 20180725-22-02 1172 22 12.9
+buy: 20180215-14-11 1176 2 11.1
+buy: 20180506-22-03 1206 0 13.3
+buy: 20180428-18-11 1218 5 9.8
+buy: 20180421-16-11 1226 0 8.5
+buy: 20180318-10-05 1240 0 17.3
+buy: 20180310-03-02 1250 0 14.5
+buy: 20180310-03-02 1250 4 14.0
+buy: 20180403-19-01 1259 0 15.4
+buy: 20180605-08-05 1308 4 19.4
+buy: 20180516-09-08 1321 0 12.7
+buy: 20180211-21-06 1341 0 11.2
+buy: 20180112-21-01 1356 1 19.7
+buy: 20180505-05-08 1390 1 25.3
+buy: 20180623-09-04 1410 1 11.9
+buy: 20180429-01-04 1480 12 16.9
+buy: 20180606-18-01 1490 4 15.1
+buy: 20180702-19-10 1508 2 15.1
+buy: 20180204-15-02 1524 0 14.7
+buy: 20180428-24-06 1586 8 11.2
+buy: 20180308-10-07 1630 0 19.6
+buy: 20180102-12-06 1653 21 21.0
+buy: 20180426-24-07 1668 1 12.9
+buy: 20180502-23-10 1681 0 15.1
+buy: 20180223-18-02 1708 3 18.3
+buy: 20180220-18-05 1713 1 13.7
+buy: 20180117-17-08 1728 11 20.8
+buy: 20180410-12-09 1760 0 14.8
+buy: 20180331-14-06 1827 0 18.5
+buy: 20180605-09-07 1831 23 64.4
+buy: 20180602-01-06 1875 0 36.0
+buy: 20180602-01-06 1875 4 28.8
+buy: 20180128-09-01 1895 8 17.4
+buy: 20180428-12-08 1907 8 21.0
+buy: 20180629-17-07 1973 1 12.6
+buy: 20180312-18-01 2022 4 19.4
+buy: 20180217-11-11 2029 0 18.2
+buy: 20180417-17-08 2069 0 7.3
+buy: 20180610-06-07 2088 1 15.7
+buy: 20180607-07-07 2098 8 18.7
+buy: 20180513-17-11 2109 0 12.4
+buy: 20180201-16-10 2155 0 15.9
+buy: 20180423-23-03 2182 0 18.0
+buy: 20180608-09-08 2192 4 15.0
+buy: 20180520-24-11 2215 14 21.1
+buy: 20180711-17-08 2219 23 38.5
+buy: 20180204-13-04 2244 21 15.8
+buy: 20180608-12-01 2248 1 57.9
+buy: 20180603-11-06 2253 0 16.4
+buy: 20180102-24-02 2264 8 15.9
+buy: 20180609-05-01 2293 0 13.9
+buy: 20180215-09-10 2369 0 15.0
+buy: 20180113-22-06 2448 0 19.9
+buy: 20180323-10-04 2459 0 13.2
+buy: 20180617-12-07 2462 1 15.4
+buy: 20180517-05-09 2503 0 14.6
+buy: 20180427-18-08 2504 23 14.2
+buy: 20180630-05-06 2586 12 17.9
+buy: 20180625-21-08 2628 8 11.3
+buy: 20180117-19-09 2639 0 15.3
+buy: 20180721-18-03 2643 0 34.8
+buy: 20180416-24-05 2681 8 11.7
+buy: 20180409-07-01 2702 0 10.5
+buy: 20180521-21-05 2710 1 26.9
+buy: 20180524-02-10 2722 0 11.5
+buy: 20180406-09-04 2732 1 16.6
+buy: 20180311-13-08 2793 7 11.9
+buy: 20180329-23-11 2809 2 17.5
+buy: 20180606-10-01 2855 1 53.2
+buy: 20180418-11-01 2856 0 18.2
+buy: 20180603-13-07 2866 20 17.4
+buy: 20180516-23-03 2880 5 15.6
+buy: 20180525-02-09 2885 0 12.3
+buy: 20180729-13-06 2892 0 14.4
+buy: 20180422-09-11 2927 0 13.2
+buy: 20180708-01-06 2973 4 13.9
+buy: 20180310-18-02 2986 0 14.8
+buy: 20180413-16-10 2987 0 13.3
+buy: 20180331-15-05 3003 0 20.0
+buy: 20180506-07-08 3010 1 16.9
+buy: 20180225-22-10 3120 7 14.7
+buy: 20180714-21-02 3179 8 18.1
+buy: 20180515-12-12 3223 0 30.0
+buy: 20180317-10-08 3231 20 21.0
+buy: 20180705-06-06 3235 0 13.3
+buy: 20180720-16-03 3252 0 15.0
+☆hit!☆: 20180720-16-03 0 15.0
+buy: 20180224-16-09 3265 1 16.6
+buy: 20180626-17-07 3280 0 11.4
+buy: 20180407-10-01 3282 4 13.4
+buy: 20180401-24-01 3312 0 17.6
+buy: 20180401-24-01 3312 1 14.0
+buy: 20180103-16-01 3314 2 16.6
+buy: 20180614-19-03 3319 0 10.5
+buy: 20180612-23-03 3399 0 27.3
+buy: 20180511-19-01 3446 0 11.4
+buy: 20180104-07-07 3471 0 21.7
+buy: 20180104-07-07 3471 4 13.3
+buy: 20180707-12-12 3503 1 14.8
+☆hit!☆: 20180707-12-12 1 14.8
+buy: 20180620-18-02 3506 0 9.3
+buy: 20180221-01-01 3534 8 15.9
+buy: 20180615-10-03 3704 0 15.1
+buy: 20180708-12-06 3724 0 10.5
+buy: 20180702-21-01 3727 0 22.3
+buy: 20180514-19-08 3730 0 38.6
+buy: 20180427-18-07 3737 1 19.4
+buy: 20180520-15-08 3743 0 15.1
+buy: 20180624-08-09 3778 1 9.4
+buy: 20180422-10-01 3785 1 11.6
+buy: 20180103-10-02 3805 0 16.5
+buy: 20180310-07-06 3836 1 13.4
+buy: 20180604-13-09 3838 0 14.2
+buy: 20180105-21-03 3844 0 12.5
+buy: 20180320-18-01 3845 4 14.3
+☆hit!☆: 20180320-18-01 4 14.3
+buy: 20180428-21-03 3889 5 18.0
+☆hit!☆: 20180428-21-03 5 18.0
+buy: 20180420-11-03 3908 1 15.3
+buy: 20180318-22-03 3918 8 15.1
+buy: 20180502-24-02 3922 0 18.5
+buy: 20180517-09-05 3963 5 13.3
+buy: 20180112-13-08 3996 1 13.0
+buy: 20180721-16-12 4008 11 15.0
+buy: 20180110-24-01 4053 3 14.8
+buy: 20180124-03-12 4081 11 12.2
+buy: 20180722-16-07 4083 4 13.7
+buy: 20180325-17-04 4088 8 14.0
+buy: 20180429-18-11 4133 0 11.7
+buy: 20180720-24-05 4148 0 16.8
+☆hit!☆: 20180720-24-05 0 16.8
+buy: 20180114-09-01 4159 4 16.7
+buy: 20180729-09-09 4182 14 13.0
+buy: 20180416-11-05 4243 4 18.7
+buy: 20180328-13-06 4276 0 15.0
+buy: 20180710-09-12 4341 0 12.9
+buy: 20180601-23-08 4349 1 49.8
+buy: 20180101-14-03 4358 9 15.9
+buy: 20180102-18-04 4377 4 14.3
+buy: 20180307-12-05 4390 2 16.2
+buy: 20180228-07-06 4397 0 13.9
+buy: 20180302-15-08 4443 0 11.2
+buy: 20180201-16-08 4460 2 12.7
+buy: 20180502-05-09 4469 0 10.9
+buy: 20180427-02-09 4471 0 14.2
+☆hit!☆: 20180427-02-09 0 14.2
+buy: 20180626-15-01 4486 8 16.4
+buy: 20180128-06-04 4517 1 15.9
+buy: 20180114-07-07 4520 11 18.1
+buy: 20180104-24-07 4535 0 11.5
+buy: 20180104-24-07 4535 4 18.6
+buy: 20180104-24-07 4535 5 13.1
+buy: 20180630-05-11 4559 1 16.4
+☆hit!☆: 20180630-05-11 1 16.4
+buy: 20180528-15-05 4585 0 16.0
+buy: 20180430-05-09 4598 11 11.8
+buy: 20180624-09-07 4639 8 22.6
+buy: 20180121-18-02 4648 0 14.4
+buy: 20180303-04-05 4658 0 21.2
+buy: 20180309-24-08 4660 1 40.9
+buy: 20180203-07-06 4668 0 20.0
+buy: 20180118-12-05 4679 12 15.4
+buy: 20180720-18-06 4692 1 31.3
+buy: 20180609-14-01 4724 0 13.4
+buy: 20180609-14-01 4724 4 16.8
+buy: 20180105-21-01 4770 0 24.2
+buy: 20180105-21-01 4770 4 18.8
+buy: 20180328-23-02 4775 1 60.4
+buy: 20180504-08-05 4840 0 8.8
+buy: 20180525-09-06 4843 22 17.5
+buy: 20180322-21-02 4879 5 15.2
+☆hit!☆: 20180322-21-02 5 15.2
+buy: 20180221-03-08 4917 13 13.9
+buy: 20180426-18-06 4921 1 28.5
+buy: 20180613-10-11 4928 1 16.2
+buy: 20180102-24-04 4951 0 19.0
+buy: 20180102-24-04 4951 4 17.3
+buy: 20180317-21-01 4952 0 16.6
+buy: 20180317-21-01 4952 1 16.3
+buy: 20180317-21-01 4952 4 13.8
+buy: 20180429-12-07 4994 1 13.8
+buy: 20180719-18-01 5004 0 14.4
+buy: 20180719-18-01 5004 4 18.4
+buy: 20180205-20-03 5047 12 19.1
+buy: 20180613-09-10 5056 1 16.9
+buy: 20180525-20-07 5075 8 14.4
+buy: 20180225-16-12 5080 0 17.1
+buy: 20180721-23-07 5098 21 17.1
+☆hit!☆: 20180721-23-07 21 17.1
+buy: 20180613-10-03 5112 0 10.3
+buy: 20180701-24-02 5130 8 14.0
+buy: 20180319-09-05 5186 0 12.9
+buy: 20180425-19-10 5211 2 12.4
+buy: 20180427-16-03 5212 5 14.3
+buy: 20180402-15-04 5347 0 27.3
+buy: 20180105-24-05 5376 1 11.2
+buy: 20180128-17-05 5400 1 14.3
+buy: 20180702-21-10 5410 2 27.1
+buy: 20180320-06-07 5428 0 13.2
+buy: 20180708-18-01 5451 4 11.5
+buy: 20180725-22-04 5452 0 15.1
+buy: 20180523-18-04 5454 4 16.6
+buy: 20180612-10-04 5531 12 15.3
+buy: 20180604-20-09 5557 12 12.8
+buy: 20180205-24-10 5564 0 15.2
+buy: 20180609-24-06 5572 5 16.5
+buy: 20180721-16-07 5607 0 18.6
+buy: 20180417-18-05 5616 0 16.9
+buy: 20180410-05-09 5647 0 15.2
+buy: 20180313-20-09 5662 8 29.3
+buy: 20180326-22-07 5680 0 21.6
+buy: 20180609-12-02 5685 2 22.7
+buy: 20180225-21-10 5692 0 14.6
+buy: 20180426-09-10 5719 0 11.7
+buy: 20180502-09-05 5776 4 11.1
+buy: 20180614-09-08 5813 1 34.5
+buy: 20180528-17-03 5835 3 12.3
+buy: 20180530-17-03 5884 0 11.2
+buy: 20180115-11-08 5892 6 15.2
+buy: 20180415-24-01 5908 4 13.9
+buy: 20180303-21-08 5952 0 15.5
+buy: 20180515-10-02 5973 8 13.5
+buy: 20180401-12-05 6016 7 11.6
+buy: 20180715-21-04 6063 0 15.5
+buy: 20180715-21-04 6063 4 13.5
+buy: 20180423-02-06 6074 12 15.8
+buy: 20180506-16-01 6114 1 10.1
+buy: 20180515-20-09 6117 0 20.9
+buy: 20180208-01-06 6127 1 15.3
+buy: 20180523-08-06 6202 0 20.0
+buy: 20180505-15-10 6220 1 15.7
+buy: 20180302-24-01 6323 0 15.3
+buy: 20180111-16-11 6358 11 21.4
+buy: 20180510-21-04 6492 4 14.5
+buy: 20180501-15-06 6532 0 13.8
+☆hit!☆: 20180501-15-06 0 13.8
+buy: 20180106-16-08 6575 5 14.4
+buy: 20180501-06-05 6587 12 15.5
+buy: 20180610-06-05 6632 0 15.0
+buy: 20180624-06-05 6703 23 19.0
+buy: 20180129-13-01 6730 12 16.3
+buy: 20180430-01-08 6804 0 23.6
+buy: 20180413-10-03 6830 4 11.8
+☆hit!☆: 20180413-10-03 4 11.8
+buy: 20180720-24-12 6831 2 12.3
+buy: 20180401-21-01 6897 8 15.0
+buy: 20180421-18-05 6901 0 33.2
+buy: 20180514-22-09 6915 0 16.7
+buy: 20180616-08-07 6970 12 31.4
+buy: 20180128-08-05 7007 2 15.0
+buy: 20180502-09-12 7014 5 11.9
+buy: 20180207-01-06 7018 0 40.9
+buy: 20180622-21-04 7021 0 14.9
+buy: 20180310-17-08 7054 1 10.2
+buy: 20180511-05-07 7076 3 18.7
+buy: 20180528-03-03 7087 1 12.9
 ☆hit!☆: 20180528-03-03 1 12.9
-buy: 20180122-14-12 499 0 8.4
-buy: 20180304-10-12 507 0 11.2
-buy: 20180429-13-08 520 1 7.1
-buy: 20180225-22-08 541 0 16.0
-buy: 20180426-19-09 542 0 17.0
-buy: 20180211-02-05 551 0 13.3
-buy: 20180701-14-03 622 11 23.5
-buy: 20180317-21-01 632 0 16.6
-buy: 20180317-21-01 632 4 13.8
-buy: 20180103-22-08 683 5 14.8
-buy: 20180113-21-01 684 0 16.6
-buy: 20180506-19-09 700 0 8.8
-buy: 20180117-23-02 758 1 13.0
-buy: 20180226-22-03 761 12 13.7
-buy: 20180428-18-04 809 4 14.3
-buy: 20180327-23-01 1005 0 10.5
-buy: 20180327-02-04 1009 42 13.9
-buy: 20180415-03-08 1054 21 16.4
-☆hit!☆: 20180415-03-08 21 16.4
-buy: 20180314-20-09 1063 0 15.7
-buy: 20180611-21-04 1149 2 12.9
-buy: 20180117-23-05 1183 0 22.2
-buy: 20180329-19-06 1184 0 15.3
-buy: 20180127-19-01 1201 0 25.2
-buy: 20180226-09-03 1229 0 19.8
-buy: 20180723-23-09 1253 0 37.2
-buy: 20180323-21-05 1272 0 12.5
-buy: 20180524-22-05 1286 0 22.6
-buy: 20180719-24-01 1310 0 11.3
-buy: 20180122-16-01 1318 1 21.6
-☆hit!☆: 20180122-16-01 1 21.6
-buy: 20180730-19-10 1337 0 11.5
-buy: 20180130-24-10 1385 1 14.4
-buy: 20180316-20-11 1480 0 13.6
-buy: 20180413-16-10 1481 0 13.3
-buy: 20180406-21-05 1489 1 78.9
-buy: 20180730-21-01 1495 0 19.5
-buy: 20180730-21-01 1495 4 12.7
-buy: 20180108-05-02 1504 0 8.2
-buy: 20180314-22-05 1530 0 33.9
-buy: 20180527-17-09 1561 0 9.7
-☆hit!☆: 20180527-17-09 0 9.7
-buy: 20180222-18-02 1629 0 13.6
-buy: 20180430-03-10 1657 0 13.2
-buy: 20180430-11-10 1686 9 14.1
-buy: 20180624-06-12 1696 0 14.2
-buy: 20180203-16-04 1703 0 15.4
-buy: 20180312-12-09 1710 1 17.5
-buy: 20180503-09-05 1721 0 11.9
-buy: 20180502-20-09 1746 8 26.1
-buy: 20180201-16-09 1758 1 17.8
-☆hit!☆: 20180201-16-09 1 17.8
-buy: 20180426-22-08 1779 0 14.2
-buy: 20180118-17-02 1813 0 16.6
-buy: 20180312-18-03 1815 0 18.1
-buy: 20180705-21-02 1839 1 17.3
-buy: 20180216-18-08 1845 1 88.2
-buy: 20180429-12-07 1849 1 13.8
-buy: 20180501-15-05 1890 0 16.3
-buy: 20180507-06-04 1905 0 27.2
-buy: 20180725-20-10 1929 2 13.6
-buy: 20180324-04-05 1948 0 8.8
-buy: 20180514-07-01 2008 0 11.5
-☆hit!☆: 20180514-07-01 0 11.5
-buy: 20180326-08-07 2037 20 12.9
-buy: 20180612-09-08 2044 22 14.5
-buy: 20180423-23-02 2051 2 11.2
-buy: 20180222-24-04 2063 0 11.4
-buy: 20180617-06-07 2107 0 11.8
-☆hit!☆: 20180617-06-07 0 11.8
-buy: 20180224-22-08 2139 0 13.5
-buy: 20180402-15-04 2178 0 27.3
-buy: 20180408-05-09 2234 0 14.1
-buy: 20180217-23-05 2330 1 14.6
-buy: 20180312-01-05 2347 5 13.9
-buy: 20180105-24-07 2378 1 13.5
-buy: 20180105-24-07 2378 8 23.5
-buy: 20180409-18-11 2394 0 10.0
-buy: 20180506-10-02 2403 1 10.5
-buy: 20180228-14-01 2423 8 8.4
-buy: 20180509-21-04 2435 2 13.9
-buy: 20180324-04-12 2451 0 16.1
-buy: 20180702-19-10 2457 2 15.1
-buy: 20180702-08-12 2562 0 10.8
-buy: 20180408-05-06 2581 20 14.0
-buy: 20180704-24-09 2600 0 17.4
-buy: 20180224-16-01 2620 0 33.6
-buy: 20180224-16-01 2620 4 23.5
-buy: 20180318-09-01 2637 0 9.7
-buy: 20180404-10-12 2689 1 18.4
-buy: 20180318-15-09 2695 0 21.8
-buy: 20180117-18-01 2749 4 17.9
-buy: 20180503-06-04 2766 0 10.0
-☆hit!☆: 20180503-06-04 0 10.0
-buy: 20180719-11-07 2770 2 21.1
-buy: 20180406-15-08 2778 4 15.8
-☆hit!☆: 20180406-15-08 4 15.8
-buy: 20180117-12-02 2850 0 16.9
-buy: 20180616-21-02 2876 0 37.5
-buy: 20180104-24-07 3000 4 18.6
-buy: 20180104-24-07 3000 5 13.1
-buy: 20180106-01-06 3041 0 14.7
-buy: 20180622-21-04 3059 0 14.9
-buy: 20180303-18-05 3082 0 11.7
-buy: 20180403-19-01 3115 0 15.4
-buy: 20180301-07-06 3143 0 20.7
-buy: 20180301-07-06 3143 4 44.8
-buy: 20180626-17-04 3176 0 9.9
-buy: 20180125-20-08 3248 0 16.2
-buy: 20180604-10-03 3253 0 21.7
-buy: 20180102-10-07 3280 5 38.4
-buy: 20180413-10-07 3320 5 13.2
-buy: 20180427-18-06 3352 1 37.7
-buy: 20180512-22-07 3443 0 16.6
-☆hit!☆: 20180512-22-07 0 16.6
-buy: 20180602-01-06 3454 4 28.8
-buy: 20180215-18-10 3509 1 13.7
-buy: 20180727-15-08 3525 0 21.2
-buy: 20180128-21-04 3559 0 12.9
-buy: 20180225-06-05 3570 0 38.1
-buy: 20180517-01-06 3595 0 15.9
-buy: 20180114-20-05 3621 8 10.3
-buy: 20180319-09-04 3625 0 27.8
-buy: 20180228-16-05 3628 0 15.0
-buy: 20180303-20-07 3681 1 15.3
-buy: 20180106-20-09 3693 0 15.8
-buy: 20180426-13-01 3736 0 14.6
-buy: 20180610-24-05 3746 1 14.5
-buy: 20180520-01-01 3820 8 13.4
-buy: 20180718-24-08 3831 1 23.6
-buy: 20180531-17-07 3847 0 29.6
-buy: 20180710-24-02 3896 1 17.2
-☆hit!☆: 20180710-24-02 1 17.2
-buy: 20180225-10-05 3987 0 18.2
-buy: 20180203-16-11 4044 0 14.3
-buy: 20180320-01-06 4050 0 13.3
-buy: 20180429-11-06 4082 2 20.5
-buy: 20180429-11-06 4082 12 29.5
-buy: 20180516-19-06 4116 0 20.9
-buy: 20180516-19-06 4116 4 13.8
-buy: 20180118-24-05 4172 1 22.3
-buy: 20180616-05-09 4181 0 14.0
-buy: 20180127-21-04 4206 0 13.8
-buy: 20180318-01-07 4225 0 10.4
-buy: 20180105-05-11 4237 1 11.1
-buy: 20180221-13-04 4253 0 17.7
-buy: 20180207-12-11 4279 0 12.5
-buy: 20180226-19-01 4287 4 33.7
-buy: 20180205-13-05 4303 21 18.2
-buy: 20180529-17-08 4374 22 17.9
-buy: 20180709-07-07 4378 0 17.8
-buy: 20180729-21-01 4395 0 15.3
-buy: 20180714-21-01 4412 0 14.8
-buy: 20180107-12-01 4471 0 13.0
-buy: 20180605-13-01 4520 0 18.7
-buy: 20180407-22-08 4578 0 16.1
-buy: 20180305-13-11 4640 2 16.1
-buy: 20180610-16-01 4658 0 17.0
-buy: 20180723-21-02 4680 5 18.9
-buy: 20180516-12-08 4692 1 17.2
-buy: 20180517-09-08 4755 0 18.6
-buy: 20180206-05-09 4756 4 13.0
-☆hit!☆: 20180206-05-09 4 13.0
-buy: 20180218-06-09 4795 1 28.5
-buy: 20180227-19-04 4810 0 14.1
-buy: 20180209-21-05 4812 1 15.2
-☆hit!☆: 20180209-21-05 1 15.2
-buy: 20180125-17-08 4827 0 14.1
-buy: 20180103-01-06 4852 0 19.0
-buy: 20180502-05-09 4854 0 10.9
-buy: 20180201-15-11 4890 1 14.7
-buy: 20180114-07-06 4913 2 16.8
-buy: 20180712-14-01 4975 0 19.5
-buy: 20180117-17-07 4976 0 16.8
-buy: 20180412-03-12 5014 1 12.0
-buy: 20180514-19-07 5050 0 47.5
-buy: 20180113-20-05 5106 0 16.2
-buy: 20180721-07-02 5146 5 17.5
-buy: 20180307-12-06 5158 0 11.6
-buy: 20180625-06-12 5200 5 14.8
-buy: 20180502-14-03 5251 4 14.8
-buy: 20180315-15-02 5253 0 17.2
-buy: 20180407-10-08 5273 0 14.0
-buy: 20180509-06-08 5274 0 16.2
-buy: 20180725-16-01 5285 1 11.0
-buy: 20180514-23-02 5308 4 15.1
-☆hit!☆: 20180514-23-02 4 15.1
-buy: 20180705-17-07 5347 1 10.6
-buy: 20180602-20-07 5358 1 13.4
-☆hit!☆: 20180602-20-07 1 13.4
-buy: 20180426-09-04 5374 0 10.1
-☆hit!☆: 20180426-09-04 0 10.1
-buy: 20180506-15-07 5381 2 12.7
-buy: 20180117-11-07 5433 0 10.6
-☆hit!☆: 20180117-11-07 0 10.6
-buy: 20180719-15-04 5454 0 12.9
-buy: 20180223-17-01 5480 0 20.6
-buy: 20180101-21-05 5497 2 15.5
-buy: 20180616-06-12 5506 0 10.9
-buy: 20180611-24-08 5555 7 15.5
-buy: 20180223-24-12 5579 8 12.5
-buy: 20180318-13-08 5585 0 19.0
-buy: 20180526-08-09 5593 0 15.1
-buy: 20180426-19-11 5594 1 14.7
-buy: 20180605-13-08 5627 1 14.0
-☆hit!☆: 20180605-13-08 1 14.0
-buy: 20180506-21-08 5668 5 14.7
-buy: 20180531-14-08 5709 1 27.3
-buy: 20180115-20-03 5727 12 21.6
-buy: 20180303-01-09 5728 4 14.1
-buy: 20180427-04-05 5735 0 14.5
-buy: 20180101-21-01 5783 0 12.1
-☆hit!☆: 20180101-21-01 0 12.1
-buy: 20180101-21-01 5783 2 16.3
-buy: 20180101-09-02 5793 3 17.2
-buy: 20180502-23-08 5806 1 15.8
-buy: 20180325-04-06 5871 0 16.9
-buy: 20180325-04-06 5871 42 15.3
-buy: 20180718-01-06 5889 4 15.2
-buy: 20180323-10-04 5954 0 13.2
-buy: 20180603-13-06 6041 0 12.9
-buy: 20180312-18-02 6074 8 17.0
-buy: 20180720-07-01 6130 4 11.6
-buy: 20180726-18-01 6173 0 10.1
-buy: 20180428-18-11 6176 5 9.8
-buy: 20180626-17-07 6190 0 11.4
-buy: 20180622-19-10 6265 0 15.7
-buy: 20180713-06-01 6269 0 19.1
-buy: 20180513-19-06 6276 20 13.5
-buy: 20180429-18-02 6291 0 11.4
-buy: 20180514-19-05 6322 0 18.5
-buy: 20180705-20-06 6373 0 18.3
-buy: 20180216-23-03 6398 0 29.8
-buy: 20180616-08-04 6418 0 9.2
-buy: 20180328-18-03 6446 1 20.9
-buy: 20180328-18-03 6446 8 11.5
-buy: 20180308-18-03 6452 4 13.2
-buy: 20180108-12-08 6513 0 17.1
-buy: 20180504-07-11 6522 1 15.5
-buy: 20180506-07-05 6544 20 13.2
-buy: 20180417-09-09 6545 4 15.2
-buy: 20180526-23-03 6618 0 11.5
-buy: 20180107-13-07 6646 6 22.3
-buy: 20180126-20-08 6738 0 12.2
-buy: 20180108-15-01 6758 0 13.7
-buy: 20180424-09-06 6762 20 30.5
-buy: 20180502-20-04 6766 0 11.9
-buy: 20180521-16-01 6769 8 11.2
-buy: 20180628-24-07 6779 0 20.0
-buy: 20180603-14-04 6895 0 12.7
-buy: 20180121-08-09 6924 21 15.4
-buy: 20180505-19-07 6933 0 14.3
-buy: 20180506-13-06 6961 0 17.2
-buy: 20180430-06-04 6977 0 32.4
-buy: 20180314-23-01 6993 0 15.6
-buy: 20180722-19-07 7001 0 16.4
-buy: 20180104-06-08 7039 12 25.2
-buy: 20180501-13-03 7044 5 12.2
-buy: 20180310-07-12 7047 1 25.3
-buy: 20180313-04-01 7055 1 12.8
-buy: 20180527-04-11 7092 21 14.9
-buy: 20180617-12-05 7162 1 13.0
-buy: 20180727-18-03 7231 1 14.7
-buy: 20180517-22-05 7239 0 18.9
-buy: 20180408-22-08 7262 9 13.5
-buy: 20180430-13-07 7263 3 30.0
-buy: 20180524-17-06 7269 0 14.3
-buy: 20180428-12-03 7351 20 17.6
-buy: 20180513-07-07 7378 0 17.6
-buy: 20180606-20-12 7395 0 15.5
-buy: 20180502-10-02 7423 0 21.3
-buy: 20180305-14-07 7431 1 18.1
-buy: 20180512-18-01 7438 4 12.9
-buy: 20180709-22-03 7482 2 10.3
-buy: 20180207-23-02 7503 1 80.2
-buy: 20180609-21-05 7508 1 9.3
-buy: 20180514-19-08 7510 0 38.6
-buy: 20180602-02-07 7520 0 48.7
-buy: 20180516-09-08 7546 0 12.7
-buy: 20180516-09-08 7546 1 80.9
-buy: 20180707-10-12 7549 0 10.9
-buy: 20180712-09-07 7621 0 21.5
-buy: 20180712-09-07 7621 4 14.5
-buy: 20180313-01-10 7646 0 12.6
-buy: 20180421-08-04 7670 0 11.1
-buy: 20180612-14-05 7689 0 15.4
-buy: 20180117-19-09 7742 0 15.3
-buy: 20180610-24-09 7743 2 15.1
-buy: 20180312-12-12 7776 11 11.9
-☆hit!☆: 20180312-12-12 11 11.9
-buy: 20180613-10-06 7790 12 34.3
-buy: 20180225-10-01 7845 0 14.8
-buy: 20180427-23-03 7848 0 16.4
-buy: 20180522-08-06 7849 0 14.3
-buy: 20180227-09-05 7878 0 15.5
-buy: 20180609-06-09 7928 0 16.2
-buy: 20180331-18-01 7953 2 17.9
-resultReturn: 0.9603333333333333
+buy: 20180108-14-05 7088 2 14.9
+buy: 20180410-18-09 7097 0 30.0
+buy: 20180501-06-01 7146 8 16.3
+buy: 20180429-12-05 7157 0 16.0
+buy: 20180429-12-05 7157 1 62.9
+buy: 20180625-05-06 7168 2 20.5
+buy: 20180502-23-04 7207 8 16.4
+buy: 20180505-08-06 7225 0 27.9
+buy: 20180616-04-09 7309 5 14.8
+buy: 20180106-23-02 7320 2 14.8
+buy: 20180303-14-05 7364 4 12.1
+buy: 20180118-23-02 7384 0 17.4
+buy: 20180125-18-03 7412 0 11.0
+buy: 20180707-07-08 7532 1 19.5
+buy: 20180501-15-05 7572 0 16.3
+buy: 20180312-01-06 7600 8 15.5
+buy: 20180219-06-08 7669 6 18.4
+buy: 20180429-11-06 7735 12 29.5
+buy: 20180113-03-04 7752 0 9.9
+buy: 20180617-24-06 7770 0 12.3
+buy: 20180130-24-04 7821 11 16.0
+buy: 20180107-04-11 7857 8 19.6
+buy: 20180322-22-07 7858 0 13.0
+☆hit!☆: 20180322-22-07 0 13.0
+buy: 20180509-16-09 7860 5 21.8
+buy: 20180504-23-08 7905 5 54.1
+buy: 20180526-08-09 7951 0 15.1
+resultReturn: 0.7466237942122187
 </pre>
 </div>
 </div>
@@ -14441,7 +14447,7 @@ resultReturn: 0.9603333333333333
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[171]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;totalRace,buy,return&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">),</span><span class="n">buyAmount</span><span class="p">,</span><span class="n">resAmount</span> <span class="p">)</span>
@@ -14461,7 +14467,7 @@ resultReturn: 0.9603333333333333
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>totalRace,buy,return 7956 300 288.09999999999997
+<pre>totalRace,buy,return 7956 311 232.20000000000002
 </pre>
 </div>
 </div>
@@ -14472,7 +14478,7 @@ resultReturn: 0.9603333333333333
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[100]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># trainの回収率を計算</span>
@@ -14512,10 +14518,39 @@ resultReturn: 0.9603333333333333
     <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>accuracy: 0.15254734372381432
-return: 1.6404767890061995
-</pre>
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-19-34acaf71e785&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">     10</span> 
+<span class="ansi-green-intense-fg ansi-bold">     11</span> <span class="ansi-red-fg"># 精度 (Accuracy) を計算する</span>
+<span class="ansi-green-fg">---&gt; 12</span><span class="ansi-red-fg"> </span>accuracy <span class="ansi-blue-fg">=</span> sum<span class="ansi-blue-fg">(</span>y_train <span class="ansi-blue-fg">==</span> y_pred_max<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">/</span> len<span class="ansi-blue-fg">(</span>y_train<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     13</span> print<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;accuracy:&#34;</span><span class="ansi-blue-fg">,</span>accuracy<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     14</span> 
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/site-packages/pandas/core/ops.py</span> in <span class="ansi-cyan-fg">f</span><span class="ansi-blue-fg">(self, other)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2089</span>     <span class="ansi-green-fg">def</span> f<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> other<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   2090</span> 
+<span class="ansi-green-fg">-&gt; 2091</span><span class="ansi-red-fg">         </span>other <span class="ansi-blue-fg">=</span> _align_method_FRAME<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> other<span class="ansi-blue-fg">,</span> axis<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">None</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2092</span> 
+<span class="ansi-green-intense-fg ansi-bold">   2093</span>         <span class="ansi-green-fg">if</span> isinstance<span class="ansi-blue-fg">(</span>other<span class="ansi-blue-fg">,</span> ABCDataFrame<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/site-packages/pandas/core/ops.py</span> in <span class="ansi-cyan-fg">_align_method_FRAME</span><span class="ansi-blue-fg">(left, right, axis)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1952</span> 
+<span class="ansi-green-intense-fg ansi-bold">   1953</span>         <span class="ansi-green-fg">if</span> right<span class="ansi-blue-fg">.</span>ndim <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 1954</span><span class="ansi-red-fg">             </span>right <span class="ansi-blue-fg">=</span> to_series<span class="ansi-blue-fg">(</span>right<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1955</span> 
+<span class="ansi-green-intense-fg ansi-bold">   1956</span>         <span class="ansi-green-fg">elif</span> right<span class="ansi-blue-fg">.</span>ndim <span class="ansi-blue-fg">==</span> <span class="ansi-cyan-fg">2</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/site-packages/pandas/core/ops.py</span> in <span class="ansi-cyan-fg">to_series</span><span class="ansi-blue-fg">(right)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1945</span>             <span class="ansi-green-fg">if</span> len<span class="ansi-blue-fg">(</span>left<span class="ansi-blue-fg">.</span>columns<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">!=</span> len<span class="ansi-blue-fg">(</span>right<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   1946</span>                 raise ValueError(msg.format(req_len=len(left.columns),
+<span class="ansi-green-fg">-&gt; 1947</span><span class="ansi-red-fg">                                             given_len=len(right)))
+</span><span class="ansi-green-intense-fg ansi-bold">   1948</span>             right <span class="ansi-blue-fg">=</span> left<span class="ansi-blue-fg">.</span>_constructor_sliced<span class="ansi-blue-fg">(</span>right<span class="ansi-blue-fg">,</span> index<span class="ansi-blue-fg">=</span>left<span class="ansi-blue-fg">.</span>columns<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1949</span>         <span class="ansi-green-fg">return</span> right
+
+<span class="ansi-red-fg">ValueError</span>: Unable to coerce to Series, length must be 1: given 23868</pre>
 </div>
 </div>
 
@@ -14525,7 +14560,7 @@ return: 1.6404767890061995
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -14535,47 +14570,10 @@ return: 1.6404767890061995
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[0.16325538 0.08015782 0.09847157 0.0193496  0.07342523 0.0341735
- 0.03888798 0.00830498 0.06171979 0.02266775 0.03685082 0.00557308
- 0.0666263  0.01264112 0.01730488 0.00404506 0.00392837 0.00303416
- 0.00286295 0.00155773 0.04369695 0.00799778 0.02450095 0.0053066
- 0.00567482 0.00178753 0.00303634 0.00185662 0.00379114 0.00213292
- 0.00114678 0.00122078 0.00242561 0.0012388  0.00238295 0.00084877
- 0.00117216 0.00100795 0.00083239 0.0009667  0.00532319 0.00293772
- 0.00350938 0.00257052 0.00253015 0.00215458 0.00163988 0.00114257
- 0.00205868 0.00317003 0.00167596 0.00099296 0.00164794 0.0017303
- 0.00138308 0.00109713 0.00080937 0.00130603 0.00068086 0.00069282
- 0.00423586 0.00258704 0.0052843  0.00177792 0.00290934 0.00134249
- 0.00163997 0.00110285 0.00139556 0.00180939 0.00298379 0.00096123
- 0.00364094 0.00276216 0.00243222 0.00143256 0.0011333  0.0006861
- 0.00107718 0.00126817 0.00682508 0.00364191 0.00467418 0.00111447
- 0.00180396 0.00122093 0.00100456 0.00078043 0.0017301  0.00076718
- 0.00075802 0.00095687 0.00178655 0.00169523 0.00098762 0.00097537
- 0.0018058  0.00071287 0.00068011 0.00078683 0.001277   0.00132368
- 0.00072805 0.00079747 0.00109832 0.00090135 0.00094821 0.00059081
- 0.00070554 0.00062298 0.00058891 0.00072482 0.00082795 0.00071976
- 0.00062065 0.00079111 0.0007507  0.000725   0.0006602  0.00051128]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;raceId&#39;</span><span class="p">])</span>
@@ -14585,85 +14583,6 @@ return: 1.6404767890061995
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>21616    20180524-24-03
-13722    20180403-07-09
-12788    20180326-17-09
-30986    20180725-20-09
-1638     20180109-14-09
-30344    20180721-18-01
-15707    20180417-02-07
-5794     20180207-04-12
-124      20180101-20-05
-15187    20180414-06-01
-5077     20180202-04-07
-30248    20180721-02-09
-4989     20180201-13-01
-8310     20180225-19-02
-4125     20180127-02-03
-29431    20180715-08-03
-9325     20180304-20-03
-13178    20180329-13-03
-8754     20180228-22-06
-8933     20180302-15-04
-3413     20180121-10-12
-31669    20180730-19-02
-6987     20180217-16-04
-8662     20180228-02-10
-7643     20180222-13-06
-12242    20180322-22-11
-11671    20180318-21-06
-16877    20180425-20-05
-10254    20180310-17-07
-15584    20180416-11-03
-              ...      
-29031    20180712-17-10
-26067    20180622-18-11
-22921    20180602-01-05
-26435    20180625-08-10
-25068    20180616-04-01
-22818    20180601-11-10
-13138    20180329-02-11
-16092    20180419-19-10
-18583    20180504-19-04
-3146     20180119-08-08
-23978    20180608-21-01
-4072     20180126-18-10
-6937     20180217-06-01
-4668     20180130-10-02
-30703    20180723-24-01
-9999     20180309-03-12
-1352     20180107-20-10
-17963    20180501-06-07
-11475    20180317-21-01
-5616     20180205-20-11
-8893     20180302-06-12
-7339     20180220-13-12
-10748    20180313-10-09
-22169    20180528-07-03
-11867    20180320-06-11
-23473    20180605-15-06
-18232    20180502-14-03
-22395    20180529-16-05
-19425    20180509-18-06
-12425    20180324-08-02
-Name: raceId, Length: 23868, dtype: object
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -14693,35 +14612,13 @@ Name: raceId, Length: 23868, dtype: object
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">feature_importance</span><span class="p">())</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[  96 1031 1251  858 1106 5396   83 1181 1115  894 1210 5285   89  784
- 1027 1090 1082 5657   69 1047  909 1158 1011 6521  139 1234 1137 1173
- 1016 7256   94  918 1074  876  966 6603  528  502   43   48  149   55
-  140   73  130   27  164  122  318   60  119   85   96  133   88  104
-  131  245  141   85  108  145]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
