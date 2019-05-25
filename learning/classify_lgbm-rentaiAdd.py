@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[20]:
 
 
+# todo 学習結果を使って運用するための環境を作る。
 # 選手情報・過去レース情報から3連単舟券120種をクラス分類する
 # LGBMでやってみる。
 # todo:bayseの方と、インプットの与え方をあわせる。今はOne-Hotが一致していない。
 # 的中予想確率10%以上のうち、オッズで見合うものだけ買った場合のシミュレーションをする。
+# このnoteでは情報を増やしてみる。
 
 # 汎用ライブラリのimport
 import sys
@@ -26,7 +28,7 @@ from sklearn.preprocessing import LabelEncoder
 import csv
 
 
-# In[2]:
+# In[21]:
 
 
 # 自作ライブラリのimport
@@ -37,7 +39,7 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[3]:
+# In[22]:
 
 
 # 舟券の配列を取得
@@ -51,23 +53,23 @@ funakenDict=dict(zip(funakenList[0],funakenID))
 print(funakenDict)
 
 
-# In[4]:
+# In[23]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
-trainStartDate="20180101"
-trainEndDate="20180731"
+trainStartDate="20170401"
+trainEndDate="20190430"
 # test はtrainからsplitする
 
 
-# In[5]:
+# In[24]:
 
 
 dbh=dbHandler.getDBHandle()
 #dbHandler.closeDBHandle(dbh)
 
 
-# In[6]:
+# In[25]:
 
 
 # trainの元データを取得
@@ -78,14 +80,14 @@ with dbh.cursor() as cursor:
 print("traindata:",len(loadList))
 
 
-# In[7]:
+# In[26]:
 
 
 df = pd.io.json.json_normalize(loadList)
 df.head()
 
 
-# In[8]:
+# In[27]:
 
 
 # 入力のデータ整形
@@ -119,7 +121,7 @@ xdf.head()
 
 
 
-# In[9]:
+# In[28]:
 
 
 # ファイルから作った辞書で変換する
@@ -128,7 +130,7 @@ ydf=pd.DataFrame(ydf.replace(funakenDict))
 print(ydf.head())
 
 
-# In[10]:
+# In[29]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -138,20 +140,21 @@ odf=df['odds'].values
 print(odf)
 
 
-# In[11]:
+# In[50]:
 
 
 X_train, X_test, y_train, y_test,o_train,o_test = train_test_split(xdf, ydf,odf)
+print("X_train,X_test:",len(X_train),len(X_test))
 
 
-# In[12]:
+# In[51]:
 
 
 lgb_train = lgb.Dataset(X_train, y_train)
 lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
 
 
-# In[13]:
+# In[52]:
 
 
 lgbm_params = {
@@ -163,27 +166,27 @@ lgbm_params = {
     'random_state':999,
     # 以下、ハイパーパラメタ
     'max_depth':3,
-    'num_leaves':19,
+    'num_leaves':6,
     'min_data_in_leaf':300,
     # 正則化
-    'reg_alpha':9.591,
-    'reg_lambda':9.928 ,
+    'reg_alpha':2.425,
+    'reg_lambda':9.473 ,
 }
 
 
-# In[14]:
+# In[53]:
 
 
 lgb.LGBMClassifier()
 
 
-# In[15]:
+# In[54]:
 
 
 model = lgb.train(lgbm_params, lgb_train, valid_sets=lgb_eval)
 
 
-# In[16]:
+# In[55]:
 
 
 y_pred = model.predict(X_test, num_iteration=model.best_iteration)
@@ -205,7 +208,7 @@ for i in range(len(y_test)):
 print("resultReturn:",res/len(y_test))
 
 
-# In[17]:
+# In[56]:
 
 
 print(len(y_pred))
@@ -241,13 +244,59 @@ for i in range(len(y_test)):
 print("resultReturn:",resAmount/buyAmount)
 
 
-# In[18]:
+# In[57]:
 
 
 print("totalRace,buy,return",len(y_test),buyAmount,resAmount )
+# 現状でも100%はロバストに超えそう。
+# だがrrが1.2でもbuyが6/300レースだと、1000円投票しても一日だと約3000*1.2⇒利益600円なので、もっと回収率を上げるか母数増やす。
+# totalRace,buy,return 28274 608 614.3
+# totalRace,buy,return 28274 614 804.8
 
 
-# In[19]:
+# In[58]:
+
+
+print(len(y_pred))
+# オッズを見て判断する場合
+resAmount=0
+buyAmount=0
+
+dfIndexList=y_test['funaken'].index
+for i in range(len(y_test)):
+    raceId = df.iloc[dfIndexList[i]]['raceId']
+    #print(raceId)
+    with dbh.cursor() as cursor:
+        sel_sql = "select funaken,odds from raceodds                    where oddsType = '3t'                    and raceId = '%s'                    order by funaken"                    % (raceId)
+        cursor.execute(sel_sql)
+        loadList=pd.DataFrame(cursor.fetchall())
+        loadList=pd.DataFrame(loadList.replace(funakenDict))
+    #print((loadList[loadList['funaken']==0]['odds'] * y_pred[i][0] ).values[0] )
+    #if ( (loadList[loadList['funaken']==0]['odds'] * y_pred[i][0] ).values[0] > 1) :
+    #    print("ok")
+    #print(y_pred[i][0])
+    #print(raceId)
+    for j in range(120):
+        # y_predの閾値を下げてみる。
+        if y_pred[i][j]> 0.05 and ( (y_pred[i][j] * (loadList[loadList['funaken']==j]['odds'])).values[0] > 1.5) :
+            print("buy:",raceId,i,j,loadList[loadList['funaken']==j]['odds'].values[0])
+            buyAmount+=1
+            if y_test['funaken'].iloc[i]==j:
+            #print("i:",i,"result:",y_test[i],"forecast:",y_pred_max[i],"forecastProb:",y_pred[i][y_pred_max[i]],"return:",o_test[i],"expect:",y_pred[i][y_pred_max[i]]*o_test[i])
+                print("☆hit!☆:",raceId,j,loadList[loadList['funaken']==j]['odds'].values[0])
+                resAmount += o_test[i]
+            else:
+            #print("i:",i,"result:",y_test[i],"forecast:",y_pred_max[i],"forecastProb:",y_pred[i][y_pred_max[i]],"return:",o_test[i],"expect:",y_pred[i][y_pred_max[i]]*o_test[i])
+                pass
+print("resultReturn:",resAmount/buyAmount)
+print("totalRace,buy,return",len(y_test),buyAmount,resAmount )
+# y_pred[i][j]> 0.05に閾値下げてみた。投票数はかなり増えているが、回収率が低く、トータルリターンは下がっている。
+# ToDo：運用に向けてはこのバランスを調整してみるのはあり。
+#resultReturn: 1.005279187817259
+#totalRace,buy,return 28274 4925 4951.0
+
+
+# In[38]:
 
 
 # trainの回収率を計算
@@ -261,6 +310,7 @@ y_pred_max = np.argmax(y_pred, axis=1)  # 最尤と判断したクラスの値�
 #print(len(c) )
 
 # 精度 (Accuracy) を計算する
+# エラーになるけど気にしない。
 accuracy = sum(y_train == y_pred_max) / len(y_train)
 print("accuracy:",accuracy)
 

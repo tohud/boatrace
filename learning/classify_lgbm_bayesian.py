@@ -112,7 +112,7 @@ ydf.head()
 
 
 
-# In[ ]:
+# In[9]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -122,13 +122,13 @@ odf=pd.DataFrame(df['odds'])
 print(type(odf))
 
 
-# In[ ]:
+# In[10]:
 
 
 bayesian_tr_index, bayesian_val_index  = list(StratifiedKFold(n_splits=2, shuffle=True, random_state=1).split(xdf, ydf))[0]
 
 
-# In[ ]:
+# In[11]:
 
 
 def LGB_bayesian(
@@ -183,7 +183,7 @@ def LGB_bayesian(
     return score
 
 
-# In[ ]:
+# In[12]:
 
 
 bounds_LGB={
@@ -195,7 +195,7 @@ bounds_LGB={
 }
 
 
-# In[ ]:
+# In[13]:
 
 
 LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)
@@ -214,7 +214,7 @@ print(LGB_BO.space.keys)
 
 
 
-# In[ ]:
+# In[14]:
 
 
 init_points = 5
