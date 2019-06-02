@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[72]:
+# In[1]:
 
 
 # 選手情報・過去レース情報から3連単舟券120種をクラス分類する
@@ -26,7 +26,7 @@ from sklearn.preprocessing import LabelEncoder
 import csv
 
 
-# In[73]:
+# In[2]:
 
 
 # 自作ライブラリのimport
@@ -37,7 +37,7 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[74]:
+# In[3]:
 
 
 # 舟券の配列を取得
@@ -51,23 +51,23 @@ funakenDict=dict(zip(funakenList[0],funakenID))
 print(funakenDict)
 
 
-# In[75]:
+# In[4]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
-trainStartDate="20180101"
-trainEndDate="20180731"
+trainStartDate="20170401"
+trainEndDate="20190331"
 # test はtrainからsplitする
 
 
-# In[164]:
+# In[5]:
 
 
 dbh=dbHandler.getDBHandle()
 #dbHandler.closeDBHandle(dbh)
 
 
-# In[77]:
+# In[6]:
 
 
 # trainの元データを取得
@@ -78,14 +78,14 @@ with dbh.cursor() as cursor:
 print("traindata:",len(loadList))
 
 
-# In[78]:
+# In[7]:
 
 
 df = pd.io.json.json_normalize(loadList)
 df.head()
 
 
-# In[80]:
+# In[8]:
 
 
 # 入力のデータ整形
@@ -119,7 +119,7 @@ xdf.head()
 
 
 
-# In[109]:
+# In[9]:
 
 
 # ファイルから作った辞書で変換する
@@ -128,7 +128,7 @@ ydf=pd.DataFrame(ydf.replace(funakenDict))
 print(ydf.head())
 
 
-# In[110]:
+# In[10]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -138,20 +138,20 @@ odf=df['odds'].values
 print(odf)
 
 
-# In[111]:
+# In[11]:
 
 
 X_train, X_test, y_train, y_test,o_train,o_test = train_test_split(xdf, ydf,odf)
 
 
-# In[112]:
+# In[12]:
 
 
 lgb_train = lgb.Dataset(X_train, y_train)
 lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
 
 
-# In[113]:
+# In[13]:
 
 
 lgbm_params = {
@@ -163,27 +163,27 @@ lgbm_params = {
     'random_state':999,
     # 以下、ハイパーパラメタ
     'max_depth':3,
-    'num_leaves':19,
+    'num_leaves':6,
     'min_data_in_leaf':300,
     # 正則化
-    'reg_alpha':9.591,
-    'reg_lambda':9.928 ,
+    'reg_alpha':2.425,
+    'reg_lambda':9.473 ,
 }
 
 
-# In[114]:
+# In[14]:
 
 
 lgb.LGBMClassifier()
 
 
-# In[115]:
+# In[15]:
 
 
 model = lgb.train(lgbm_params, lgb_train, valid_sets=lgb_eval)
 
 
-# In[118]:
+# In[16]:
 
 
 y_pred = model.predict(X_test, num_iteration=model.best_iteration)
@@ -205,7 +205,7 @@ for i in range(len(y_test)):
 print("resultReturn:",res/len(y_test))
 
 
-# In[170]:
+# In[17]:
 
 
 print(len(y_pred))
@@ -241,13 +241,13 @@ for i in range(len(y_test)):
 print("resultReturn:",resAmount/buyAmount)
 
 
-# In[171]:
+# In[18]:
 
 
 print("totalRace,buy,return",len(y_test),buyAmount,resAmount )
 
 
-# In[100]:
+# In[20]:
 
 
 # trainの回収率を計算
@@ -261,8 +261,8 @@ y_pred_max = np.argmax(y_pred, axis=1)  # 最尤と判断したクラスの値�
 #print(len(c) )
 
 # 精度 (Accuracy) を計算する
-accuracy = sum(y_train == y_pred_max) / len(y_train)
-print("accuracy:",accuracy)
+#accuracy = sum(y_train == y_pred_max) / len(y_train)
+#print("accuracy:",accuracy)
 
 # 回収率を計算
 res=0
@@ -274,13 +274,13 @@ for i in range(len(y_train)):
 print("return:",res/len(y_train))
 
 
-# In[37]:
+# In[ ]:
 
 
 print(y_pred[0])
 
 
-# In[36]:
+# In[ ]:
 
 
 print(df.iloc[X_train.index]['raceId'])
@@ -298,7 +298,7 @@ print(df.iloc[X_train.index]['raceId'])
 
 
 
-# In[17]:
+# In[ ]:
 
 
 print(model.feature_importance())
