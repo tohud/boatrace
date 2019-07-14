@@ -13120,7 +13120,7 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 選手情報・過去レース情報から3連単舟券120種をクラス分類する</span>
 <span class="c1"># こちらではパラメタのベイズ最適化を試みる。</span>
-<span class="c1"># todo データの項目を増やしてみる。スタートタイムや過去の連対率。逆に、オッズは消す。</span>
+<span class="c1"># スタートタイムや過去の連対率。逆に、オッズは消してみる。</span>
 
 <span class="c1"># 汎用ライブラリのimport</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -13173,7 +13173,7 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 分析期間の指定は一旦ここでまとめてみる。</span>
-<span class="n">trainStartDate</span><span class="o">=</span><span class="s2">&quot;20170101&quot;</span>
+<span class="n">trainStartDate</span><span class="o">=</span><span class="s2">&quot;20170901&quot;</span>
 <span class="n">trainEndDate</span><span class="o">=</span><span class="s2">&quot;20181231&quot;</span>
 <span class="c1"># test はtrainからsplitする</span>
 </pre></div>
@@ -13204,7 +13204,7 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># trainの元データを取得</span>
 <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select * from raceabst_forml_v </span><span class="se">\</span>
+    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select * from raceabst_forml_rentai_v </span><span class="se">\</span>
 <span class="s2">               where raceDate between &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39; </span><span class="se">\</span>
 <span class="s2">               order by raceId &quot;</span>\
                <span class="o">%</span> <span class="p">(</span><span class="n">trainStartDate</span><span class="p">,</span><span class="n">trainEndDate</span><span class="p">)</span>
@@ -13227,7 +13227,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>traindata: 94959
+<pre>traindata: 71699
 </pre>
 </div>
 </div>
@@ -13284,14 +13284,14 @@ div#notebook {
       <th>l1boat3r</th>
       <th>l1motor2r</th>
       <th>l1motor3r</th>
-      <th>l1rank</th>
-      <th>l1score</th>
-      <th>l2Fcnt</th>
-      <th>l2boat2r</th>
+      <th>l1oldavgstdev</th>
+      <th>l1oldavgsttime</th>
+      <th>l1oldrank1</th>
+      <th>l1oldrank2</th>
       <th>...</th>
-      <th>l6boat3r</th>
-      <th>l6motor2r</th>
-      <th>l6motor3r</th>
+      <th>l6oldrank4</th>
+      <th>l6oldrank5</th>
+      <th>l6oldrank6</th>
       <th>l6rank</th>
       <th>l6score</th>
       <th>odds</th>
@@ -13304,127 +13304,127 @@ div#notebook {
   <tbody>
     <tr>
       <th>0</th>
-      <td>1-5-2</td>
+      <td>1-2-5</td>
       <td>0</td>
-      <td>0.3333</td>
-      <td>0.4848</td>
-      <td>0.3817</td>
-      <td>0.5645</td>
-      <td>B1</td>
-      <td>4.842381</td>
-      <td>0</td>
-      <td>0.3333</td>
+      <td>0.2632</td>
+      <td>0.3684</td>
+      <td>0.3158</td>
+      <td>0.4737</td>
+      <td>-0.02765</td>
+      <td>0.12900</td>
+      <td>0.26</td>
+      <td>0.25</td>
       <td>...</td>
-      <td>0.4452</td>
-      <td>0.3134</td>
-      <td>0.4478</td>
-      <td>B2</td>
-      <td>0.594831</td>
-      <td>30.3</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-01</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>0.10</td>
+      <td>0.06</td>
+      <td>0.09</td>
+      <td>A1</td>
+      <td>2.973712</td>
+      <td>22.8</td>
+      <td>2017-09-01</td>
+      <td>20170901-05-01</td>
+      <td>3</td>
+      <td>6.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>2-1-3</td>
-      <td>1</td>
-      <td>0.2876</td>
-      <td>0.4248</td>
-      <td>0.3960</td>
-      <td>0.6040</td>
-      <td>B1</td>
-      <td>7.406036</td>
+      <td>2-3-6</td>
       <td>0</td>
-      <td>0.3871</td>
+      <td>0.4737</td>
+      <td>0.7368</td>
+      <td>0.2963</td>
+      <td>0.4074</td>
+      <td>-0.06915</td>
+      <td>0.16990</td>
+      <td>0.41</td>
+      <td>0.15</td>
       <td>...</td>
-      <td>0.4177</td>
-      <td>0.4500</td>
-      <td>0.5750</td>
-      <td>B1</td>
-      <td>1.504087</td>
-      <td>79.0</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-02</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>0.14</td>
+      <td>0.13</td>
+      <td>0.08</td>
+      <td>A1</td>
+      <td>4.878168</td>
+      <td>92.7</td>
+      <td>2017-09-01</td>
+      <td>20170901-05-02</td>
+      <td>3</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>2-3-1</td>
-      <td>1</td>
-      <td>0.2452</td>
-      <td>0.4387</td>
-      <td>0.4610</td>
-      <td>0.5779</td>
-      <td>B1</td>
-      <td>8.340631</td>
-      <td>1</td>
-      <td>0.3807</td>
+      <td>3-1-6</td>
+      <td>0</td>
+      <td>0.3500</td>
+      <td>0.6500</td>
+      <td>0.5556</td>
+      <td>0.5556</td>
+      <td>-0.02338</td>
+      <td>0.12890</td>
+      <td>0.42</td>
+      <td>0.27</td>
       <td>...</td>
-      <td>0.4938</td>
-      <td>0.3541</td>
-      <td>0.5502</td>
-      <td>A2</td>
-      <td>3.195143</td>
-      <td>28.9</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-03</td>
-      <td>1</td>
-      <td>3.0</td>
+      <td>0.11</td>
+      <td>0.11</td>
+      <td>0.02</td>
+      <td>A1</td>
+      <td>0.877197</td>
+      <td>54.5</td>
+      <td>2017-09-01</td>
+      <td>20170901-05-03</td>
+      <td>2</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>1-4-2</td>
+      <td>1-5-2</td>
       <td>0</td>
-      <td>0.1959</td>
-      <td>0.3986</td>
-      <td>0.6369</td>
-      <td>0.7738</td>
-      <td>B1</td>
-      <td>9.654840</td>
-      <td>0</td>
-      <td>0.3439</td>
+      <td>0.4444</td>
+      <td>0.5556</td>
+      <td>0.2667</td>
+      <td>0.4000</td>
+      <td>-0.01867</td>
+      <td>0.14760</td>
+      <td>0.38</td>
+      <td>0.27</td>
       <td>...</td>
-      <td>0.3846</td>
-      <td>0.3161</td>
-      <td>0.4540</td>
-      <td>B1</td>
-      <td>0.583962</td>
-      <td>7.7</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-04</td>
-      <td>1</td>
-      <td>3.0</td>
+      <td>0.16</td>
+      <td>0.15</td>
+      <td>0.09</td>
+      <td>A1</td>
+      <td>1.284942</td>
+      <td>13.1</td>
+      <td>2017-09-01</td>
+      <td>20170901-05-04</td>
+      <td>3</td>
+      <td>5.0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>1-2-4</td>
       <td>0</td>
-      <td>0.3609</td>
-      <td>0.4852</td>
-      <td>0.2983</td>
-      <td>0.4475</td>
-      <td>A2</td>
-      <td>15.248551</td>
-      <td>0</td>
-      <td>0.2911</td>
+      <td>0.3000</td>
+      <td>0.5500</td>
+      <td>0.3077</td>
+      <td>0.5000</td>
+      <td>0.00234</td>
+      <td>0.15212</td>
+      <td>0.25</td>
+      <td>0.28</td>
       <td>...</td>
-      <td>0.5375</td>
-      <td>0.4296</td>
-      <td>0.6667</td>
-      <td>A2</td>
-      <td>2.543009</td>
-      <td>52.7</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-05</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>0.17</td>
+      <td>0.10</td>
+      <td>0.05</td>
+      <td>A1</td>
+      <td>2.240696</td>
+      <td>12.0</td>
+      <td>2017-09-01</td>
+      <td>20170901-05-05</td>
+      <td>2</td>
+      <td>3.0</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 48 columns</p>
+<p>5 rows × 96 columns</p>
 </div>
 </div>
 
@@ -13441,6 +13441,10 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 入力のデータ整形</span>
 <span class="n">xdf</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;funaken&#39;</span><span class="p">,</span><span class="s1">&#39;odds&#39;</span><span class="p">,</span><span class="s1">&#39;raceId&#39;</span><span class="p">,</span><span class="s1">&#39;raceDate&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># オッズから作ったスコアは効きすぎるので捨ててみる</span>
+<span class="n">xdf</span><span class="o">=</span><span class="n">xdf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;l1score&#39;</span><span class="p">,</span><span class="s1">&#39;l2score&#39;</span><span class="p">,</span><span class="s1">&#39;l3score&#39;</span><span class="p">,</span><span class="s1">&#39;l4score&#39;</span><span class="p">,</span><span class="s1">&#39;l5score&#39;</span><span class="p">,</span><span class="s1">&#39;l6score&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#xdf=xdf.drop([&#39;l1Fcnt&#39;,&#39;l2Fcnt&#39;,&#39;l3Fcnt&#39;,&#39;l4Fcnt&#39;,&#39;l5Fcnt&#39;,&#39;l6Fcnt&#39;],axis=1)</span>
+<span class="c1">#xdf=xdf.drop([&#39;l1oldavgstdev&#39;,&#39;l2oldavgstdev&#39;,&#39;l3oldavgstdev&#39;,&#39;l4oldavgstdev&#39;,&#39;l5oldavgstdev&#39;,&#39;l6oldavgstdev&#39;],axis=1)</span>
 <span class="c1">#xdf=pd.get_dummies(xdf,columns=[&#39;l1rank&#39;,&#39;l2rank&#39;,&#39;l3rank&#39;,&#39;l4rank&#39;,&#39;l5rank&#39;,&#39;l6rank&#39;])</span>
 <span class="n">rankLabel</span><span class="o">=</span><span class="n">LabelEncoder</span><span class="p">()</span>
 <span class="n">rankLabel</span><span class="o">=</span><span class="n">rankLabel</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l1rank&#39;</span><span class="p">])</span>
@@ -13491,20 +13495,20 @@ div#notebook {
       <th>l1boat3r</th>
       <th>l1motor2r</th>
       <th>l1motor3r</th>
-      <th>l1rank</th>
-      <th>l1score</th>
-      <th>l2Fcnt</th>
-      <th>l2boat2r</th>
-      <th>l2boat3r</th>
+      <th>l1oldavgstdev</th>
+      <th>l1oldavgsttime</th>
+      <th>l1oldrank1</th>
+      <th>l1oldrank2</th>
+      <th>l1oldrank3</th>
       <th>...</th>
-      <th>l5score</th>
-      <th>l6Fcnt</th>
-      <th>l6boat2r</th>
-      <th>l6boat3r</th>
-      <th>l6motor2r</th>
-      <th>l6motor3r</th>
+      <th>l6oldavgsttime</th>
+      <th>l6oldrank1</th>
+      <th>l6oldrank2</th>
+      <th>l6oldrank3</th>
+      <th>l6oldrank4</th>
+      <th>l6oldrank5</th>
+      <th>l6oldrank6</th>
       <th>l6rank</th>
-      <th>l6score</th>
       <th>raceWaveHeight</th>
       <th>raceWindSpeed</th>
     </tr>
@@ -13513,126 +13517,126 @@ div#notebook {
     <tr>
       <th>0</th>
       <td>0</td>
-      <td>0.3333</td>
-      <td>0.4848</td>
-      <td>0.3817</td>
-      <td>0.5645</td>
-      <td>2</td>
-      <td>4.842381</td>
-      <td>0</td>
-      <td>0.3333</td>
-      <td>0.5094</td>
+      <td>0.2632</td>
+      <td>0.3684</td>
+      <td>0.3158</td>
+      <td>0.4737</td>
+      <td>-0.02765</td>
+      <td>0.12900</td>
+      <td>0.26</td>
+      <td>0.25</td>
+      <td>0.15</td>
       <td>...</td>
-      <td>2.860248</td>
+      <td>0.1587</td>
+      <td>0.28</td>
+      <td>0.21</td>
+      <td>0.26</td>
+      <td>0.10</td>
+      <td>0.06</td>
+      <td>0.09</td>
       <td>0</td>
-      <td>0.2740</td>
-      <td>0.4452</td>
-      <td>0.3134</td>
-      <td>0.4478</td>
       <td>3</td>
-      <td>0.594831</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>6.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1</td>
-      <td>0.2876</td>
-      <td>0.4248</td>
-      <td>0.3960</td>
-      <td>0.6040</td>
-      <td>2</td>
-      <td>7.406036</td>
       <td>0</td>
-      <td>0.3871</td>
-      <td>0.5935</td>
+      <td>0.4737</td>
+      <td>0.7368</td>
+      <td>0.2963</td>
+      <td>0.4074</td>
+      <td>-0.06915</td>
+      <td>0.16990</td>
+      <td>0.41</td>
+      <td>0.15</td>
+      <td>0.21</td>
       <td>...</td>
-      <td>2.015905</td>
-      <td>1</td>
-      <td>0.2532</td>
-      <td>0.4177</td>
-      <td>0.4500</td>
-      <td>0.5750</td>
-      <td>2</td>
-      <td>1.504087</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>0.1307</td>
+      <td>0.23</td>
+      <td>0.22</td>
+      <td>0.20</td>
+      <td>0.14</td>
+      <td>0.13</td>
+      <td>0.08</td>
+      <td>0</td>
+      <td>3</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>1</td>
-      <td>0.2452</td>
-      <td>0.4387</td>
-      <td>0.4610</td>
-      <td>0.5779</td>
-      <td>2</td>
-      <td>8.340631</td>
-      <td>1</td>
-      <td>0.3807</td>
-      <td>0.5739</td>
-      <td>...</td>
-      <td>1.279918</td>
       <td>0</td>
-      <td>0.3125</td>
-      <td>0.4938</td>
-      <td>0.3541</td>
-      <td>0.5502</td>
-      <td>1</td>
-      <td>3.195143</td>
-      <td>1</td>
-      <td>3.0</td>
+      <td>0.3500</td>
+      <td>0.6500</td>
+      <td>0.5556</td>
+      <td>0.5556</td>
+      <td>-0.02338</td>
+      <td>0.12890</td>
+      <td>0.42</td>
+      <td>0.27</td>
+      <td>0.11</td>
+      <td>...</td>
+      <td>0.1754</td>
+      <td>0.33</td>
+      <td>0.23</td>
+      <td>0.20</td>
+      <td>0.11</td>
+      <td>0.11</td>
+      <td>0.02</td>
+      <td>0</td>
+      <td>2</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>3</th>
       <td>0</td>
-      <td>0.1959</td>
-      <td>0.3986</td>
-      <td>0.6369</td>
-      <td>0.7738</td>
-      <td>2</td>
-      <td>9.654840</td>
-      <td>0</td>
-      <td>0.3439</td>
-      <td>0.5350</td>
+      <td>0.4444</td>
+      <td>0.5556</td>
+      <td>0.2667</td>
+      <td>0.4000</td>
+      <td>-0.01867</td>
+      <td>0.14760</td>
+      <td>0.38</td>
+      <td>0.27</td>
+      <td>0.12</td>
       <td>...</td>
-      <td>1.545834</td>
+      <td>0.1642</td>
+      <td>0.23</td>
+      <td>0.22</td>
+      <td>0.15</td>
+      <td>0.16</td>
+      <td>0.15</td>
+      <td>0.09</td>
       <td>0</td>
-      <td>0.2231</td>
-      <td>0.3846</td>
-      <td>0.3161</td>
-      <td>0.4540</td>
-      <td>2</td>
-      <td>0.583962</td>
-      <td>1</td>
-      <td>3.0</td>
+      <td>3</td>
+      <td>5.0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>0</td>
-      <td>0.3609</td>
-      <td>0.4852</td>
-      <td>0.2983</td>
-      <td>0.4475</td>
-      <td>1</td>
-      <td>15.248551</td>
-      <td>0</td>
-      <td>0.2911</td>
-      <td>0.4557</td>
+      <td>0.3000</td>
+      <td>0.5500</td>
+      <td>0.3077</td>
+      <td>0.5000</td>
+      <td>0.00234</td>
+      <td>0.15212</td>
+      <td>0.25</td>
+      <td>0.28</td>
+      <td>0.18</td>
       <td>...</td>
-      <td>11.021105</td>
-      <td>1</td>
-      <td>0.3500</td>
-      <td>0.5375</td>
-      <td>0.4296</td>
-      <td>0.6667</td>
-      <td>1</td>
-      <td>2.543009</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>0.1508</td>
+      <td>0.34</td>
+      <td>0.19</td>
+      <td>0.15</td>
+      <td>0.17</td>
+      <td>0.10</td>
+      <td>0.05</td>
+      <td>0</td>
+      <td>2</td>
+      <td>3.0</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 44 columns</p>
+<p>5 rows × 86 columns</p>
 </div>
 </div>
 
@@ -13697,19 +13701,19 @@ div#notebook {
   <tbody>
     <tr>
       <th>0</th>
-      <td>12</td>
+      <td>2</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>20</td>
+      <td>27</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>24</td>
+      <td>43</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>8</td>
+      <td>12</td>
     </tr>
     <tr>
       <th>4</th>
@@ -13789,7 +13793,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">LGB_bayesian</span><span class="p">(</span>
@@ -13811,10 +13815,11 @@ div#notebook {
     <span class="n">params</span><span class="o">=</span><span class="p">{</span>
         <span class="c1"># 多値分類問題</span>
         <span class="s1">&#39;objective&#39;</span><span class="p">:</span> <span class="s1">&#39;multiclass&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;num_boost_round&#39;</span><span class="p">:</span><span class="mi">250</span><span class="p">,</span>
         <span class="c1"># クラス数は 120</span>
         <span class="s1">&#39;num_class&#39;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
         <span class="c1">#&#39;class_weight&#39;:&#39;balanced&#39;,</span>
-        <span class="s1">&#39;random_state&#39;</span><span class="p">:</span><span class="mi">999</span><span class="p">,</span>
+        <span class="c1">#&#39;random_state&#39;:999,</span>
         <span class="c1"># 以下、ハイパーパラメタ</span>
         <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span><span class="n">max_depth</span><span class="p">,</span>
         <span class="s1">&#39;num_leaves&#39;</span><span class="p">:</span><span class="n">num_leaves</span><span class="p">,</span>
@@ -13851,13 +13856,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bounds_LGB</span><span class="o">=</span><span class="p">{</span>
-    <span class="s1">&#39;max_depth&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span>
+    <span class="s1">&#39;max_depth&#39;</span><span class="p">:(</span><span class="mi">2</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span>
     <span class="s1">&#39;min_data_in_leaf&#39;</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mi">300</span><span class="p">),</span>
-    <span class="s1">&#39;num_leaves&#39;</span><span class="p">:(</span><span class="mi">5</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span>
+    <span class="s1">&#39;num_leaves&#39;</span><span class="p">:(</span><span class="mi">3</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span>
     <span class="s1">&#39;reg_alpha&#39;</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">),</span>
     <span class="s1">&#39;reg_lambda&#39;</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">)</span>
 <span class="p">}</span>
@@ -13870,10 +13875,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">LGB_BO</span> <span class="o">=</span> <span class="n">BayesianOptimization</span><span class="p">(</span><span class="n">LGB_bayesian</span><span class="p">,</span> <span class="n">bounds_LGB</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)</span>
+<span class="n">LGB_BO</span> <span class="o">=</span> <span class="n">BayesianOptimization</span><span class="p">(</span><span class="n">LGB_bayesian</span><span class="p">,</span> <span class="n">bounds_LGB</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">LGB_BO</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span>
 </pre></div>
 
@@ -13928,7 +13934,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">init_points</span> <span class="o">=</span> <span class="mi">5</span>
@@ -13957,80 +13963,40 @@ div#notebook {
 -------------------------------------------------------------------------------------
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[88]	valid_0&#39;s multi_logloss: 3.90548
-3.905477907432176
-|  1        |  0.2561   |  12.33    |  71.26    |  17.36    |  9.657    |  9.726    |
+[88]	valid_0&#39;s multi_logloss: 4.0108
+4.010802525745981
+|  1        |  0.2493   |  12.11    |  71.26    |  17.01    |  9.657    |  9.726    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[79]	valid_0&#39;s multi_logloss: 3.90279
-3.9027891094577147
-| <span class="ansi-magenta-intense-fg"> 2       </span> | <span class="ansi-magenta-intense-fg"> 0.2562  </span> | <span class="ansi-magenta-intense-fg"> 8.441   </span> | <span class="ansi-magenta-intense-fg"> 182.7   </span> | <span class="ansi-magenta-intense-fg"> 16.63   </span> | <span class="ansi-magenta-intense-fg"> 6.416   </span> | <span class="ansi-magenta-intense-fg"> 7.22    </span> |
+[80]	valid_0&#39;s multi_logloss: 4.00595
+4.005954159464579
+| <span class="ansi-magenta-intense-fg"> 2       </span> | <span class="ansi-magenta-intense-fg"> 0.2496  </span> | <span class="ansi-magenta-intense-fg"> 7.895   </span> | <span class="ansi-magenta-intense-fg"> 182.7   </span> | <span class="ansi-magenta-intense-fg"> 16.18   </span> | <span class="ansi-magenta-intense-fg"> 6.416   </span> | <span class="ansi-magenta-intense-fg"> 7.22    </span> |
+Training until validation scores don&#39;t improve for 50 rounds.
+[250]	valid_0&#39;s multi_logloss: 3.98101
+Did not meet early stopping. Best iteration is:
+[250]	valid_0&#39;s multi_logloss: 3.98101
+3.9810107018726457
+| <span class="ansi-magenta-intense-fg"> 3       </span> | <span class="ansi-magenta-intense-fg"> 0.2512  </span> | <span class="ansi-magenta-intense-fg"> 2.455   </span> | <span class="ansi-magenta-intense-fg"> 89.53   </span> | <span class="ansi-magenta-intense-fg"> 3.995   </span> | <span class="ansi-magenta-intense-fg"> 8.571   </span> | <span class="ansi-magenta-intense-fg"> 3.729   </span> |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[148]	valid_0&#39;s multi_logloss: 3.87956
-3.879559787564874
-| <span class="ansi-magenta-intense-fg"> 3       </span> | <span class="ansi-magenta-intense-fg"> 0.2578  </span> | <span class="ansi-magenta-intense-fg"> 3.42    </span> | <span class="ansi-magenta-intense-fg"> 89.53   </span> | <span class="ansi-magenta-intense-fg"> 5.878   </span> | <span class="ansi-magenta-intense-fg"> 8.571   </span> | <span class="ansi-magenta-intense-fg"> 3.729   </span> |
+[77]	valid_0&#39;s multi_logloss: 4.00273
+4.00272575219918
+|  4        |  0.2498   |  10.84    |  76.88    |  8.909    |  0.09413  |  3.583    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[72]	valid_0&#39;s multi_logloss: 3.89927
-3.899265422983779
-|  4        |  0.2565   |  11.16    |  76.88    |  10.21    |  0.09413  |  3.583    |
+[108]	valid_0&#39;s multi_logloss: 3.99765
+3.997649063172499
+|  5        |  0.2501   |  14.34    |  65.37    |  8.43     |  9.178    |  0.319    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[97]	valid_0&#39;s multi_logloss: 3.89454
-3.8945443881716995
-|  5        |  0.2568   |  14.39    |  65.37    |  9.791    |  9.178    |  0.319    |
+[187]	valid_0&#39;s multi_logloss: 3.98144
+3.981438287215365
+|  6        |  0.2512   |  2.466    |  299.9    |  3.148    |  1.031    |  2.772    |
 Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[105]	valid_0&#39;s multi_logloss: 3.87906
-3.8790559529913473
-| <span class="ansi-magenta-intense-fg"> 6       </span> | <span class="ansi-magenta-intense-fg"> 0.2578  </span> | <span class="ansi-magenta-intense-fg"> 3.431   </span> | <span class="ansi-magenta-intense-fg"> 299.9   </span> | <span class="ansi-magenta-intense-fg"> 5.131   </span> | <span class="ansi-magenta-intense-fg"> 1.031   </span> | <span class="ansi-magenta-intense-fg"> 2.772   </span> |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[165]	valid_0&#39;s multi_logloss: 3.88276
-3.882763561838727
-|  7        |  0.2575   |  13.75    |  299.4    |  5.043    |  9.935    |  3.077    |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[119]	valid_0&#39;s multi_logloss: 3.88199
-3.8819925442729093
-|  8        |  0.2576   |  3.833    |  299.2    |  19.79    |  8.907    |  0.2894   |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[104]	valid_0&#39;s multi_logloss: 3.8816
-3.881603557423534
-|  9        |  0.2576   |  14.52    |  299.1    |  5.179    |  0.4468   |  3.892    |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[102]	valid_0&#39;s multi_logloss: 3.88778
-3.8877826374697886
-|  10       |  0.2572   |  4.077    |  299.9    |  18.42    |  9.292    |  8.969    |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[102]	valid_0&#39;s multi_logloss: 3.8802
-3.88019937232592
-|  11       |  0.2577   |  14.69    |  299.0    |  5.277    |  0.7658   |  8.198    |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[129]	valid_0&#39;s multi_logloss: 3.88444
-3.884442935619309
-|  12       |  0.2574   |  4.745    |  299.4    |  6.026    |  9.483    |  0.1469   |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[76]	valid_0&#39;s multi_logloss: 3.90813
-3.9081340718126083
-|  13       |  0.2559   |  14.57    |  299.9    |  19.98    |  9.23     |  0.8363   |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[114]	valid_0&#39;s multi_logloss: 3.87779
-3.8777929502375006
-| <span class="ansi-magenta-intense-fg"> 14      </span> | <span class="ansi-magenta-intense-fg"> 0.2579  </span> | <span class="ansi-magenta-intense-fg"> 3.544   </span> | <span class="ansi-magenta-intense-fg"> 299.2   </span> | <span class="ansi-magenta-intense-fg"> 5.566   </span> | <span class="ansi-magenta-intense-fg"> 2.425   </span> | <span class="ansi-magenta-intense-fg"> 9.473   </span> |
-Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[107]	valid_0&#39;s multi_logloss: 3.87962
-3.87962244886879
-|  15       |  0.2578   |  5.576    |  299.4    |  5.245    |  1.027    |  9.077    |
-=====================================================================================
+[250]	valid_0&#39;s multi_logloss: 3.98292
+Did not meet early stopping. Best iteration is:
+[250]	valid_0&#39;s multi_logloss: 3.98292
+3.9829211952501122
 </pre>
 </div>
 </div>

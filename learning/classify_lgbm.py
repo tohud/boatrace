@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[23]:
 
 
 # 選手情報・過去レース情報から3連単舟券120種をクラス分類する
@@ -26,7 +26,7 @@ from sklearn.preprocessing import LabelEncoder
 import csv
 
 
-# In[2]:
+# In[24]:
 
 
 # 自作ライブラリのimport
@@ -37,7 +37,7 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[3]:
+# In[25]:
 
 
 # 舟券の配列を取得
@@ -51,7 +51,7 @@ funakenDict=dict(zip(funakenList[0],funakenID))
 print(funakenDict)
 
 
-# In[4]:
+# In[26]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
@@ -60,14 +60,14 @@ trainEndDate="20190331"
 # test はtrainからsplitする
 
 
-# In[5]:
+# In[27]:
 
 
 dbh=dbHandler.getDBHandle()
 #dbHandler.closeDBHandle(dbh)
 
 
-# In[6]:
+# In[31]:
 
 
 # trainの元データを取得
@@ -78,14 +78,14 @@ with dbh.cursor() as cursor:
 print("traindata:",len(loadList))
 
 
-# In[7]:
+# In[32]:
 
 
 df = pd.io.json.json_normalize(loadList)
 df.head()
 
 
-# In[8]:
+# In[33]:
 
 
 # 入力のデータ整形
@@ -160,7 +160,7 @@ lgbm_params = {
     # クラス数は 120
     'num_class': 120,
     #'class_weight':'balanced',
-    'random_state':999,
+    #'random_state':999,
     # 以下、ハイパーパラメタ
     'max_depth':3,
     'num_leaves':6,
@@ -247,7 +247,7 @@ print("resultReturn:",resAmount/buyAmount)
 print("totalRace,buy,return",len(y_test),buyAmount,resAmount )
 
 
-# In[20]:
+# In[19]:
 
 
 # trainの回収率を計算
@@ -292,13 +292,13 @@ print(df.iloc[X_train.index]['raceId'])
 
 
 
-# In[ ]:
+# In[21]:
 
 
+print(xdf.columns)
 
 
-
-# In[ ]:
+# In[22]:
 
 
 print(model.feature_importance())

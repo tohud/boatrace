@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>classify_lgbm</title>
+<title>raceInfoVisualize-Copy1</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13115,13 +13115,10 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 選手情報・過去レース情報から3連単舟券120種をクラス分類する</span>
-<span class="c1"># LGBMでやってみる。</span>
-<span class="c1"># todo:bayseの方と、インプットの与え方をあわせる。今はOne-Hotが一致していない。</span>
-<span class="c1"># 的中予想確率10%以上のうち、オッズで見合うものだけ買った場合のシミュレーションをする。</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ToDo 分類別のオッズ分布を見てみる</span>
 
 <span class="c1"># 汎用ライブラリのimport</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -13129,15 +13126,6 @@ div#notebook {
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-
-<span class="kn">import</span> <span class="nn">lightgbm</span> <span class="k">as</span> <span class="nn">lgb</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">LabelEncoder</span>
-<span class="kn">import</span> <span class="nn">csv</span>
 </pre></div>
 
     </div>
@@ -13147,7 +13135,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 自作ライブラリのimport</span>
@@ -13165,52 +13153,12 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 舟券の配列を取得</span>
-<span class="n">funakenList</span><span class="o">=</span><span class="p">[]</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;BR_HOME&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/boatrace/config/3t_list.dat&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">reader</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
-        <span class="n">funakenList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-<span class="n">funakenID</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">120</span><span class="p">)]</span>
-<span class="n">funakenDict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">funakenList</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">funakenID</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">funakenDict</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;1-2-3&#39;: 0, &#39;1-2-4&#39;: 1, &#39;1-2-5&#39;: 2, &#39;1-2-6&#39;: 3, &#39;1-3-2&#39;: 4, &#39;1-3-4&#39;: 5, &#39;1-3-5&#39;: 6, &#39;1-3-6&#39;: 7, &#39;1-4-2&#39;: 8, &#39;1-4-3&#39;: 9, &#39;1-4-5&#39;: 10, &#39;1-4-6&#39;: 11, &#39;1-5-2&#39;: 12, &#39;1-5-3&#39;: 13, &#39;1-5-4&#39;: 14, &#39;1-5-6&#39;: 15, &#39;1-6-2&#39;: 16, &#39;1-6-3&#39;: 17, &#39;1-6-4&#39;: 18, &#39;1-6-5&#39;: 19, &#39;2-1-3&#39;: 20, &#39;2-1-4&#39;: 21, &#39;2-1-5&#39;: 22, &#39;2-1-6&#39;: 23, &#39;2-3-1&#39;: 24, &#39;2-3-4&#39;: 25, &#39;2-3-5&#39;: 26, &#39;2-3-6&#39;: 27, &#39;2-4-1&#39;: 28, &#39;2-4-3&#39;: 29, &#39;2-4-5&#39;: 30, &#39;2-4-6&#39;: 31, &#39;2-5-1&#39;: 32, &#39;2-5-3&#39;: 33, &#39;2-5-4&#39;: 34, &#39;2-5-6&#39;: 35, &#39;2-6-1&#39;: 36, &#39;2-6-3&#39;: 37, &#39;2-6-4&#39;: 38, &#39;2-6-5&#39;: 39, &#39;3-1-2&#39;: 40, &#39;3-1-4&#39;: 41, &#39;3-1-5&#39;: 42, &#39;3-1-6&#39;: 43, &#39;3-2-1&#39;: 44, &#39;3-2-4&#39;: 45, &#39;3-2-5&#39;: 46, &#39;3-2-6&#39;: 47, &#39;3-4-1&#39;: 48, &#39;3-4-2&#39;: 49, &#39;3-4-5&#39;: 50, &#39;3-4-6&#39;: 51, &#39;3-5-1&#39;: 52, &#39;3-5-2&#39;: 53, &#39;3-5-4&#39;: 54, &#39;3-5-6&#39;: 55, &#39;3-6-1&#39;: 56, &#39;3-6-2&#39;: 57, &#39;3-6-4&#39;: 58, &#39;3-6-5&#39;: 59, &#39;4-1-2&#39;: 60, &#39;4-1-3&#39;: 61, &#39;4-1-5&#39;: 62, &#39;4-1-6&#39;: 63, &#39;4-2-1&#39;: 64, &#39;4-2-3&#39;: 65, &#39;4-2-5&#39;: 66, &#39;4-2-6&#39;: 67, &#39;4-3-1&#39;: 68, &#39;4-3-2&#39;: 69, &#39;4-3-5&#39;: 70, &#39;4-3-6&#39;: 71, &#39;4-5-1&#39;: 72, &#39;4-5-2&#39;: 73, &#39;4-5-3&#39;: 74, &#39;4-5-6&#39;: 75, &#39;4-6-1&#39;: 76, &#39;4-6-2&#39;: 77, &#39;4-6-3&#39;: 78, &#39;4-6-5&#39;: 79, &#39;5-1-2&#39;: 80, &#39;5-1-3&#39;: 81, &#39;5-1-4&#39;: 82, &#39;5-1-6&#39;: 83, &#39;5-2-1&#39;: 84, &#39;5-2-3&#39;: 85, &#39;5-2-4&#39;: 86, &#39;5-2-6&#39;: 87, &#39;5-3-1&#39;: 88, &#39;5-3-2&#39;: 89, &#39;5-3-4&#39;: 90, &#39;5-3-6&#39;: 91, &#39;5-4-1&#39;: 92, &#39;5-4-2&#39;: 93, &#39;5-4-3&#39;: 94, &#39;5-4-6&#39;: 95, &#39;5-6-1&#39;: 96, &#39;5-6-2&#39;: 97, &#39;5-6-3&#39;: 98, &#39;5-6-4&#39;: 99, &#39;6-1-2&#39;: 100, &#39;6-1-3&#39;: 101, &#39;6-1-4&#39;: 102, &#39;6-1-5&#39;: 103, &#39;6-2-1&#39;: 104, &#39;6-2-3&#39;: 105, &#39;6-2-4&#39;: 106, &#39;6-2-5&#39;: 107, &#39;6-3-1&#39;: 108, &#39;6-3-2&#39;: 109, &#39;6-3-4&#39;: 110, &#39;6-3-5&#39;: 111, &#39;6-4-1&#39;: 112, &#39;6-4-2&#39;: 113, &#39;6-4-3&#39;: 114, &#39;6-4-5&#39;: 115, &#39;6-5-1&#39;: 116, &#39;6-5-2&#39;: 117, &#39;6-5-3&#39;: 118, &#39;6-5-4&#39;: 119}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 分析期間の指定は一旦ここでまとめてみる。</span>
-<span class="n">trainStartDate</span><span class="o">=</span><span class="s2">&quot;20170401&quot;</span>
-<span class="n">trainEndDate</span><span class="o">=</span><span class="s2">&quot;20190331&quot;</span>
-<span class="c1"># test はtrainからsplitする</span>
+<span class="n">analyzeStartDate</span><span class="o">=</span><span class="s2">&quot;20180101&quot;</span>
+<span class="n">analyzeEndDate</span><span class="o">=</span><span class="s2">&quot;20180131&quot;</span>
 </pre></div>
 
     </div>
@@ -13220,11 +13168,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbh</span><span class="o">=</span><span class="n">dbHandler</span><span class="o">.</span><span class="n">getDBHandle</span><span class="p">()</span>
-<span class="c1">#dbHandler.closeDBHandle(dbh)</span>
 </pre></div>
 
     </div>
@@ -13234,18 +13181,18 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># trainの元データを取得</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 疎通</span>
+<span class="n">raceDate_t</span> <span class="o">=</span> <span class="s2">&quot;20180101&quot;</span>
 <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select * from raceabst_forml_v </span><span class="se">\</span>
-<span class="s2">               where raceDate between &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39; </span><span class="se">\</span>
-<span class="s2">               order by raceId &quot;</span>\
-               <span class="o">%</span> <span class="p">(</span><span class="n">trainStartDate</span><span class="p">,</span><span class="n">trainEndDate</span><span class="p">)</span>
+    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT raceId FROM racemanagement </span><span class="se">\</span>
+<span class="s2">               WHERE raceDate=&#39;</span><span class="si">%s</span><span class="s2">&#39; and racebeforeinfo_flg = TRUE&quot;</span> \
+                <span class="o">%</span> <span class="p">(</span><span class="n">raceDate_t</span><span class="p">)</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-    <span class="n">loadList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;traindata:&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">loadList</span><span class="p">))</span>
+    <span class="n">raceIdList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">raceIdList</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;raceId&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13262,7 +13209,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>traindata: 108689
+<pre>20180101-06-01
 </pre>
 </div>
 </div>
@@ -13273,10 +13220,60 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">loadList</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
+    <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select * from raceresultsummary_v </span><span class="se">\</span>
+<span class="s2">               where raceDate between &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39; &quot;</span>\
+               <span class="o">%</span> <span class="p">(</span><span class="n">analyzeStartDate</span><span class="p">,</span><span class="n">analyzeEndDate</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
+    <span class="n">raceInfoList</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">raceInfoList</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2364
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">raceInfoList</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
@@ -13290,7 +13287,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[32]:</div>
+    <div class="prompt output_prompt">Out[24]:</div>
 
 
 
@@ -13314,365 +13311,97 @@ div#notebook {
     <tr style="text-align: right;">
       <th></th>
       <th>funaken</th>
-      <th>l1Fcnt</th>
-      <th>l1boat2r</th>
-      <th>l1boat3r</th>
-      <th>l1motor2r</th>
-      <th>l1motor3r</th>
-      <th>l1rank</th>
-      <th>l1score</th>
-      <th>l2Fcnt</th>
-      <th>l2boat2r</th>
-      <th>...</th>
-      <th>l6boat3r</th>
-      <th>l6motor2r</th>
-      <th>l6motor3r</th>
-      <th>l6rank</th>
-      <th>l6score</th>
       <th>odds</th>
       <th>raceDate</th>
+      <th>raceGrade</th>
       <th>raceId</th>
+      <th>raceNumber</th>
+      <th>raceSurfaceTemperature</th>
+      <th>raceTemperature</th>
       <th>raceWaveHeight</th>
+      <th>raceWeather</th>
       <th>raceWindSpeed</th>
+      <th>raceplaceId</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>1-5-2</td>
-      <td>0</td>
-      <td>0.3333</td>
-      <td>0.4848</td>
-      <td>0.3817</td>
-      <td>0.5645</td>
-      <td>B1</td>
-      <td>4.842381</td>
-      <td>0</td>
-      <td>0.3333</td>
-      <td>...</td>
-      <td>0.4452</td>
-      <td>0.3134</td>
-      <td>0.4478</td>
-      <td>B2</td>
-      <td>0.594831</td>
-      <td>30.3</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-01</td>
-      <td>1</td>
-      <td>2.0</td>
-    </tr>
-    <tr>
-      <th>1</th>
       <td>2-1-3</td>
+      <td>30.9</td>
+      <td>2018-01-01</td>
+      <td>ippan</td>
+      <td>20180101-06-01</td>
       <td>1</td>
-      <td>0.2876</td>
-      <td>0.4248</td>
-      <td>0.3960</td>
-      <td>0.6040</td>
-      <td>B1</td>
-      <td>7.406036</td>
-      <td>0</td>
-      <td>0.3871</td>
-      <td>...</td>
-      <td>0.4177</td>
-      <td>0.4500</td>
-      <td>0.5750</td>
-      <td>B1</td>
-      <td>1.504087</td>
-      <td>79.0</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-02</td>
-      <td>1</td>
-      <td>2.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2-3-1</td>
-      <td>1</td>
-      <td>0.2452</td>
-      <td>0.4387</td>
-      <td>0.4610</td>
-      <td>0.5779</td>
-      <td>B1</td>
-      <td>8.340631</td>
-      <td>1</td>
-      <td>0.3807</td>
-      <td>...</td>
-      <td>0.4938</td>
-      <td>0.3541</td>
-      <td>0.5502</td>
-      <td>A2</td>
-      <td>3.195143</td>
-      <td>28.9</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-03</td>
-      <td>1</td>
-      <td>3.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1-4-2</td>
-      <td>0</td>
-      <td>0.1959</td>
-      <td>0.3986</td>
-      <td>0.6369</td>
-      <td>0.7738</td>
-      <td>B1</td>
-      <td>9.654840</td>
-      <td>0</td>
-      <td>0.3439</td>
-      <td>...</td>
-      <td>0.3846</td>
-      <td>0.3161</td>
-      <td>0.4540</td>
-      <td>B1</td>
-      <td>0.583962</td>
-      <td>7.7</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-04</td>
-      <td>1</td>
-      <td>3.0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1-2-4</td>
-      <td>0</td>
-      <td>0.3609</td>
-      <td>0.4852</td>
-      <td>0.2983</td>
-      <td>0.4475</td>
-      <td>A2</td>
-      <td>15.248551</td>
-      <td>0</td>
-      <td>0.2911</td>
-      <td>...</td>
-      <td>0.5375</td>
-      <td>0.4296</td>
-      <td>0.6667</td>
-      <td>A2</td>
-      <td>2.543009</td>
-      <td>52.7</td>
-      <td>2017-04-01</td>
-      <td>20170401-02-05</td>
-      <td>1</td>
-      <td>2.0</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 48 columns</p>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 入力のデータ整形</span>
-<span class="c1">#xdf=df.drop([&#39;funaken&#39;,&#39;odds&#39;,&#39;raceId&#39;,&#39;raceDate&#39;],axis=1)</span>
-<span class="c1">#xdf=pd.get_dummies(xdf,columns=[&#39;l1rank&#39;,&#39;l2rank&#39;,&#39;l3rank&#39;,&#39;l4rank&#39;,&#39;l5rank&#39;,&#39;l6rank&#39;])</span>
-<span class="c1">#xdf.head()</span>
-
-<span class="c1"># 入力のデータ整形</span>
-<span class="n">xdf</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;funaken&#39;</span><span class="p">,</span><span class="s1">&#39;odds&#39;</span><span class="p">,</span><span class="s1">&#39;raceId&#39;</span><span class="p">,</span><span class="s1">&#39;raceDate&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1">#xdf=pd.get_dummies(xdf,columns=[&#39;l1rank&#39;,&#39;l2rank&#39;,&#39;l3rank&#39;,&#39;l4rank&#39;,&#39;l5rank&#39;,&#39;l6rank&#39;])</span>
-<span class="n">rankLabel</span><span class="o">=</span><span class="n">LabelEncoder</span><span class="p">()</span>
-<span class="n">rankLabel</span><span class="o">=</span><span class="n">rankLabel</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l1rank&#39;</span><span class="p">])</span>
-<span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l1rank&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rankLabel</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l1rank&#39;</span><span class="p">])</span>
-<span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l2rank&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rankLabel</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l2rank&#39;</span><span class="p">])</span>
-<span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l3rank&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rankLabel</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l3rank&#39;</span><span class="p">])</span>
-<span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l4rank&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rankLabel</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l4rank&#39;</span><span class="p">])</span>
-<span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l5rank&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rankLabel</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l5rank&#39;</span><span class="p">])</span>
-<span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l6rank&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">rankLabel</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">xdf</span><span class="p">[</span><span class="s1">&#39;l6rank&#39;</span><span class="p">])</span>
-<span class="n">xdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[33]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>l1Fcnt</th>
-      <th>l1boat2r</th>
-      <th>l1boat3r</th>
-      <th>l1motor2r</th>
-      <th>l1motor3r</th>
-      <th>l1rank</th>
-      <th>l1score</th>
-      <th>l2Fcnt</th>
-      <th>l2boat2r</th>
-      <th>l2boat3r</th>
-      <th>...</th>
-      <th>l5score</th>
-      <th>l6Fcnt</th>
-      <th>l6boat2r</th>
-      <th>l6boat3r</th>
-      <th>l6motor2r</th>
-      <th>l6motor3r</th>
-      <th>l6rank</th>
-      <th>l6score</th>
-      <th>raceWaveHeight</th>
-      <th>raceWindSpeed</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0</td>
-      <td>0.3333</td>
-      <td>0.4848</td>
-      <td>0.3817</td>
-      <td>0.5645</td>
-      <td>2</td>
-      <td>4.842381</td>
-      <td>0</td>
-      <td>0.3333</td>
-      <td>0.5094</td>
-      <td>...</td>
-      <td>2.860248</td>
-      <td>0</td>
-      <td>0.2740</td>
-      <td>0.4452</td>
-      <td>0.3134</td>
-      <td>0.4478</td>
+      <td>9.0</td>
+      <td>8.0</td>
       <td>3</td>
-      <td>0.594831</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>晴</td>
+      <td>5.0</td>
+      <td>06</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1</td>
-      <td>0.2876</td>
-      <td>0.4248</td>
-      <td>0.3960</td>
-      <td>0.6040</td>
+      <td>2-1-6</td>
+      <td>26.2</td>
+      <td>2018-01-01</td>
+      <td>ippan</td>
+      <td>20180101-06-02</td>
       <td>2</td>
-      <td>7.406036</td>
-      <td>0</td>
-      <td>0.3871</td>
-      <td>0.5935</td>
-      <td>...</td>
-      <td>2.015905</td>
-      <td>1</td>
-      <td>0.2532</td>
-      <td>0.4177</td>
-      <td>0.4500</td>
-      <td>0.5750</td>
-      <td>2</td>
-      <td>1.504087</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>8.0</td>
+      <td>8.0</td>
+      <td>3</td>
+      <td>晴</td>
+      <td>5.0</td>
+      <td>06</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>1</td>
-      <td>0.2452</td>
-      <td>0.4387</td>
-      <td>0.4610</td>
-      <td>0.5779</td>
-      <td>2</td>
-      <td>8.340631</td>
-      <td>1</td>
-      <td>0.3807</td>
-      <td>0.5739</td>
-      <td>...</td>
-      <td>1.279918</td>
-      <td>0</td>
-      <td>0.3125</td>
-      <td>0.4938</td>
-      <td>0.3541</td>
-      <td>0.5502</td>
-      <td>1</td>
-      <td>3.195143</td>
-      <td>1</td>
-      <td>3.0</td>
+      <td>3-5-4</td>
+      <td>99.2</td>
+      <td>2018-01-01</td>
+      <td>ippan</td>
+      <td>20180101-06-03</td>
+      <td>3</td>
+      <td>8.0</td>
+      <td>8.0</td>
+      <td>3</td>
+      <td>晴</td>
+      <td>5.0</td>
+      <td>06</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>0</td>
-      <td>0.1959</td>
-      <td>0.3986</td>
-      <td>0.6369</td>
-      <td>0.7738</td>
-      <td>2</td>
-      <td>9.654840</td>
-      <td>0</td>
-      <td>0.3439</td>
-      <td>0.5350</td>
-      <td>...</td>
-      <td>1.545834</td>
-      <td>0</td>
-      <td>0.2231</td>
-      <td>0.3846</td>
-      <td>0.3161</td>
-      <td>0.4540</td>
-      <td>2</td>
-      <td>0.583962</td>
-      <td>1</td>
-      <td>3.0</td>
+      <td>1-5-2</td>
+      <td>16.8</td>
+      <td>2018-01-01</td>
+      <td>ippan</td>
+      <td>20180101-06-04</td>
+      <td>4</td>
+      <td>9.0</td>
+      <td>8.0</td>
+      <td>3</td>
+      <td>晴</td>
+      <td>5.0</td>
+      <td>06</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>0</td>
-      <td>0.3609</td>
-      <td>0.4852</td>
-      <td>0.2983</td>
-      <td>0.4475</td>
-      <td>1</td>
-      <td>15.248551</td>
-      <td>0</td>
-      <td>0.2911</td>
-      <td>0.4557</td>
-      <td>...</td>
-      <td>11.021105</td>
-      <td>1</td>
-      <td>0.3500</td>
-      <td>0.5375</td>
-      <td>0.4296</td>
-      <td>0.6667</td>
-      <td>1</td>
-      <td>2.543009</td>
-      <td>1</td>
-      <td>2.0</td>
+      <td>4-1-3</td>
+      <td>51.5</td>
+      <td>2018-01-01</td>
+      <td>ippan</td>
+      <td>20180101-06-05</td>
+      <td>5</td>
+      <td>9.0</td>
+      <td>9.0</td>
+      <td>3</td>
+      <td>晴</td>
+      <td>5.0</td>
+      <td>06</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 44 columns</p>
 </div>
 </div>
 
@@ -13684,39 +13413,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ファイルから作った辞書で変換する</span>
-<span class="n">ydf</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span>
-<span class="n">ydf</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">ydf</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">funakenDict</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ydf</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 的中オッズの頻度分布</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;odds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13729,143 +13430,28 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>   funaken
-0       12
-1       20
-2       24
-3        8
-4        1
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 重み付けのため、オッズのリストを作る</span>
-<span class="n">odf</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;odds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-<span class="c1">#odf=pd.DataFrame(df[&#39;odds&#39;])</span>
-<span class="c1">#odf.describe()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">odf</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[  30.3   79.    28.9 ...   13.6 1094.    29.2]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span><span class="n">o_train</span><span class="p">,</span><span class="n">o_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">xdf</span><span class="p">,</span> <span class="n">ydf</span><span class="p">,</span><span class="n">odf</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lgb_train</span> <span class="o">=</span> <span class="n">lgb</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">lgb_eval</span> <span class="o">=</span> <span class="n">lgb</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">lgb_train</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lgbm_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="c1"># 多値分類問題</span>
-    <span class="s1">&#39;objective&#39;</span><span class="p">:</span> <span class="s1">&#39;multiclass&#39;</span><span class="p">,</span>
-    <span class="c1"># クラス数は 120</span>
-    <span class="s1">&#39;num_class&#39;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
-    <span class="c1">#&#39;class_weight&#39;:&#39;balanced&#39;,</span>
-    <span class="c1">#&#39;random_state&#39;:999,</span>
-    <span class="c1"># 以下、ハイパーパラメタ</span>
-    <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span>
-    <span class="s1">&#39;num_leaves&#39;</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span>
-    <span class="s1">&#39;min_data_in_leaf&#39;</span><span class="p">:</span><span class="mi">300</span><span class="p">,</span>
-    <span class="c1"># 正則化</span>
-    <span class="s1">&#39;reg_alpha&#39;</span><span class="p">:</span><span class="mf">2.425</span><span class="p">,</span>
-    <span class="s1">&#39;reg_lambda&#39;</span><span class="p">:</span><span class="mf">9.473</span> <span class="p">,</span>
-<span class="p">}</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lgb</span><span class="o">.</span><span class="n">LGBMClassifier</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[14]:</div>
+    <div class="prompt output_prompt">Out[25]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>LGBMClassifier(boosting_type=&#39;gbdt&#39;, class_weight=None, colsample_bytree=1.0,
-        importance_type=&#39;split&#39;, learning_rate=0.1, max_depth=-1,
-        min_child_samples=20, min_child_weight=0.001, min_split_gain=0.0,
-        n_estimators=100, n_jobs=-1, num_leaves=31, objective=None,
-        random_state=None, reg_alpha=0.0, reg_lambda=0.0, silent=True,
-        subsample=1.0, subsample_for_bin=200000, subsample_freq=0)</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fbd7c576c50&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
 </div>
 
 </div>
@@ -13876,10 +13462,162 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">lgb</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">lgbm_params</span><span class="p">,</span> <span class="n">lgb_train</span><span class="p">,</span> <span class="n">valid_sets</span><span class="o">=</span><span class="n">lgb_eval</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 水面温度の頻度分布</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;raceSurfaceTemperature&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[26]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fbd7c4e61d0&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 波高の頻度分布</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;raceWaveHeight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[27]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fbd7c408d30&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 風速の分布</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;raceWindSpeed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[28]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fbd7c3889b0&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># メモリ使用チェック</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}{: &gt;25}{}{: &gt;10}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span><span class="s1">&#39;Variable Name&#39;</span><span class="p">,</span><span class="s1">&#39;|&#39;</span><span class="p">,</span><span class="s1">&#39;Memory&#39;</span><span class="p">,</span><span class="s1">&#39;|&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot; ------------------------------------ &quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">var_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">var_name</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span> <span class="c1">#ここだけアレンジ</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}{: &gt;25}{}{: &gt;10}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span><span class="n">var_name</span><span class="p">,</span><span class="s1">&#39;|&#39;</span><span class="p">,</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">var_name</span><span class="p">)),</span><span class="s1">&#39;|&#39;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13896,106 +13634,11 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1]	valid_0&#39;s multi_logloss: 4.66151
-[2]	valid_0&#39;s multi_logloss: 4.57109
-[3]	valid_0&#39;s multi_logloss: 4.49997
-[4]	valid_0&#39;s multi_logloss: 4.44077
-[5]	valid_0&#39;s multi_logloss: 4.39019
-[6]	valid_0&#39;s multi_logloss: 4.34642
-[7]	valid_0&#39;s multi_logloss: 4.30798
-[8]	valid_0&#39;s multi_logloss: 4.27393
-[9]	valid_0&#39;s multi_logloss: 4.24323
-[10]	valid_0&#39;s multi_logloss: 4.2157
-[11]	valid_0&#39;s multi_logloss: 4.19099
-[12]	valid_0&#39;s multi_logloss: 4.16826
-[13]	valid_0&#39;s multi_logloss: 4.14784
-[14]	valid_0&#39;s multi_logloss: 4.12905
-[15]	valid_0&#39;s multi_logloss: 4.11165
-[16]	valid_0&#39;s multi_logloss: 4.0958
-[17]	valid_0&#39;s multi_logloss: 4.08103
-[18]	valid_0&#39;s multi_logloss: 4.06756
-[19]	valid_0&#39;s multi_logloss: 4.05495
-[20]	valid_0&#39;s multi_logloss: 4.04312
-[21]	valid_0&#39;s multi_logloss: 4.03223
-[22]	valid_0&#39;s multi_logloss: 4.02213
-[23]	valid_0&#39;s multi_logloss: 4.01263
-[24]	valid_0&#39;s multi_logloss: 4.00378
-[25]	valid_0&#39;s multi_logloss: 3.99546
-[26]	valid_0&#39;s multi_logloss: 3.98782
-[27]	valid_0&#39;s multi_logloss: 3.98048
-[28]	valid_0&#39;s multi_logloss: 3.97357
-[29]	valid_0&#39;s multi_logloss: 3.96718
-[30]	valid_0&#39;s multi_logloss: 3.96104
-[31]	valid_0&#39;s multi_logloss: 3.95541
-[32]	valid_0&#39;s multi_logloss: 3.95016
-[33]	valid_0&#39;s multi_logloss: 3.94519
-[34]	valid_0&#39;s multi_logloss: 3.94053
-[35]	valid_0&#39;s multi_logloss: 3.93595
-[36]	valid_0&#39;s multi_logloss: 3.93167
-[37]	valid_0&#39;s multi_logloss: 3.92783
-[38]	valid_0&#39;s multi_logloss: 3.92414
-[39]	valid_0&#39;s multi_logloss: 3.92061
-[40]	valid_0&#39;s multi_logloss: 3.91719
-[41]	valid_0&#39;s multi_logloss: 3.91399
-[42]	valid_0&#39;s multi_logloss: 3.91093
-[43]	valid_0&#39;s multi_logloss: 3.90806
-[44]	valid_0&#39;s multi_logloss: 3.9054
-[45]	valid_0&#39;s multi_logloss: 3.90268
-[46]	valid_0&#39;s multi_logloss: 3.90013
-[47]	valid_0&#39;s multi_logloss: 3.89794
-[48]	valid_0&#39;s multi_logloss: 3.89564
-[49]	valid_0&#39;s multi_logloss: 3.89359
-[50]	valid_0&#39;s multi_logloss: 3.89172
-[51]	valid_0&#39;s multi_logloss: 3.88969
-[52]	valid_0&#39;s multi_logloss: 3.88772
-[53]	valid_0&#39;s multi_logloss: 3.88608
-[54]	valid_0&#39;s multi_logloss: 3.88456
-[55]	valid_0&#39;s multi_logloss: 3.883
-[56]	valid_0&#39;s multi_logloss: 3.88157
-[57]	valid_0&#39;s multi_logloss: 3.8801
-[58]	valid_0&#39;s multi_logloss: 3.87874
-[59]	valid_0&#39;s multi_logloss: 3.87744
-[60]	valid_0&#39;s multi_logloss: 3.87629
-[61]	valid_0&#39;s multi_logloss: 3.87503
-[62]	valid_0&#39;s multi_logloss: 3.87384
-[63]	valid_0&#39;s multi_logloss: 3.87288
-[64]	valid_0&#39;s multi_logloss: 3.87196
-[65]	valid_0&#39;s multi_logloss: 3.87096
-[66]	valid_0&#39;s multi_logloss: 3.87002
-[67]	valid_0&#39;s multi_logloss: 3.86914
-[68]	valid_0&#39;s multi_logloss: 3.86814
-[69]	valid_0&#39;s multi_logloss: 3.86738
-[70]	valid_0&#39;s multi_logloss: 3.86657
-[71]	valid_0&#39;s multi_logloss: 3.86578
-[72]	valid_0&#39;s multi_logloss: 3.86499
-[73]	valid_0&#39;s multi_logloss: 3.86444
-[74]	valid_0&#39;s multi_logloss: 3.8638
-[75]	valid_0&#39;s multi_logloss: 3.86317
-[76]	valid_0&#39;s multi_logloss: 3.86257
-[77]	valid_0&#39;s multi_logloss: 3.862
-[78]	valid_0&#39;s multi_logloss: 3.86141
-[79]	valid_0&#39;s multi_logloss: 3.86086
-[80]	valid_0&#39;s multi_logloss: 3.86037
-[81]	valid_0&#39;s multi_logloss: 3.85988
-[82]	valid_0&#39;s multi_logloss: 3.85945
-[83]	valid_0&#39;s multi_logloss: 3.85896
-[84]	valid_0&#39;s multi_logloss: 3.85851
-[85]	valid_0&#39;s multi_logloss: 3.85808
-[86]	valid_0&#39;s multi_logloss: 3.85774
-[87]	valid_0&#39;s multi_logloss: 3.85737
-[88]	valid_0&#39;s multi_logloss: 3.85697
-[89]	valid_0&#39;s multi_logloss: 3.85665
-[90]	valid_0&#39;s multi_logloss: 3.85632
-[91]	valid_0&#39;s multi_logloss: 3.85599
-[92]	valid_0&#39;s multi_logloss: 3.85573
-[93]	valid_0&#39;s multi_logloss: 3.85535
-[94]	valid_0&#39;s multi_logloss: 3.85505
-[95]	valid_0&#39;s multi_logloss: 3.85473
-[96]	valid_0&#39;s multi_logloss: 3.85446
-[97]	valid_0&#39;s multi_logloss: 3.85424
-[98]	valid_0&#39;s multi_logloss: 3.85398
-[99]	valid_0&#39;s multi_logloss: 3.85378
-[100]	valid_0&#39;s multi_logloss: 3.85358
+<pre>|            Variable Name|    Memory|
+ ------------------------------------ 
+|                       df|   1275238|
+|                 oddsList|     43040|
+|               raceIdList|      1448|
 </pre>
 </div>
 </div>
@@ -14006,1008 +13649,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">num_iteration</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">best_iteration</span><span class="p">)</span>
-<span class="n">y_pred_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># 最尤と判断したクラスの値にする</span>
-
-<span class="c1"># 精度 (Accuracy) を計算する</span>
-<span class="n">accuracy</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">y_test</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">y_pred_max</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;accuracy:&quot;</span><span class="p">,</span><span class="n">accuracy</span><span class="p">)</span>
-
-<span class="c1"># 回収率を計算</span>
-<span class="n">res</span><span class="o">=</span><span class="mi">0</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)):</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">y_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">y_pred_max</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-        <span class="c1">#print(&quot;i:&quot;,i,&quot;result:&quot;,y_test[i],&quot;forecast:&quot;,y_pred_max[i],&quot;forecastProb:&quot;,y_pred[i][y_pred_max[i]],&quot;return:&quot;,o_test[i],&quot;expect:&quot;,y_pred[i][y_pred_max[i]]*o_test[i])</span>
-        <span class="n">res</span> <span class="o">+=</span> <span class="n">o_test</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1">#print(&quot;i:&quot;,i,&quot;result:&quot;,y_test[i],&quot;forecast:&quot;,y_pred_max[i],&quot;forecastProb:&quot;,y_pred[i][y_pred_max[i]],&quot;return:&quot;,o_test[i],&quot;expect:&quot;,y_pred[i][y_pred_max[i]]*o_test[i])</span>
-        <span class="k">pass</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;resultReturn:&quot;</span><span class="p">,</span><span class="n">res</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>accuracy: 0.08861737754388548
-resultReturn: 0.7107312405696822
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_pred</span><span class="p">))</span>
-<span class="c1"># オッズを見て判断する場合</span>
-<span class="n">resAmount</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">buyAmount</span><span class="o">=</span><span class="mi">0</span>
-
-<span class="n">dfIndexList</span><span class="o">=</span><span class="n">y_test</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)):</span>
-    <span class="n">raceId</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">dfIndexList</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s1">&#39;raceId&#39;</span><span class="p">]</span>
-    <span class="c1">#print(raceId)</span>
-    <span class="k">with</span> <span class="n">dbh</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-        <span class="n">sel_sql</span> <span class="o">=</span> <span class="s2">&quot;select funaken,odds from raceodds </span><span class="se">\</span>
-<span class="s2">                   where oddsType = &#39;3t&#39; </span><span class="se">\</span>
-<span class="s2">                   and raceId = &#39;</span><span class="si">%s</span><span class="s2">&#39; </span><span class="se">\</span>
-<span class="s2">                   order by funaken&quot;</span> \
-                   <span class="o">%</span> <span class="p">(</span><span class="n">raceId</span><span class="p">)</span>
-        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sel_sql</span><span class="p">)</span>
-        <span class="n">loadList</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span>
-        <span class="n">loadList</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">loadList</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">funakenDict</span><span class="p">))</span>
-    <span class="c1">#print((loadList[loadList[&#39;funaken&#39;]==0][&#39;odds&#39;] * y_pred[i][0] ).values[0] )</span>
-    <span class="c1">#if ( (loadList[loadList[&#39;funaken&#39;]==0][&#39;odds&#39;] * y_pred[i][0] ).values[0] &gt; 1) :</span>
-    <span class="c1">#    print(&quot;ok&quot;)</span>
-    <span class="c1">#print(y_pred[i][0])</span>
-    <span class="c1">#print(raceId)</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">120</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">&gt;</span> <span class="mf">0.10</span> <span class="ow">and</span> <span class="p">(</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">loadList</span><span class="p">[</span><span class="n">loadList</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;odds&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.5</span><span class="p">)</span> <span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;buy:&quot;</span><span class="p">,</span><span class="n">raceId</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">loadList</span><span class="p">[</span><span class="n">loadList</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;odds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">buyAmount</span><span class="o">+=</span><span class="mi">1</span>
-            <span class="k">if</span> <span class="n">y_test</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">j</span><span class="p">:</span>
-            <span class="c1">#print(&quot;i:&quot;,i,&quot;result:&quot;,y_test[i],&quot;forecast:&quot;,y_pred_max[i],&quot;forecastProb:&quot;,y_pred[i][y_pred_max[i]],&quot;return:&quot;,o_test[i],&quot;expect:&quot;,y_pred[i][y_pred_max[i]]*o_test[i])</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;☆hit!☆:&quot;</span><span class="p">,</span><span class="n">raceId</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">loadList</span><span class="p">[</span><span class="n">loadList</span><span class="p">[</span><span class="s1">&#39;funaken&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;odds&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">resAmount</span> <span class="o">+=</span> <span class="n">o_test</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-            <span class="c1">#print(&quot;i:&quot;,i,&quot;result:&quot;,y_test[i],&quot;forecast:&quot;,y_pred_max[i],&quot;forecastProb:&quot;,y_pred[i][y_pred_max[i]],&quot;return:&quot;,o_test[i],&quot;expect:&quot;,y_pred[i][y_pred_max[i]]*o_test[i])</span>
-                <span class="k">pass</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;resultReturn:&quot;</span><span class="p">,</span><span class="n">resAmount</span><span class="o">/</span><span class="n">buyAmount</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>27173
-buy: 20180406-09-04 9 1 16.6
-buy: 20170702-08-11 73 0 17.0
-buy: 20190123-16-01 79 0 13.1
-buy: 20190123-16-01 79 4 17.3
-buy: 20190127-14-01 92 0 12.1
-buy: 20171203-06-08 107 2 9.9
-buy: 20170404-09-12 116 0 13.8
-buy: 20170805-08-07 134 0 14.8
-buy: 20180621-22-11 145 0 12.1
-☆hit!☆: 20180621-22-11 0 12.1
-buy: 20180329-23-02 176 0 8.7
-buy: 20171109-21-04 215 0 13.4
-buy: 20170922-05-09 259 0 14.1
-buy: 20170922-05-09 259 4 15.8
-buy: 20170702-20-05 299 0 13.3
-buy: 20180208-24-04 339 41 17.2
-☆hit!☆: 20180208-24-04 41 17.2
-buy: 20170628-15-08 340 0 15.0
-buy: 20190325-16-06 349 1 13.5
-buy: 20171128-24-05 507 1 12.5
-buy: 20170925-22-01 519 8 13.6
-buy: 20180128-21-04 615 0 12.9
-buy: 20181126-10-05 778 5 11.2
-buy: 20171211-01-06 859 0 27.3
-buy: 20180126-20-08 882 0 12.2
-buy: 20181205-01-06 892 0 13.2
-buy: 20180107-13-07 934 6 22.3
-buy: 20170421-01-06 938 0 12.0
-buy: 20181223-09-07 994 0 18.8
-buy: 20180614-09-12 998 11 14.8
-buy: 20171122-23-01 1040 0 11.2
-☆hit!☆: 20171122-23-01 0 11.2
-buy: 20180824-24-03 1097 10 17.8
-buy: 20170427-16-04 1115 0 14.0
-buy: 20190106-16-07 1220 8 15.3
-buy: 20190205-23-03 1538 0 14.0
-buy: 20180920-21-05 1539 2 12.3
-buy: 20170930-20-05 1564 0 16.0
-buy: 20181118-08-06 1614 4 17.2
-buy: 20181118-08-06 1614 7 11.7
-☆hit!☆: 20181118-08-06 7 11.7
-buy: 20180702-21-04 1617 1 16.1
-☆hit!☆: 20180702-21-04 1 16.1
-buy: 20170730-19-01 1629 0 11.4
-buy: 20180103-03-02 1636 0 18.9
-buy: 20181009-21-07 1672 0 12.0
-☆hit!☆: 20181009-21-07 0 12.0
-buy: 20181124-09-09 1738 1 18.9
-buy: 20180430-17-08 1788 1 12.3
-buy: 20171012-09-04 1816 0 9.3
-☆hit!☆: 20171012-09-04 0 9.3
-buy: 20190317-16-10 1819 8 15.0
-buy: 20190315-15-12 1851 0 13.9
-buy: 20170803-09-01 1889 0 17.2
-buy: 20171024-09-01 1906 1 14.6
-buy: 20180503-10-11 1953 0 13.7
-☆hit!☆: 20180503-10-11 0 13.7
-buy: 20180227-19-04 2020 0 14.1
-buy: 20180905-08-08 2044 8 14.7
-buy: 20180515-12-12 2103 4 21.1
-☆hit!☆: 20180515-12-12 4 21.1
-buy: 20190214-21-06 2117 0 12.8
-buy: 20180822-13-06 2118 0 16.9
-buy: 20171125-03-08 2146 1 14.6
-☆hit!☆: 20171125-03-08 1 14.6
-buy: 20181008-17-01 2172 17 20.4
-buy: 20180103-21-05 2196 0 21.9
-buy: 20190107-10-02 2206 0 14.0
-buy: 20190217-18-03 2248 5 15.6
-buy: 20170430-15-08 2266 0 12.1
-buy: 20171210-09-01 2293 1 10.9
-buy: 20180302-06-02 2307 4 21.8
-buy: 20180312-23-02 2344 0 15.0
-buy: 20181021-22-10 2432 4 13.2
-buy: 20180802-18-03 2538 6 14.7
-buy: 20190210-07-12 2576 11 14.6
-buy: 20170705-24-07 2684 4 17.3
-buy: 20180709-23-09 2746 45 16.2
-buy: 20171231-23-03 2826 41 27.9
-buy: 20170524-24-05 2836 4 28.1
-buy: 20190107-16-08 2877 7 19.6
-buy: 20180720-19-07 2943 41 15.6
-buy: 20180513-17-11 2981 0 12.4
-buy: 20180909-22-07 2983 0 19.5
-buy: 20181117-13-04 3105 0 16.4
-buy: 20190327-14-03 3189 0 19.4
-buy: 20180812-02-09 3198 0 19.7
-buy: 20171015-23-02 3232 0 13.8
-buy: 20180518-06-04 3235 8 16.4
-buy: 20181027-16-01 3253 0 14.7
-buy: 20190308-22-12 3298 0 13.9
-buy: 20181201-13-04 3314 9 16.6
-buy: 20171015-21-02 3333 1 14.0
-buy: 20180806-23-03 3336 0 16.7
-buy: 20180809-17-11 3554 0 12.3
-buy: 20180730-08-07 3640 2 9.4
-buy: 20180506-06-10 3707 4 15.8
-buy: 20181122-19-07 3813 9 14.8
-buy: 20170809-07-10 3829 4 16.1
-buy: 20180908-06-04 3838 0 13.7
-☆hit!☆: 20180908-06-04 0 13.7
-buy: 20180903-23-01 3846 11 20.9
-buy: 20170725-19-08 3847 0 8.7
-buy: 20190207-17-07 3934 0 16.2
-buy: 20180415-24-02 4030 0 12.3
-buy: 20170502-09-11 4200 0 15.1
-buy: 20171014-03-04 4218 0 14.5
-buy: 20190210-16-09 4225 9 14.1
-buy: 20170426-05-07 4235 1 16.6
-buy: 20170607-21-07 4302 0 17.2
-buy: 20190308-09-01 4365 4 17.4
-buy: 20180612-12-05 4377 4 20.3
-☆hit!☆: 20180612-12-05 4 20.3
-buy: 20190120-19-08 4491 0 27.7
-buy: 20190120-19-08 4491 4 17.4
-buy: 20180414-09-10 4542 12 15.2
-buy: 20180313-01-09 4608 5 15.5
-buy: 20181128-17-02 4628 6 15.2
-buy: 20170811-16-10 4638 2 10.2
-buy: 20171119-09-04 4656 0 17.0
-buy: 20171031-13-04 4920 41 21.3
-buy: 20180517-05-09 5001 0 14.6
-buy: 20190112-18-01 5014 0 15.1
-buy: 20170814-21-04 5041 0 18.9
-buy: 20180518-15-09 5090 0 13.6
-☆hit!☆: 20180518-15-09 0 13.6
-buy: 20190104-08-05 5129 0 9.2
-buy: 20180410-05-09 5135 0 15.2
-buy: 20180414-20-10 5153 0 14.9
-buy: 20180118-23-02 5174 0 17.4
-buy: 20171113-18-05 5187 20 16.5
-buy: 20180929-07-07 5256 1 16.3
-buy: 20180929-07-07 5256 9 15.3
-buy: 20190318-18-04 5408 0 15.6
-buy: 20180809-23-03 5429 0 23.2
-buy: 20180809-23-03 5429 4 10.3
-buy: 20190323-23-01 5465 0 15.2
-☆hit!☆: 20190323-23-01 0 15.2
-buy: 20170811-11-05 5489 0 12.2
-buy: 20180103-10-01 5514 0 9.4
-buy: 20180129-11-01 5537 3 11.3
-buy: 20180129-11-01 5537 16 12.3
-buy: 20180527-09-10 5598 0 16.3
-buy: 20180922-08-08 5632 41 11.9
-buy: 20190301-24-12 5722 0 15.4
-buy: 20180616-12-05 5775 0 15.3
-buy: 20190124-24-10 5871 8 15.9
-buy: 20171029-10-03 5915 4 16.6
-buy: 20180224-17-11 5937 8 16.4
-☆hit!☆: 20180224-17-11 8 16.4
-buy: 20170609-24-01 5959 0 13.1
-buy: 20181104-18-12 5996 0 10.3
-☆hit!☆: 20181104-18-12 0 10.3
-buy: 20171222-10-01 6082 0 21.4
-buy: 20190110-09-01 6123 0 12.4
-buy: 20190105-02-07 6136 0 13.3
-buy: 20190105-02-07 6136 1 13.9
-buy: 20190105-02-07 6136 4 13.1
-buy: 20170724-09-05 6192 0 17.1
-buy: 20171109-24-05 6305 0 21.2
-buy: 20181205-20-05 6386 0 25.7
-buy: 20180912-19-07 6414 7 14.6
-buy: 20180715-01-06 6449 0 13.6
-buy: 20170919-22-09 6452 0 27.1
-buy: 20190302-13-10 6465 8 19.7
-buy: 20180527-10-01 6531 16 18.9
-buy: 20180428-04-07 6579 4 14.2
-buy: 20190113-01-01 6596 1 18.4
-buy: 20180130-01-07 6630 0 18.6
-buy: 20180827-09-08 6667 4 13.4
-buy: 20180526-19-05 6685 3 15.8
-buy: 20181123-14-03 6688 0 14.0
-buy: 20170504-18-04 6797 0 10.4
-buy: 20180728-22-03 6841 0 12.8
-buy: 20170909-14-03 6856 0 14.0
-buy: 20170606-18-02 6877 0 15.2
-buy: 20170606-18-02 6877 4 11.0
-buy: 20180329-23-05 6931 25 16.8
-buy: 20170624-23-03 6969 4 18.1
-buy: 20170513-15-01 6977 0 15.0
-buy: 20171003-01-06 7002 1 24.6
-buy: 20190310-09-09 7007 0 14.4
-☆hit!☆: 20190310-09-09 0 14.4
-buy: 20170910-21-02 7061 0 17.4
-buy: 20170910-21-02 7061 1 11.4
-buy: 20170421-08-08 7074 3 18.6
-buy: 20181231-20-09 7075 8 14.2
-buy: 20190115-22-11 7100 4 12.8
-buy: 20171130-21-04 7120 5 13.3
-buy: 20190323-12-08 7133 1 16.9
-buy: 20190317-24-08 7247 0 10.8
-buy: 20180105-21-02 7273 1 16.7
-buy: 20181120-12-02 7305 25 16.8
-buy: 20171027-21-01 7306 0 27.8
-buy: 20170722-24-11 7316 0 8.8
-buy: 20180407-05-09 7371 0 16.2
-buy: 20180216-17-01 7517 6 17.5
-buy: 20170429-01-01 7570 9 20.8
-buy: 20171019-18-02 7698 0 9.5
-buy: 20180812-05-08 7791 5 15.3
-buy: 20190113-23-02 7797 0 11.9
-buy: 20171013-12-02 7803 0 15.3
-buy: 20180803-10-11 7815 0 17.0
-buy: 20190101-18-04 7818 1 14.5
-buy: 20170603-15-08 7952 0 11.9
-☆hit!☆: 20170603-15-08 0 11.9
-buy: 20181103-14-06 7990 1 19.1
-buy: 20190107-24-05 8012 4 19.0
-buy: 20180225-18-02 8089 0 26.1
-buy: 20180225-18-02 8089 1 13.7
-buy: 20181022-10-03 8171 4 12.1
-buy: 20171214-23-01 8201 0 20.1
-buy: 20171214-23-01 8201 4 17.9
-buy: 20170409-22-06 8343 0 15.6
-buy: 20170409-22-06 8343 4 13.9
-buy: 20181220-22-08 8382 0 14.3
-buy: 20190109-19-08 8408 0 16.0
-buy: 20180302-24-01 8501 0 15.3
-buy: 20180531-06-04 8521 0 17.5
-buy: 20171223-18-04 8555 1 16.7
-buy: 20190325-13-08 8608 0 13.2
-buy: 20181009-03-03 8616 0 15.5
-buy: 20181114-10-02 8684 4 12.0
-buy: 20180115-11-09 8703 0 14.8
-buy: 20190102-03-11 8725 0 16.0
-buy: 20180105-14-03 8810 0 15.2
-buy: 20171019-21-12 8875 4 13.3
-buy: 20190118-14-05 8879 16 13.2
-☆hit!☆: 20190118-14-05 16 13.2
-buy: 20190206-01-05 8933 0 16.9
-buy: 20170812-22-07 8968 0 15.6
-buy: 20170726-07-07 9070 4 19.2
-buy: 20171105-22-01 9091 0 11.1
-buy: 20190321-01-06 9147 0 10.9
-buy: 20170504-18-05 9210 0 15.3
-buy: 20180804-20-11 9212 0 15.3
-buy: 20180722-21-04 9214 2 12.7
-buy: 20180427-01-01 9232 1 12.6
-buy: 20190104-23-11 9247 0 13.0
-buy: 20180320-02-04 9434 8 15.7
-buy: 20180907-12-08 9512 12 12.7
-buy: 20180417-13-04 9534 0 17.4
-☆hit!☆: 20180417-13-04 0 17.4
-buy: 20170716-08-12 9535 0 11.9
-buy: 20170407-19-08 9619 0 14.9
-buy: 20181203-14-05 9692 0 12.2
-buy: 20170707-16-07 9713 2 14.7
-buy: 20171224-17-05 9742 0 20.7
-buy: 20170629-18-04 9790 4 18.1
-buy: 20190120-23-02 9794 0 14.7
-buy: 20181231-06-05 9813 7 15.5
-buy: 20170909-24-06 9969 0 13.6
-buy: 20181029-05-09 9993 0 13.6
-buy: 20181221-20-05 10079 0 17.4
-buy: 20181104-12-09 10082 1 16.4
-buy: 20190303-17-10 10087 4 21.2
-buy: 20180618-23-11 10107 0 13.1
-buy: 20180105-22-07 10132 0 13.3
-buy: 20170925-14-01 10173 1 25.3
-buy: 20180701-07-08 10227 0 10.4
-buy: 20190213-23-04 10249 0 12.4
-buy: 20190321-13-01 10259 3 14.8
-buy: 20171012-16-01 10275 0 16.6
-buy: 20171012-16-01 10275 4 16.2
-buy: 20170810-14-03 10380 0 19.4
-buy: 20170924-10-01 10400 4 16.5
-buy: 20190201-12-12 10455 0 10.3
-buy: 20180803-17-08 10470 0 12.1
-buy: 20181219-14-01 10504 8 12.8
-buy: 20170612-18-08 10553 5 14.3
-buy: 20170809-24-10 10575 4 17.9
-buy: 20170611-11-05 10577 0 9.4
-buy: 20171214-12-07 10640 0 18.1
-buy: 20171102-24-02 10812 4 19.0
-buy: 20170921-09-10 10813 0 23.5
-buy: 20170810-18-05 10842 21 12.7
-buy: 20180219-06-12 10871 0 13.9
-buy: 20190207-23-04 11044 0 11.7
-buy: 20180522-24-06 11074 0 15.8
-buy: 20190106-02-12 11163 1 14.6
-buy: 20181126-13-02 11180 0 12.6
-buy: 20170913-01-05 11195 0 16.3
-buy: 20181021-18-05 11246 9 13.9
-buy: 20170613-18-03 11260 2 15.6
-buy: 20181215-02-07 11363 0 25.8
-buy: 20190205-24-05 11383 0 16.0
-buy: 20171231-09-02 11392 8 16.6
-buy: 20170901-12-07 11504 4 14.9
-buy: 20180116-05-03 11590 12 15.1
-buy: 20190318-22-01 11617 0 26.1
-buy: 20190318-22-01 11617 4 16.6
-buy: 20190221-13-08 11687 5 16.7
-☆hit!☆: 20190221-13-08 5 16.7
-buy: 20190311-24-11 11772 1 13.1
-buy: 20180813-09-01 11811 0 17.1
-buy: 20190220-24-08 11832 41 8.3
-buy: 20170416-06-04 11993 0 19.5
-buy: 20181017-09-05 12007 0 22.6
-buy: 20180310-24-08 12017 43 16.5
-buy: 20170712-24-09 12039 0 15.8
-buy: 20170417-11-05 12053 0 14.7
-buy: 20171013-03-07 12139 4 12.4
-buy: 20180311-18-01 12287 8 12.5
-buy: 20180603-08-06 12337 18 14.6
-buy: 20180426-24-10 12377 0 28.3
-buy: 20180112-03-08 12404 0 12.7
-buy: 20180925-22-03 12425 0 18.2
-buy: 20190206-19-07 12464 4 36.6
-buy: 20190217-18-12 12520 0 13.1
-buy: 20170813-15-01 12543 0 13.2
-buy: 20180414-09-12 12579 7 17.6
-buy: 20180317-09-01 12614 3 32.7
-buy: 20180321-23-03 12666 0 14.4
-buy: 20170909-16-04 12685 36 15.0
-buy: 20180126-20-07 12738 8 17.6
-buy: 20190112-05-12 12743 0 23.2
-buy: 20181218-21-04 12790 5 20.8
-buy: 20180413-13-08 12877 8 19.7
-buy: 20190106-22-05 13066 0 14.5
-buy: 20170506-18-06 13101 0 16.8
-buy: 20171103-18-12 13129 11 10.3
-buy: 20190114-18-03 13132 0 15.6
-buy: 20181002-15-10 13143 0 8.6
-buy: 20180708-09-04 13214 0 25.1
-buy: 20180106-20-05 13280 0 24.7
-buy: 20180917-04-12 13345 0 11.7
-buy: 20190305-14-02 13368 0 14.8
-buy: 20170714-22-06 13374 4 16.4
-buy: 20180916-22-10 13471 0 14.9
-buy: 20171028-08-06 13509 1 17.4
-buy: 20190221-13-01 13513 16 13.9
-buy: 20180402-12-07 13514 7 15.2
-buy: 20180620-23-03 13522 0 15.6
-buy: 20170510-24-04 13525 0 27.4
-buy: 20171126-10-01 13548 2 15.5
-buy: 20181206-18-04 13662 0 16.0
-buy: 20180911-18-06 13680 36 26.0
-buy: 20171029-22-04 13695 0 16.6
-buy: 20180725-16-07 13732 0 12.1
-☆hit!☆: 20180725-16-07 0 12.1
-buy: 20180921-19-07 13780 0 12.6
-buy: 20190225-10-01 13795 3 14.7
-buy: 20170731-13-04 13855 12 16.9
-buy: 20170527-19-05 13867 0 14.4
-buy: 20180802-16-08 13871 0 10.5
-buy: 20180707-24-03 13907 0 20.4
-buy: 20190206-06-04 14042 0 7.5
-buy: 20180609-05-01 14110 0 13.9
-buy: 20170902-24-01 14167 0 14.5
-buy: 20171122-09-04 14287 1 9.5
-buy: 20180603-06-07 14375 45 12.5
-buy: 20170629-09-01 14397 1 9.6
-buy: 20180805-18-02 14419 0 15.1
-buy: 20180603-11-06 14480 0 16.4
-buy: 20180429-12-05 14552 0 16.0
-buy: 20180921-15-02 14603 1 16.9
-buy: 20180921-15-02 14603 8 20.7
-buy: 20170525-10-01 14649 0 13.0
-buy: 20190322-21-05 14655 1 14.0
-buy: 20180429-17-10 14690 0 18.3
-buy: 20181004-10-11 14741 0 20.3
-buy: 20181004-10-11 14741 4 13.6
-buy: 20171017-21-02 14745 60 14.7
-buy: 20180916-12-07 14824 0 29.5
-buy: 20180430-01-05 14861 22 18.0
-buy: 20190223-07-07 14864 4 21.6
-buy: 20170502-24-07 14899 8 14.0
-buy: 20171231-19-02 14939 2 9.5
-buy: 20190124-18-09 14985 0 14.7
-buy: 20181004-10-03 14986 0 14.8
-buy: 20180504-07-11 15001 1 15.5
-buy: 20180302-20-07 15030 1 12.7
-buy: 20181028-05-06 15046 0 9.2
-☆hit!☆: 20181028-05-06 0 9.2
-buy: 20170611-24-06 15079 5 15.4
-buy: 20190320-18-02 15157 0 13.5
-☆hit!☆: 20190320-18-02 0 13.5
-buy: 20180307-10-02 15189 0 19.1
-buy: 20170630-24-02 15251 4 13.7
-buy: 20170525-10-09 15256 0 19.9
-buy: 20180316-18-11 15284 12 19.8
-buy: 20171206-19-11 15303 0 16.6
-buy: 20181123-12-05 15354 1 17.6
-buy: 20170609-09-05 15387 4 15.4
-buy: 20180116-05-04 15507 6 12.1
-buy: 20180103-24-09 15535 0 12.6
-☆hit!☆: 20180103-24-09 0 12.6
-buy: 20170714-22-11 15576 5 13.7
-☆hit!☆: 20170714-22-11 5 13.7
-buy: 20170419-24-03 15586 3 15.6
-buy: 20180812-08-08 15599 12 16.1
-buy: 20170712-21-05 15624 1 12.7
-buy: 20170725-09-05 15658 2 23.6
-buy: 20180320-09-01 15714 12 15.3
-buy: 20180123-16-09 15760 8 13.5
-buy: 20180128-06-06 15790 0 10.7
-buy: 20171225-22-05 15874 7 9.8
-buy: 20180731-16-01 15881 0 38.5
-buy: 20180731-16-01 15881 4 22.5
-buy: 20181112-08-05 15899 8 14.5
-buy: 20180926-23-03 15902 4 24.9
-buy: 20170416-18-04 15926 0 13.6
-buy: 20181105-03-07 16151 0 12.6
-buy: 20171103-20-05 16155 0 12.9
-buy: 20171103-20-05 16155 8 12.1
-buy: 20170924-10-02 16349 0 16.3
-buy: 20181202-09-01 16397 1 12.8
-buy: 20171104-10-07 16414 0 12.9
-buy: 20190329-18-03 16441 8 28.6
-buy: 20180721-07-11 16543 0 9.8
-buy: 20180204-17-08 16598 46 15.4
-buy: 20180427-23-03 16629 0 16.4
-buy: 20180819-19-07 16648 4 13.1
-buy: 20180102-12-09 16700 4 16.3
-buy: 20190209-24-09 16749 0 36.3
-buy: 20190209-24-09 16749 4 28.1
-buy: 20180503-10-01 16800 0 12.7
-buy: 20180316-24-07 16899 0 11.9
-buy: 20181207-21-01 16994 16 18.2
-buy: 20180404-04-08 16998 5 16.4
-buy: 20181113-14-12 17012 0 12.1
-buy: 20180611-24-08 17052 7 15.5
-buy: 20190102-07-09 17105 0 17.0
-buy: 20190103-07-11 17186 4 18.1
-buy: 20180823-05-09 17208 0 13.1
-buy: 20170916-06-08 17236 0 20.5
-buy: 20171113-18-08 17299 0 13.9
-buy: 20190104-01-08 17333 2 24.7
-buy: 20171025-21-04 17389 11 9.7
-buy: 20180611-11-09 17466 41 15.5
-buy: 20180322-12-07 17476 0 13.7
-buy: 20171125-09-05 17517 0 24.7
-buy: 20171215-16-09 17658 9 18.3
-buy: 20181225-16-01 17686 0 14.1
-buy: 20171127-20-02 17699 4 14.2
-buy: 20170621-21-05 17700 0 21.5
-buy: 20170927-24-05 17742 0 23.5
-buy: 20171120-23-03 17781 4 15.3
-buy: 20171123-10-01 17814 1 11.9
-buy: 20180114-21-04 17940 1 13.1
-buy: 20180831-21-07 17991 0 15.9
-buy: 20170712-05-08 17992 0 11.5
-buy: 20190202-18-08 17995 1 21.2
-☆hit!☆: 20190202-18-08 1 21.2
-buy: 20190323-10-01 18022 1 16.3
-buy: 20171104-14-10 18039 4 15.8
-buy: 20170704-24-01 18051 1 13.2
-buy: 20181128-10-05 18154 0 12.4
-buy: 20180807-18-03 18171 0 13.3
-buy: 20171008-08-06 18228 12 20.8
-buy: 20180802-18-05 18259 0 17.4
-buy: 20180802-18-05 18259 1 21.4
-buy: 20170924-22-09 18324 0 14.2
-buy: 20171229-18-05 18339 22 12.1
-buy: 20190125-18-02 18385 1 16.6
-buy: 20170809-24-07 18388 8 14.1
-buy: 20171010-16-01 18409 4 15.1
-buy: 20190105-07-11 18426 5 18.1
-buy: 20190105-07-11 18426 6 15.6
-buy: 20180604-10-03 18563 0 21.7
-buy: 20171231-20-05 18589 60 15.4
-buy: 20181212-17-09 18710 0 14.6
-buy: 20180706-05-11 18716 0 13.6
-buy: 20180331-15-05 18763 0 20.0
-buy: 20190109-24-07 18828 8 15.3
-buy: 20181113-20-07 18839 4 21.4
-buy: 20190118-15-07 18927 12 17.6
-buy: 20190310-22-10 18939 0 11.3
-buy: 20171223-20-09 18968 0 13.4
-buy: 20171002-13-02 19014 0 19.0
-buy: 20171002-13-02 19014 4 15.7
-buy: 20171210-06-09 19143 4 21.8
-buy: 20171009-03-08 19207 0 14.3
-buy: 20190203-05-01 19213 8 14.4
-buy: 20170421-23-01 19236 0 19.2
-buy: 20181104-12-01 19240 0 15.3
-buy: 20171023-14-08 19287 16 26.3
-buy: 20171127-03-12 19328 0 15.1
-buy: 20170814-19-01 19362 0 22.5
-buy: 20170814-19-01 19362 4 14.1
-☆hit!☆: 20170814-19-01 4 14.1
-buy: 20170406-21-01 19513 8 14.6
-buy: 20181126-22-09 19543 0 11.8
-buy: 20170516-14-01 19562 0 14.1
-buy: 20170524-14-05 19567 5 14.9
-buy: 20170915-15-09 19572 0 15.0
-buy: 20171223-20-06 19599 2 14.9
-buy: 20190225-10-04 19617 1 14.8
-buy: 20170518-19-09 19689 1 17.3
-buy: 20181201-14-03 19740 0 17.3
-buy: 20180325-22-04 19791 12 27.6
-buy: 20180131-10-10 19828 0 13.3
-buy: 20171215-23-03 19975 0 15.3
-buy: 20180429-01-06 19982 0 13.9
-buy: 20180128-17-05 20002 1 14.3
-buy: 20170429-24-08 20050 29 17.2
-buy: 20170702-05-12 20078 4 17.9
-buy: 20180502-10-02 20103 0 21.3
-buy: 20180903-23-03 20145 4 12.3
-buy: 20180517-12-05 20199 0 12.3
-buy: 20180823-11-03 20216 8 14.5
-buy: 20180823-11-03 20216 9 11.7
-buy: 20181107-05-09 20281 0 13.9
-buy: 20180618-21-11 20344 5 14.0
-buy: 20181015-14-08 20382 4 12.8
-buy: 20180224-23-01 20383 0 9.5
-buy: 20171226-18-01 20405 0 19.0
-buy: 20190323-15-12 20439 0 14.6
-buy: 20181027-23-02 20454 0 16.0
-buy: 20180107-19-05 20477 1 14.4
-buy: 20180923-09-06 20520 12 14.4
-buy: 20180609-14-01 20530 0 13.4
-buy: 20180609-14-01 20530 4 16.8
-buy: 20171106-09-09 20542 0 17.8
-☆hit!☆: 20171106-09-09 0 17.8
-buy: 20180208-11-05 20543 8 16.8
-buy: 20170617-13-12 20561 0 13.5
-buy: 20180330-24-02 20624 0 14.2
-buy: 20170808-23-11 20682 4 14.9
-buy: 20171116-22-07 20715 0 11.1
-buy: 20170518-09-12 20720 0 15.5
-buy: 20180210-21-01 20722 0 14.5
-buy: 20181116-09-07 20794 12 22.1
-buy: 20180316-05-12 20811 0 11.1
-buy: 20190117-19-07 20815 4 22.4
-buy: 20181223-09-01 20863 1 17.8
-buy: 20171021-09-01 20941 0 12.5
-buy: 20170611-09-05 21101 0 25.2
-buy: 20170418-14-01 21135 5 11.8
-buy: 20190216-17-06 21146 1 15.4
-buy: 20181101-06-06 21157 1 19.6
-buy: 20181101-06-06 21157 8 12.4
-buy: 20180530-12-12 21174 0 19.8
-buy: 20180530-12-12 21174 4 14.0
-buy: 20180606-18-03 21196 12 13.5
-buy: 20180603-08-12 21197 0 9.5
-buy: 20180723-07-07 21276 8 16.3
-☆hit!☆: 20180723-07-07 8 16.3
-buy: 20190206-03-06 21460 4 17.4
-buy: 20180102-23-05 21509 0 15.3
-buy: 20180512-19-11 21591 4 15.5
-buy: 20181224-05-07 21705 7 21.1
-buy: 20180410-16-11 21827 5 11.2
-buy: 20180302-18-10 21851 0 12.2
-buy: 20181203-09-07 21884 4 17.8
-buy: 20171206-07-07 21987 0 17.6
-buy: 20170514-16-09 22084 0 16.1
-buy: 20180909-10-07 22116 9 14.2
-buy: 20180823-10-02 22158 2 12.0
-buy: 20180828-21-05 22160 0 15.3
-buy: 20181102-08-09 22270 0 16.6
-buy: 20170704-23-04 22309 21 14.1
-buy: 20180429-21-04 22330 2 13.9
-buy: 20180706-12-09 22354 0 15.0
-buy: 20170420-21-05 22370 8 14.7
-☆hit!☆: 20170420-21-05 8 14.7
-buy: 20190331-02-04 22371 70 14.5
-buy: 20180328-17-05 22387 8 19.3
-buy: 20180924-18-09 22390 0 12.5
-buy: 20180727-08-08 22461 5 24.6
-buy: 20171025-17-08 22472 0 18.8
-buy: 20181206-01-08 22501 6 16.5
-buy: 20170826-21-08 22524 0 15.3
-buy: 20170418-24-01 22531 0 16.5
-buy: 20170418-24-01 22531 4 17.0
-buy: 20170728-18-03 22561 8 14.4
-buy: 20170525-24-03 22576 0 17.4
-buy: 20181015-07-05 22587 12 13.0
-buy: 20170806-11-05 22633 0 12.7
-☆hit!☆: 20170806-11-05 0 12.7
-buy: 20170927-14-10 22658 4 21.0
-buy: 20181125-24-08 22673 0 25.8
-buy: 20181125-24-08 22673 4 14.4
-buy: 20180625-05-06 22763 12 13.9
-buy: 20180410-02-03 22828 26 18.1
-buy: 20171118-04-05 22836 0 17.9
-buy: 20180201-21-01 22934 0 11.7
-buy: 20170619-24-02 22949 4 14.5
-buy: 20170814-08-04 23017 46 14.1
-buy: 20190305-10-02 23042 1 27.1
-buy: 20170514-19-08 23078 0 18.2
-buy: 20170525-22-04 23091 0 13.8
-buy: 20190327-18-06 23117 0 22.2
-buy: 20170705-15-05 23160 0 15.3
-☆hit!☆: 20170705-15-05 0 15.3
-buy: 20180809-19-07 23234 4 16.7
-buy: 20180603-22-10 23237 0 12.3
-buy: 20171112-14-02 23257 0 14.9
-☆hit!☆: 20171112-14-02 0 14.9
-buy: 20181014-10-07 23263 8 17.2
-buy: 20180531-18-01 23301 8 10.3
-buy: 20180719-23-02 23302 2 7.5
-buy: 20181219-21-06 23328 0 14.8
-buy: 20181219-21-06 23328 8 15.5
-buy: 20170629-09-06 23351 37 18.6
-buy: 20190212-24-07 23453 0 13.9
-buy: 20181220-19-06 23531 7 12.7
-buy: 20180719-18-01 23639 0 14.4
-buy: 20181225-22-04 23792 0 15.4
-buy: 20180728-18-02 23840 18 18.8
-buy: 20170518-15-10 23868 0 18.3
-buy: 20190322-05-11 23974 0 15.0
-buy: 20181230-19-09 24010 0 10.4
-buy: 20170512-21-08 24044 4 16.3
-buy: 20170505-17-04 24059 0 15.6
-buy: 20180315-20-06 24090 4 20.0
-buy: 20180426-19-09 24137 0 17.0
-buy: 20171108-21-01 24156 0 17.4
-buy: 20170503-10-07 24212 0 11.7
-buy: 20170930-13-07 24214 12 10.7
-buy: 20180404-10-07 24256 36 20.8
-buy: 20181115-16-01 24273 0 13.1
-buy: 20170913-07-11 24318 5 15.5
-buy: 20170403-17-05 24363 46 15.9
-buy: 20180109-06-12 24396 0 14.5
-buy: 20180312-18-02 24417 8 17.0
-buy: 20180511-19-05 24498 0 15.7
-buy: 20180714-06-06 24529 12 19.1
-buy: 20180125-18-02 24549 16 33.2
-buy: 20190106-21-01 24647 2 22.3
-☆hit!☆: 20190106-21-01 2 22.3
-buy: 20190106-21-01 24647 12 15.9
-buy: 20171105-12-07 24689 0 15.0
-buy: 20170516-17-05 24747 0 21.4
-buy: 20180107-16-01 24887 1 13.0
-buy: 20181127-01-02 24933 5 14.2
-buy: 20180602-15-06 24994 0 13.4
-buy: 20190115-12-05 25026 0 20.0
-buy: 20181017-17-09 25046 16 13.8
-buy: 20170503-09-10 25242 0 14.9
-buy: 20171224-23-02 25305 0 22.3
-buy: 20180617-24-06 25318 0 12.3
-buy: 20170814-02-10 25356 0 17.4
-buy: 20170601-08-07 25417 0 16.1
-buy: 20170714-15-11 25430 0 11.4
-buy: 20181107-15-11 25464 16 29.3
-buy: 20171031-18-09 25481 0 17.5
-buy: 20171024-17-07 25510 0 17.2
-buy: 20190304-14-04 25512 1 14.6
-buy: 20170815-16-01 25518 0 9.9
-buy: 20190307-24-09 25565 0 16.3
-buy: 20190307-24-09 25565 4 16.2
-buy: 20180205-23-03 25585 0 20.5
-buy: 20180908-22-02 25691 0 15.7
-buy: 20170426-22-10 25785 0 10.1
-buy: 20180526-13-06 25811 0 15.3
-☆hit!☆: 20180526-13-06 0 15.3
-buy: 20170924-12-11 25905 0 14.6
-buy: 20190302-13-12 25936 0 11.8
-buy: 20171203-20-05 26022 0 11.3
-buy: 20170930-16-07 26048 0 15.4
-buy: 20170430-11-01 26075 0 16.2
-buy: 20170920-19-01 26096 1 31.8
-buy: 20170920-19-01 26096 8 22.9
-buy: 20190312-04-08 26197 0 12.6
-buy: 20190120-21-04 26263 0 14.7
-buy: 20180426-02-06 26300 0 14.0
-buy: 20180516-22-07 26333 0 15.0
-buy: 20180421-10-10 26403 1 21.0
-buy: 20190305-05-09 26405 0 13.1
-buy: 20180608-10-02 26437 2 15.1
-buy: 20170418-18-03 26505 0 16.7
-buy: 20180505-12-04 26528 1 14.5
-☆hit!☆: 20180505-12-04 1 14.5
-buy: 20181229-19-10 26548 0 12.2
-buy: 20170505-01-07 26591 0 15.3
-buy: 20180117-11-07 26611 0 10.6
-☆hit!☆: 20180117-11-07 0 10.6
-buy: 20180916-02-12 26612 0 12.8
-buy: 20181209-09-04 26615 2 16.6
-buy: 20171025-05-06 26693 0 14.9
-buy: 20180401-19-01 26857 0 11.6
-buy: 20181228-19-08 26966 4 16.0
-buy: 20170701-10-11 26987 0 11.9
-buy: 20181014-17-10 27020 0 16.3
-buy: 20170702-05-10 27066 0 18.5
-resultReturn: 0.8666144200626958
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;totalRace,buy,return&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">),</span><span class="n">buyAmount</span><span class="p">,</span><span class="n">resAmount</span> <span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>totalRace,buy,return 27173 638 552.9
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># trainの回収率を計算</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">num_iteration</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">best_iteration</span><span class="p">)</span>
-<span class="n">y_pred_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># 最尤と判断したクラスの値にする</span>
-
-<span class="c1">#print(X_train.head())</span>
-<span class="c1">#print(y_train[0:5])</span>
-<span class="c1">#print(y_pred_max[0:5])</span>
-<span class="c1">#c = collections.Counter(y_pred_max)</span>
-<span class="c1">#print(len(c) )</span>
-
-<span class="c1"># 精度 (Accuracy) を計算する</span>
-<span class="c1">#accuracy = sum(y_train == y_pred_max) / len(y_train)</span>
-<span class="c1">#print(&quot;accuracy:&quot;,accuracy)</span>
-
-<span class="c1"># 回収率を計算</span>
-<span class="n">res</span><span class="o">=</span><span class="mi">0</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)):</span>
-    <span class="k">if</span> <span class="n">y_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">y_pred_max</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-        <span class="n">res</span> <span class="o">+=</span> <span class="n">o_train</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">pass</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;return:&quot;</span><span class="p">,</span><span class="n">res</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-19-ce34cb397c3b&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">     16</span> res<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">0</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span> <span class="ansi-green-fg">for</span> i <span class="ansi-green-fg">in</span> range<span class="ansi-blue-fg">(</span>len<span class="ansi-blue-fg">(</span>y_train<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">---&gt; 18</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">if</span> y_train<span class="ansi-blue-fg">.</span>iloc<span class="ansi-blue-fg">[</span>i<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">==</span>y_pred_max<span class="ansi-blue-fg">[</span>i<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     19</span>         res <span class="ansi-blue-fg">+=</span> o_train<span class="ansi-blue-fg">[</span>i<span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span>
-<span class="ansi-green-intense-fg ansi-bold">     20</span>     <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-green-fg">~/.pyenv/versions/anaconda3-2018.12/lib/python3.6/site-packages/pandas/core/generic.py</span> in <span class="ansi-cyan-fg">__nonzero__</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1476</span>         raise ValueError(&#34;The truth value of a {0} is ambiguous. &#34;
-<span class="ansi-green-intense-fg ansi-bold">   1477</span>                          <span class="ansi-blue-fg">&#34;Use a.empty, a.bool(), a.item(), a.any() or a.all().&#34;</span>
-<span class="ansi-green-fg">-&gt; 1478</span><span class="ansi-red-fg">                          .format(self.__class__.__name__))
-</span><span class="ansi-green-intense-fg ansi-bold">   1479</span> 
-<span class="ansi-green-intense-fg ansi-bold">   1480</span>     __bool__ <span class="ansi-blue-fg">=</span> __nonzero__
-
-<span class="ansi-red-fg">ValueError</span>: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">X_train</span><span class="o">.</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;raceId&#39;</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">xdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Index([&#39;l1Fcnt&#39;, &#39;l1boat2r&#39;, &#39;l1boat3r&#39;, &#39;l1motor2r&#39;, &#39;l1motor3r&#39;, &#39;l1rank&#39;,
-       &#39;l1score&#39;, &#39;l2Fcnt&#39;, &#39;l2boat2r&#39;, &#39;l2boat3r&#39;, &#39;l2motor2r&#39;, &#39;l2motor3r&#39;,
-       &#39;l2rank&#39;, &#39;l2score&#39;, &#39;l3Fcnt&#39;, &#39;l3boat2r&#39;, &#39;l3boat3r&#39;, &#39;l3motor2r&#39;,
-       &#39;l3motor3r&#39;, &#39;l3rank&#39;, &#39;l3score&#39;, &#39;l4Fcnt&#39;, &#39;l4boat2r&#39;, &#39;l4boat3r&#39;,
-       &#39;l4motor2r&#39;, &#39;l4motor3r&#39;, &#39;l4rank&#39;, &#39;l4score&#39;, &#39;l5Fcnt&#39;, &#39;l5boat2r&#39;,
-       &#39;l5boat3r&#39;, &#39;l5motor2r&#39;, &#39;l5motor3r&#39;, &#39;l5rank&#39;, &#39;l5score&#39;, &#39;l6Fcnt&#39;,
-       &#39;l6boat2r&#39;, &#39;l6boat3r&#39;, &#39;l6motor2r&#39;, &#39;l6motor3r&#39;, &#39;l6rank&#39;, &#39;l6score&#39;,
-       &#39;raceWaveHeight&#39;, &#39;raceWindSpeed&#39;],
-      dtype=&#39;object&#39;)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">feature_importance</span><span class="p">())</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[  37  697  800  630  799  168 5425   24  700  773  641  730  383 5956
-   43  685  679  733  744  571 5992   42  681  654  708  707  551 6784
-   35  690  721  707  723  757 7557   63  606  722  742  733  713 7186
-  290  307]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span> 

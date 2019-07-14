@@ -6,7 +6,7 @@
 
 # 選手情報・過去レース情報から3連単舟券120種をクラス分類する
 # こちらではパラメタのベイズ最適化を試みる。
-# todo データの項目を増やしてみる。スタートタイムや過去の連対率。逆に、オッズは消す。
+# スタートタイムや過去の連対率。逆に、オッズは消してみる。
 
 # 汎用ライブラリのimport
 import sys
@@ -45,7 +45,7 @@ from setup.myUtil import dbHandler
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
-trainStartDate="20170101"
+trainStartDate="20170901"
 trainEndDate="20181231"
 # test はtrainからsplitする
 
@@ -62,7 +62,7 @@ dbh=dbHandler.getDBHandle()
 
 # trainの元データを取得
 with dbh.cursor() as cursor:
-    sel_sql = "select * from raceabst_forml_v                where raceDate between '%s' and '%s'                order by raceId "               % (trainStartDate,trainEndDate)
+    sel_sql = "select * from raceabst_forml_rentai_v                where raceDate between '%s' and '%s'                order by raceId "               % (trainStartDate,trainEndDate)
     cursor.execute(sel_sql)
     loadList=cursor.fetchall()
 print("traindata:",len(loadList))
@@ -80,6 +80,10 @@ df.head()
 
 # 入力のデータ整形
 xdf=df.drop(['funaken','odds','raceId','raceDate'],axis=1)
+# オッズから作ったスコアは効きすぎるので捨ててみる
+xdf=xdf.drop(['l1score','l2score','l3score','l4score','l5score','l6score'],axis=1)
+#xdf=xdf.drop(['l1Fcnt','l2Fcnt','l3Fcnt','l4Fcnt','l5Fcnt','l6Fcnt'],axis=1)
+#xdf=xdf.drop(['l1oldavgstdev','l2oldavgstdev','l3oldavgstdev','l4oldavgstdev','l5oldavgstdev','l6oldavgstdev'],axis=1)
 #xdf=pd.get_dummies(xdf,columns=['l1rank','l2rank','l3rank','l4rank','l5rank','l6rank'])
 rankLabel=LabelEncoder()
 rankLabel=rankLabel.fit(xdf['l1rank'])
@@ -128,7 +132,7 @@ print(type(odf))
 bayesian_tr_index, bayesian_val_index  = list(StratifiedKFold(n_splits=2, shuffle=True, random_state=1).split(xdf, ydf))[0]
 
 
-# In[11]:
+# In[15]:
 
 
 def LGB_bayesian(
@@ -150,10 +154,11 @@ def LGB_bayesian(
     params={
         # 多値分類問題
         'objective': 'multiclass',
+        'num_boost_round':250,
         # クラス数は 120
         'num_class': 120,
         #'class_weight':'balanced',
-        'random_state':999,
+        #'random_state':999,
         # 以下、ハイパーパラメタ
         'max_depth':max_depth,
         'num_leaves':num_leaves,
@@ -183,22 +188,23 @@ def LGB_bayesian(
     return score
 
 
-# In[12]:
+# In[16]:
 
 
 bounds_LGB={
-    'max_depth':(3,15),
+    'max_depth':(2,15),
     'min_data_in_leaf':(0,300),
-    'num_leaves':(5,20),
+    'num_leaves':(3,20),
     'reg_alpha':(0,10.0),
     'reg_lambda':(0,10.0)
 }
 
 
-# In[13]:
+# In[17]:
 
 
-LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)
+#LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)
+LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB)
 print(LGB_BO.space.keys)
 
 
@@ -214,7 +220,7 @@ print(LGB_BO.space.keys)
 
 
 
-# In[14]:
+# In[ ]:
 
 
 init_points = 5
