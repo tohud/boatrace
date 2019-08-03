@@ -13793,7 +13793,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">LGB_bayesian</span><span class="p">(</span>
@@ -13815,7 +13815,7 @@ div#notebook {
     <span class="n">params</span><span class="o">=</span><span class="p">{</span>
         <span class="c1"># 多値分類問題</span>
         <span class="s1">&#39;objective&#39;</span><span class="p">:</span> <span class="s1">&#39;multiclass&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;num_boost_round&#39;</span><span class="p">:</span><span class="mi">250</span><span class="p">,</span>
+        <span class="s1">&#39;num_boost_round&#39;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
         <span class="c1"># クラス数は 120</span>
         <span class="s1">&#39;num_class&#39;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
         <span class="c1">#&#39;class_weight&#39;:&#39;balanced&#39;,</span>
@@ -13856,7 +13856,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bounds_LGB</span><span class="o">=</span><span class="p">{</span>
@@ -13875,7 +13875,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)</span>
@@ -13938,7 +13938,7 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">init_points</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">n_iter</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">n_iter</span> <span class="o">=</span> <span class="mi">30</span>
 
 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
@@ -13963,40 +13963,25 @@ div#notebook {
 -------------------------------------------------------------------------------------
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[88]	valid_0&#39;s multi_logloss: 4.0108
-4.010802525745981
-|  1        |  0.2493   |  12.11    |  71.26    |  17.01    |  9.657    |  9.726    |
+[192]	valid_0&#39;s multi_logloss: 3.98067
+3.98067150302112
+|  1        |  0.2512   |  2.516    |  161.0    |  19.82    |  4.715    |  6.368    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[80]	valid_0&#39;s multi_logloss: 4.00595
-4.005954159464579
-| <span class="ansi-magenta-intense-fg"> 2       </span> | <span class="ansi-magenta-intense-fg"> 0.2496  </span> | <span class="ansi-magenta-intense-fg"> 7.895   </span> | <span class="ansi-magenta-intense-fg"> 182.7   </span> | <span class="ansi-magenta-intense-fg"> 16.18   </span> | <span class="ansi-magenta-intense-fg"> 6.416   </span> | <span class="ansi-magenta-intense-fg"> 7.22    </span> |
-Training until validation scores don&#39;t improve for 50 rounds.
-[250]	valid_0&#39;s multi_logloss: 3.98101
-Did not meet early stopping. Best iteration is:
-[250]	valid_0&#39;s multi_logloss: 3.98101
-3.9810107018726457
-| <span class="ansi-magenta-intense-fg"> 3       </span> | <span class="ansi-magenta-intense-fg"> 0.2512  </span> | <span class="ansi-magenta-intense-fg"> 2.455   </span> | <span class="ansi-magenta-intense-fg"> 89.53   </span> | <span class="ansi-magenta-intense-fg"> 3.995   </span> | <span class="ansi-magenta-intense-fg"> 8.571   </span> | <span class="ansi-magenta-intense-fg"> 3.729   </span> |
+[114]	valid_0&#39;s multi_logloss: 3.98686
+3.98686063714877
+|  2        |  0.2508   |  3.117    |  267.2    |  16.9     |  5.463    |  8.28     |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[77]	valid_0&#39;s multi_logloss: 4.00273
-4.00272575219918
-|  4        |  0.2498   |  10.84    |  76.88    |  8.909    |  0.09413  |  3.583    |
+[79]	valid_0&#39;s multi_logloss: 4.00373
+4.003733487789074
+|  3        |  0.2498   |  13.6     |  169.6    |  11.07    |  2.461    |  7.028    |
 Training until validation scores don&#39;t improve for 50 rounds.
 Early stopping, best iteration is:
-[108]	valid_0&#39;s multi_logloss: 3.99765
-3.997649063172499
-|  5        |  0.2501   |  14.34    |  65.37    |  8.43     |  9.178    |  0.319    |
+[90]	valid_0&#39;s multi_logloss: 4.00719
+4.007185031413018
+|  4        |  0.2496   |  12.89    |  53.2     |  14.2     |  8.124    |  9.141    |
 Training until validation scores don&#39;t improve for 50 rounds.
-Early stopping, best iteration is:
-[187]	valid_0&#39;s multi_logloss: 3.98144
-3.981438287215365
-|  6        |  0.2512   |  2.466    |  299.9    |  3.148    |  1.031    |  2.772    |
-Training until validation scores don&#39;t improve for 50 rounds.
-[250]	valid_0&#39;s multi_logloss: 3.98292
-Did not meet early stopping. Best iteration is:
-[250]	valid_0&#39;s multi_logloss: 3.98292
-3.9829211952501122
 </pre>
 </div>
 </div>

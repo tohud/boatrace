@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[57]:
+# In[1]:
 
 
 # ToDo LGBMの成果を評価するために、オッズ帯別の回収率を見てみる。
@@ -15,7 +15,7 @@ import pandas as pd
 import numpy as np
 
 
-# In[58]:
+# In[2]:
 
 
 # 自作ライブラリのimport
@@ -26,7 +26,7 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[59]:
+# In[3]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
@@ -34,13 +34,13 @@ analyzeStartDate="20180101"
 analyzeEndDate="20190131"
 
 
-# In[60]:
+# In[4]:
 
 
 dbh=dbHandler.getDBHandle()
 
 
-# In[61]:
+# In[5]:
 
 
 # 疎通
@@ -52,7 +52,7 @@ with dbh.cursor() as cursor:
     print(raceIdList[0]['raceId'])
 
 
-# In[62]:
+# In[6]:
 
 
 # オッズ帯は対数分布から作る。何段階にするかを指定する
@@ -65,7 +65,7 @@ for i in range(oddsRankNum):
     oddsRankList.append(math.exp(logMaxOddsVal/oddsRankNum*i))
 
 
-# In[63]:
+# In[7]:
 
 
 # オッズの分布
@@ -82,7 +82,7 @@ with dbh.cursor() as cursor:
 print(odds_dist)
 
 
-# In[64]:
+# In[8]:
 
 
 # 回収金額の分布
@@ -99,7 +99,7 @@ with dbh.cursor() as cursor:
 print(return_dist)
 
 
-# In[65]:
+# In[9]:
 
 
 # 回収率を見る
@@ -156,7 +156,7 @@ print(kaishuRank)
 
 
 
-# In[56]:
+# In[11]:
 
 
 # メモリ使用チェック
@@ -167,7 +167,7 @@ for var_name in dir():
         print("{}{: >25}{}{: >10}{}".format('|',var_name,'|',sys.getsizeof(eval(var_name)),'|'))
 
 
-# In[3]:
+# In[ ]:
 
 
 

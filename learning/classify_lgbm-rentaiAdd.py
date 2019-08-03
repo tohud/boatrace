@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[30]:
 
 
 # todo 学習結果を使って運用するための環境を作る。
@@ -24,6 +24,7 @@ import statsmodels.api as sm
 import math
 import tensorflow as tf
 import collections
+from datetime import datetime
 
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
@@ -32,7 +33,7 @@ import csv
 from itertools import chain
 
 
-# In[2]:
+# In[34]:
 
 
 # 自作ライブラリのimport
@@ -41,6 +42,9 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 #print(sys.path)
 
 from setup.myUtil import dbHandler
+
+# model保存パスのセット
+model_path=os.path.join(os.environ['BR_HOME'],"boatrace/models")
 
 
 # In[3]:
@@ -99,7 +103,7 @@ df = pd.io.json.json_normalize(loadList)
 df.head()
 
 
-# In[28]:
+# In[8]:
 
 
 # 入力のデータ整形
@@ -126,7 +130,7 @@ xdf['l6rank']=rankLabel.transform(xdf['l6rank'])
 xdf.head()
 
 
-# In[29]:
+# In[9]:
 
 
 xdf.describe()
@@ -138,7 +142,7 @@ xdf.describe()
 
 
 
-# In[30]:
+# In[10]:
 
 
 # ファイルから作った辞書で変換する
@@ -149,7 +153,7 @@ ydf['funaken']=ydf['funaken'].astype(int)
 print(ydf['funaken'].dtype)
 
 
-# In[31]:
+# In[11]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -165,21 +169,21 @@ odf=df['odds'].values
 
 
 
-# In[32]:
+# In[12]:
 
 
 X_train, X_test, y_train, y_test,o_train,o_test = train_test_split(xdf, ydf,odf)
 print("X_train,X_test:",len(X_train),len(X_test))
 
 
-# In[33]:
+# In[13]:
 
 
 lgb_train = lgb.Dataset(X_train, y_train)
 lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
 
 
-# In[34]:
+# In[14]:
 
 
 lgbm_params = {
@@ -200,19 +204,28 @@ lgbm_params = {
 }
 
 
-# In[35]:
+# In[15]:
 
 
 lgb.LGBMClassifier()
 
 
-# In[36]:
+# In[16]:
 
 
 model = lgb.train(lgbm_params, lgb_train, valid_sets=lgb_eval)
 
 
-# In[37]:
+# In[35]:
+
+
+## save_model
+model_name=os.path.join(datetime.now().strftime("%Y%m%d%H%M%S"))
+print(model_name)
+model.save_model(os.path.join(model_path,model_name+'.txt'))
+
+
+# In[17]:
 
 
 y_pred = model.predict(X_test, num_iteration=model.best_iteration)
@@ -234,7 +247,7 @@ for i in range(len(y_test)):
 print("resultReturn:",res/len(y_test))
 
 
-# In[38]:
+# In[18]:
 
 
 print(len(y_pred))
@@ -270,7 +283,7 @@ for i in range(len(y_test)):
 print("resultReturn:",resAmount/buyAmount)
 
 
-# In[39]:
+# In[19]:
 
 
 print("totalRace,buy,return,",len(y_test),buyAmount,resAmount ,resAmount/buyAmount)
@@ -283,7 +296,7 @@ print("totalRace,buy,return,",len(y_test),buyAmount,resAmount ,resAmount/buyAmou
 #totalRace,buy,return, 17925 151 153.29999999999998 1.0152317880794701
 
 
-# In[40]:
+# In[20]:
 
 
 print(len(y_pred))
@@ -349,14 +362,14 @@ for i in range(len(y_test)):
 #totalRace,buy,return 17925 5966 5108.700000000001
 
 
-# In[41]:
+# In[21]:
 
 
 print("resultReturn:",resAmount/buyAmount)
 print("totalRace,buy,return",len(y_test),buyAmount,resAmount )
 
 
-# In[42]:
+# In[22]:
 
 
 # trainの回収率を計算
@@ -384,13 +397,13 @@ y_pred_max = np.argmax(y_pred, axis=1)  # 最尤と判断したクラスの値�
 #print("return:",res/len(y_train))
 
 
-# In[43]:
+# In[23]:
 
 
 print(y_pred[0])
 
 
-# In[44]:
+# In[24]:
 
 
 print(df.iloc[X_train.index]['raceId'])
@@ -402,13 +415,13 @@ print(df.iloc[X_train.index]['raceId'])
 
 
 
-# In[45]:
+# In[25]:
 
 
 print(xdf.columns)
 
 
-# In[46]:
+# In[26]:
 
 
 print(model.feature_importance())

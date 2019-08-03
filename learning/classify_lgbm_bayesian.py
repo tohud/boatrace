@@ -132,7 +132,7 @@ print(type(odf))
 bayesian_tr_index, bayesian_val_index  = list(StratifiedKFold(n_splits=2, shuffle=True, random_state=1).split(xdf, ydf))[0]
 
 
-# In[15]:
+# In[11]:
 
 
 def LGB_bayesian(
@@ -154,7 +154,7 @@ def LGB_bayesian(
     params={
         # 多値分類問題
         'objective': 'multiclass',
-        'num_boost_round':250,
+        'num_boost_round':500,
         # クラス数は 120
         'num_class': 120,
         #'class_weight':'balanced',
@@ -188,7 +188,7 @@ def LGB_bayesian(
     return score
 
 
-# In[16]:
+# In[12]:
 
 
 bounds_LGB={
@@ -200,7 +200,7 @@ bounds_LGB={
 }
 
 
-# In[17]:
+# In[13]:
 
 
 #LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)
@@ -224,7 +224,7 @@ print(LGB_BO.space.keys)
 
 
 init_points = 5
-n_iter = 10
+n_iter = 30
 
 with warnings.catch_warnings():
     warnings.filterwarnings('ignore')
