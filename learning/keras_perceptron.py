@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[19]:
+# In[1]:
 
 
 # 汎用ライブラリのimport
@@ -23,7 +23,7 @@ from sklearn.preprocessing import LabelEncoder
 import scipy.stats
 
 
-# In[54]:
+# In[2]:
 
 
 # keras用ライブラリ
@@ -34,7 +34,7 @@ from keras.optimizers import SGD
 from keras.utils import np_utils
 
 
-# In[4]:
+# In[3]:
 
 
 # 自作ライブラリのimport
@@ -45,7 +45,7 @@ if os.environ['BR_HOME']+"/boatrace" not in sys.path:
 from setup.myUtil import dbHandler
 
 
-# In[7]:
+# In[4]:
 
 
 # 舟券の配列を取得
@@ -58,22 +58,22 @@ funakenID = [i for i in range(120)]
 funakenDict=dict(zip(funakenList[0],funakenID))
 
 
-# In[8]:
+# In[5]:
 
 
 # 分析期間の指定は一旦ここでまとめてみる。
-simStartDate="20190101"
-simEndDate="20190531"
+simStartDate="20180101"
+simEndDate="20181231"
 
 
-# In[9]:
+# In[6]:
 
 
 dbh=dbHandler.getDBHandle()
 #dbHandler.closeDBHandle(dbh)
 
 
-# In[10]:
+# In[7]:
 
 
 # データを取得
@@ -84,14 +84,14 @@ with dbh.cursor() as cursor:
 print("simdata:",len(loadList))
 
 
-# In[11]:
+# In[8]:
 
 
 df = pd.io.json.json_normalize(loadList)
 df.head()
 
 
-# In[14]:
+# In[9]:
 
 
 # 入力のデータ整形
@@ -112,7 +112,22 @@ xdf['l6rank']=rankLabel.transform(xdf['l6rank'])
 xdf.head()
 
 
-# In[21]:
+# In[10]:
+
+
+# validation向けに平均値、標準偏差を出しておく
+zscore_param=xdf.describe()
+# 変換の方法はこちら。
+print( (xdf.loc["0":"1",["l1boat2r"] ]-zscore_param['l1boat2r']['mean'])/zscore_param['l1boat2r']['std'] )
+
+
+# In[ ]:
+
+
+
+
+
+# In[11]:
 
 
 # normalizeしておく
@@ -120,13 +135,13 @@ xdf.head()
 xdf=xdf.apply(scipy.stats.zscore, axis=0)
 
 
-# In[22]:
+# In[12]:
 
 
 xdf.head()
 
 
-# In[35]:
+# In[13]:
 
 
 # ファイルから作った辞書で変換する
@@ -140,7 +155,7 @@ y=np.eye(120)[ydf['funaken']]
 print(y)
 
 
-# In[100]:
+# In[14]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -152,7 +167,7 @@ print(odf)
 print(raceId_df)
 
 
-# In[126]:
+# In[15]:
 
 
 #train/testを分割
@@ -167,37 +182,44 @@ print("raceId_train,raceId_test:",len(raceId_train),len(raceId_test))
 print(type(o_train))
 
 
-# In[128]:
+# In[16]:
 
 
 # class
 class my_Net:
     def __init__(self):
-        self.Epoch = 200
-        self.Batch_size = 8000
+        # 整数パラメータの保証
+        in_hidden_units = int(1124)
+        in_layer_num = int(3.24)
+        assert(type(in_hidden_units)== int)
+        assert(type(in_layer_num)== int )
+    
+        self.Epoch = 400
+        #self.Batch_size = 4000
+        self.Batch_size = 10000
         self.Verbose = 1 #ログの出力モード切替 : 1 プログレスバーで表示
         self.output_size = 120
-        self.optimize = SGD()
+        self.optimize = SGD() #確率的勾配下降法
         #self.hidden_units = 128
-        self.hidden_units = 256
+        #self.hidden_units = 256
+        self.hidden_units = in_hidden_units
+        self.layer_num = in_layer_num
         self.Validation_split = 0.2 #訓練データの中で検証データとして扱う割合
         #self.Reshape = 28 * 28
+
         
         self.model = Sequential()
  
     def make_net(self):
         self.model.add(Dense(self.hidden_units, input_shape=(86,)))
         self.model.add(Activation("relu"))
-        self.model.add(Dense(self.hidden_units))
-        self.model.add(Activation("relu"))
-        self.model.add(Dense(self.hidden_units))
-        self.model.add(Activation("relu"))
-        self.model.add(Dense(self.hidden_units))
-        self.model.add(Activation("relu"))
+        for i in range(self.layer_num):
+            self.model.add(Dense(self.hidden_units))
+            self.model.add(Activation("relu"))
         self.model.add(Dense(self.output_size))
         self.model.add(Activation("softmax"))
         self.model.summary()
- 
+        
     def model_compile(self):
         self.model.compile(loss="categorical_crossentropy", #交差エントロピー誤差関数
                            optimizer=self.optimize,#確率的勾配下降法
@@ -217,7 +239,7 @@ class my_Net:
         return self.model.evaluate(x, t, verbose=self.Verbose)
 
 
-# In[129]:
+# In[17]:
 
 
 net = my_Net()
@@ -232,19 +254,21 @@ print("\nTest loss:", score[0])
 print("\nTest accuracy:", score[1])
 
 
-# In[57]:
+# In[ ]:
 
 
 #モデルを保存
-model_path=os.path.join(os.environ['BR_HOME'],"boatrace/models")
-model_modelfile=os.path.join(model_path,'keras_perceptron_model.json')
-model_weightfile=os.path.join(model_path,'keras_perceptron_weight.json')
+model_save = False
+if model_save :
+    model_path=os.path.join(os.environ['BR_HOME'],"boatrace/models")
+    model_modelfile=os.path.join(model_path,'keras_perceptron_model.json')
+    model_weightfile=os.path.join(model_path,'keras_perceptron_weight.json')
 
-open(model_modelfile,"w").write(net.model.to_json())
-net.model.save_weights(model_weightfile)
+    open(model_modelfile,"w").write(net.model.to_json())
+    net.model.save_weights(model_weightfile)
 
 
-# In[130]:
+# In[ ]:
 
 
 # testの回収率をシミュレート
@@ -257,7 +281,7 @@ buyCnt=0
 testPredictList=net.model.predict(X_test,batch_size=len(X_test))
 
 for i in range(len(raceId_test) ):
-    raceId=raceId_train[i]
+    raceId=raceId_test[i]
     with dbh.cursor() as cursor:
         sel_sql = "select funaken,odds from raceodds                    where oddsType = '3t'                    and raceId = '%s'                    order by funaken"                    % (raceId)
 
@@ -267,7 +291,7 @@ for i in range(len(raceId_test) ):
                 
     for j in range(120):
         # y_predの閾値を下げてみる。
-        if testPredictList[i][j]> 0.08 and ( (testPredictList[i][j] * (loadList[loadList['funaken']==j]['odds'])).values[0] > 1.5) :
+        if testPredictList[i][j]> 0.05 and ( (testPredictList[i][j] * (loadList[loadList['funaken']==j]['odds'])).values[0] > 2.0) :
             print("buy:",raceId,i,j,loadList[loadList['funaken']==j]['odds'].values[0],round(testPredictList[i][j],3) )
             buyAmount+=1
             buyCnt+=1
@@ -280,11 +304,30 @@ for i in range(len(raceId_test) ):
 #res=net.model.predict_on_batch(xdf[1:3])
 
 
-# In[131]:
+# In[ ]:
 
 
 print("resultReturn:",resAmount/buyAmount)
 print("totalRace,buy,return",len(y_test),buyAmount,resAmount )
+print("rate:",resCnt/buyCnt)
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:

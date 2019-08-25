@@ -81,7 +81,7 @@ df.head()
 # 入力のデータ整形
 xdf=df.drop(['funaken','odds','raceId','raceDate'],axis=1)
 # オッズから作ったスコアは効きすぎるので捨ててみる
-xdf=xdf.drop(['l1score','l2score','l3score','l4score','l5score','l6score'],axis=1)
+#xdf=xdf.drop(['l1score','l2score','l3score','l4score','l5score','l6score'],axis=1)
 #xdf=xdf.drop(['l1Fcnt','l2Fcnt','l3Fcnt','l4Fcnt','l5Fcnt','l6Fcnt'],axis=1)
 #xdf=xdf.drop(['l1oldavgstdev','l2oldavgstdev','l3oldavgstdev','l4oldavgstdev','l5oldavgstdev','l6oldavgstdev'],axis=1)
 #xdf=pd.get_dummies(xdf,columns=['l1rank','l2rank','l3rank','l4rank','l5rank','l6rank'])
@@ -116,7 +116,7 @@ ydf.head()
 
 
 
-# In[9]:
+# In[ ]:
 
 
 # 重み付けのため、オッズのリストを作る
@@ -126,13 +126,13 @@ odf=pd.DataFrame(df['odds'])
 print(type(odf))
 
 
-# In[10]:
+# In[ ]:
 
 
 bayesian_tr_index, bayesian_val_index  = list(StratifiedKFold(n_splits=2, shuffle=True, random_state=1).split(xdf, ydf))[0]
 
 
-# In[11]:
+# In[ ]:
 
 
 def LGB_bayesian(
@@ -188,19 +188,19 @@ def LGB_bayesian(
     return score
 
 
-# In[12]:
+# In[ ]:
 
 
 bounds_LGB={
     'max_depth':(2,15),
-    'min_data_in_leaf':(0,300),
+    'min_data_in_leaf':(0,500),
     'num_leaves':(3,20),
     'reg_alpha':(0,10.0),
     'reg_lambda':(0,10.0)
 }
 
 
-# In[13]:
+# In[ ]:
 
 
 #LGB_BO = BayesianOptimization(LGB_bayesian, bounds_LGB, random_state=13)
@@ -224,7 +224,7 @@ print(LGB_BO.space.keys)
 
 
 init_points = 5
-n_iter = 30
+n_iter = 10
 
 with warnings.catch_warnings():
     warnings.filterwarnings('ignore')
